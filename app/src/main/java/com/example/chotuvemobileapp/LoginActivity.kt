@@ -53,25 +53,8 @@ class LoginActivity : AppCompatActivity() {
         })
     }
 
-    fun isDataValid(): Boolean{
-        var valid = true
-
-        val user = LogInUsername.text.toString()
-        val password = LoginPassword.text.toString()
-
-        LogInUsername.error = null
-        LoginPassword.error = null
-
-        if (user.isEmpty()){
-            LogInUsername.error = "Username is required"
-            valid = false
-        }
-        if (password.isEmpty()){
-            LoginPassword.error = "Password is required"
-            valid = false
-        }
-            return valid
-    }
+    fun isDataValid(): Boolean =
+        LogInUsername.text.toString().isNotEmpty() && LoginPassword.text.toString().isNotEmpty()
 }
 
 

@@ -11,6 +11,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.chotuvemobileapp.LoginDataSource.addUser
 import com.example.chotuvemobileapp.LoginDataSource.userExists
 import kotlinx.android.synthetic.main.activity_sign_up.*
+import java.text.DecimalFormat
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 class SignUpActivity : AppCompatActivity() {
@@ -26,7 +29,9 @@ class SignUpActivity : AppCompatActivity() {
 
         RegDateText.setOnClickListener {
             val dialog = DatePickerDialog(this, DatePickerDialog.OnDateSetListener{ _, mYear, mMonth, mDay ->
-                val text = "$mDay/$mMonth/$mYear"
+                val df = DecimalFormat("00")
+                val month = df.format(mMonth + 1)
+                val text = "$mDay/$month/$mYear"
                 RegDateText.setText(text)
 
             }, year, month, day)
@@ -44,20 +49,25 @@ class SignUpActivity : AppCompatActivity() {
         RegPwSecondText.watchText()
 
         SignUpButton.setOnClickListener{
-            addUser(RegUsernameText.text.toString(), RegNameText.text.toString(),
-                RegLastNameText.text.toString(), RegEmailText.text.toString(),
-                RegPwFirstText.text.toString(), RegDateText.text.toString())
-            startActivity(Intent(this, MainActivity::class.java))
-            val nameToShow = RegNameText.text.toString()
-            Toast.makeText(applicationContext, "Welcome, $nameToShow!", Toast.LENGTH_LONG).show()
-            finish()
+            if (isDataValid()) {
+                addUser(
+                    RegUsernameText.text.toString(), RegNameText.text.toString(),
+                    RegLastNameText.text.toString(), RegEmailText.text.toString(),
+                    RegPwFirstText.text.toString(), RegDateText.text.toString()
+                )
+                startActivity(Intent(this, MainActivity::class.java))
+                val nameToShow = RegNameText.text.toString()
+                Toast.makeText(applicationContext, "Welcome, $nameToShow!", Toast.LENGTH_LONG)
+                    .show()
+                finish()
+            }
         }
     }
 
     private fun EditText.watchText() {
         this.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(editable: Editable?) {
-                SignUpButton.isEnabled = validate()
+                SignUpButton.isEnabled = isDataCorrect()
                 if (SignUpButton.isEnabled) SignUpButton.alpha = 1f
             }
 
@@ -66,52 +76,58 @@ class SignUpActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
         })
     }
-    fun validate(): Boolean {
+
+    fun isDataValid(): Boolean{
         var valid = true
+
+        RegUsername.error = null
+        RegEmail.error = null
+        RegPassFirst.error = null
+        RegDate.error = null
+
+        if (userExists(RegUsernameText.text.toString())){
+            RegUsername.error = "Username already taken"
+            valid = false
+        }
+        if (RegPwFirstText.text.toString() != RegPwSecondText.text.toString()){
+            RegPassFirst.error = "Passwords don't match"
+            valid = false
+        }
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(RegEmailText.text.toString()).matches()){
+            RegEmail.error = "Invalid email"
+            valid = false
+        }
+        if (LocalDate.parse(RegDateText.text.toString(), DateTimeFormatter.ofPattern("dd/MM/yyyy")) >= LocalDate.now()){
+            RegDate.error = "You're from the future!"
+            valid = false
+        }
+        return valid
+    }
+    fun isDataCorrect(): Boolean {
+        var correct = true
 
         val name = RegNameText.text.toString()
         val lastName = RegLastNameText.text.toString()
         val username = RegUsernameText.text.toString()
         val email = RegEmailText.text.toString()
         val password = RegPwFirstText.text.toString()
-        val reEnterPassword = RegPwSecondText.text.toString()
-
-        RegNameText.error = null
-        RegLastNameText.error = null
-        RegUsernameText.error = null
-        RegEmailText.error = null
-        RegPwFirstText.error = null
-        RegPwSecondText.error = null
 
         if (name.isEmpty()){
-            RegNameText.error = "Name is required"
-            valid = false
+            correct = false
         }
         if (lastName.isEmpty()){
-            RegLastNameText.error = "Last Name is required"
-            valid = false
+            correct = false
         }
         if (username.isEmpty()){
-            RegUsernameText.error = "Name is required"
-            valid = false
-        }
-        if (userExists(username)){
-            RegUsernameText.error = "Username already taken"
-            valid = false
+            correct = false
         }
         if (email.isEmpty()){
-            RegEmailText.error = "Email is required"
-            valid = false
+            correct = false
         }
-        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()){
-            RegEmailText.error = "Invalid email"
-            valid = false
+        if (password.isEmpty()){
+            correct = false
         }
-        if (password != reEnterPassword){
-            RegPwFirstText.error = "Passwords don't match"
-            valid = false
-        }
-        return valid
+        return correct
     }
 }
 
