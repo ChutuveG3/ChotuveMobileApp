@@ -1,4 +1,4 @@
-package com.example.chotuvemobileapp.data.model
+package com.example.chotuvemobileapp
 
 import java.time.LocalDate
 import java.util.*

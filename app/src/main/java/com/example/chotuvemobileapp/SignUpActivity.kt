@@ -8,10 +8,9 @@ import android.text.TextWatcher
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.chotuvemobileapp.data.LoginDataSource.addUser
-import com.example.chotuvemobileapp.data.LoginDataSource.userExists
+import com.example.chotuvemobileapp.LoginDataSource.addUser
+import com.example.chotuvemobileapp.LoginDataSource.userExists
 import kotlinx.android.synthetic.main.activity_sign_up.*
-import java.time.LocalDate
 import java.util.*
 
 class SignUpActivity : AppCompatActivity() {
@@ -34,23 +33,48 @@ class SignUpActivity : AppCompatActivity() {
             dialog.show()
         }
 
+        SignUpButton.isEnabled = false
+        SignUpButton.alpha = .5f
+
+        RegUsernameText.watchText()
+        RegNameText.watchText()
+        RegLastNameText.watchText()
+        RegEmailText.watchText()
+        RegPwFirstText.watchText()
+        RegPwSecondText.watchText()
+
         SignUpButton.setOnClickListener{
-            addUser(RegUsernameText.toString(), RegNameText.toString(), RegLastNameText.toString(), RegEmailText.toString(),
-                RegPwFirstText.toString(), RegDateText.toString())
+            addUser(RegUsernameText.text.toString(), RegNameText.text.toString(),
+                RegLastNameText.text.toString(), RegEmailText.text.toString(),
+                RegPwFirstText.text.toString(), RegDateText.text.toString())
             startActivity(Intent(this, MainActivity::class.java))
+            val nameToShow = RegNameText.text.toString()
+            Toast.makeText(applicationContext, "Welcome, $nameToShow!", Toast.LENGTH_LONG).show()
             finish()
         }
     }
 
+    private fun EditText.watchText() {
+        this.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(editable: Editable?) {
+                SignUpButton.isEnabled = validate()
+                if (SignUpButton.isEnabled) SignUpButton.alpha = 1f
+            }
+
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
+        })
+    }
     fun validate(): Boolean {
         var valid = true
 
-        val name = RegNameText.toString()
-        val lastName = RegLastNameText.toString()
-        val username = RegUsernameText.toString()
-        val email = RegEmailText.toString()
-        val password = RegPwFirstText.toString()
-        val reEnterPassword = RegPwSecondText.toString()
+        val name = RegNameText.text.toString()
+        val lastName = RegLastNameText.text.toString()
+        val username = RegUsernameText.text.toString()
+        val email = RegEmailText.text.toString()
+        val password = RegPwFirstText.text.toString()
+        val reEnterPassword = RegPwSecondText.text.toString()
 
         RegNameText.error = null
         RegLastNameText.error = null
@@ -88,18 +112,6 @@ class SignUpActivity : AppCompatActivity() {
             valid = false
         }
         return valid
-    }
-    fun EditText.onTextChanged(onTextChanged: (String) -> Unit) {
-        this.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(editable: Editable?) {}
-
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
-                SignUpButton.isEnabled = validate()
-                if (!SignUpButton.isEnabled) Toast.makeText(baseContext, "Sign up Failed", Toast.LENGTH_LONG).show()
-            }
-        })
     }
 }
 
