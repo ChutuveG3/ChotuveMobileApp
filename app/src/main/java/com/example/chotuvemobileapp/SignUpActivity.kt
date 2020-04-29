@@ -86,19 +86,19 @@ class SignUpActivity : AppCompatActivity() {
         RegDate.error = null
 
         if (userExists(RegUsernameText.text.toString())){
-            RegUsername.error = "Username already taken"
+            RegUsername.error = getString(R.string.user_taken)
             valid = false
         }
         if (RegPwFirstText.text.toString() != RegPwSecondText.text.toString()){
-            RegPassFirst.error = "Passwords don't match"
+            RegPassFirst.error = getString(R.string.password_mismatch)
             valid = false
         }
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(RegEmailText.text.toString()).matches()){
-            RegEmail.error = "Invalid email"
+            RegEmail.error = getString(R.string.invalid_email)
             valid = false
         }
         if (LocalDate.parse(RegDateText.text.toString(), DateTimeFormatter.ofPattern("dd/MM/yyyy")) >= LocalDate.now()){
-            RegDate.error = "You're from the future!"
+            RegDate.error = getString(R.string.invalid_date)
             valid = false
         }
         return valid

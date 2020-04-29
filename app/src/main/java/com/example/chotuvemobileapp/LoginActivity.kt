@@ -36,8 +36,8 @@ class LoginActivity : AppCompatActivity() {
                 finish()
             }
 
-            else Toast.makeText(applicationContext, result.Error, Toast.LENGTH_LONG).show()
-
+            else if (result.Error == Error.UserNotRegistered) UsernameInput.error = getString(R.string.invalid_username)
+            else PasswordInput.error = getString(R.string.invalid_password)
         }
     }
     private fun EditText.watchText() {
@@ -53,8 +53,11 @@ class LoginActivity : AppCompatActivity() {
         })
     }
 
-    fun isDataValid(): Boolean =
-        LogInUsername.text.toString().isNotEmpty() && LoginPassword.text.toString().isNotEmpty()
+    fun isDataValid(): Boolean {
+        UsernameInput.error = null
+        PasswordInput.error = null
+        return LogInUsername.text.toString().isNotEmpty() && LoginPassword.text.toString().isNotEmpty()
+    }
 }
 
 

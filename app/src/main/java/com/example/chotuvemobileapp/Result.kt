@@ -1,3 +1,8 @@
 package com.example.chotuvemobileapp
 
-class Result (val Success: Boolean, val Error : String?)
+
+enum class Error {
+    UserNotRegistered,
+    IncorrectPassword
+}
+class Result (val Success: Boolean, val Error : Error?)

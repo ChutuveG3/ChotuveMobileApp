@@ -12,9 +12,9 @@ object LoginDataSource {
     }
 
     fun login(username: String, password: String): Result {
-        if (!users.containsKey(username)) return Result(false, "User doesn't exist")
+        if (!users.containsKey(username)) return Result(false, Error.UserNotRegistered)
         val user = users[username]
-        if (user!!.password != password) return Result(false, "Incorrect password")
+        if (user!!.password != password) return Result(false, Error.IncorrectPassword)
 
         return Result(true, null)
     }
