@@ -9,7 +9,6 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.chotuvemobileapp.LoginDataSource.addUser
-import com.example.chotuvemobileapp.LoginDataSource.userExists
 import kotlinx.android.synthetic.main.activity_sign_up.*
 import java.text.DecimalFormat
 import java.time.LocalDate
@@ -30,8 +29,9 @@ class SignUpActivity : AppCompatActivity() {
         RegDateText.setOnClickListener {
             val dialog = DatePickerDialog(this, DatePickerDialog.OnDateSetListener{ _, mYear, mMonth, mDay ->
                 val df = DecimalFormat("00")
-                val month = df.format(mMonth + 1)
-                val text = "$mDay/$month/$mYear"
+                val trueMonth = df.format(mMonth + 1)
+                val trueDay = df.format(mDay)
+                val text = "$mYear-$trueMonth-$trueDay"
                 RegDateText.setText(text)
 
             }, year, month, day)
@@ -50,16 +50,26 @@ class SignUpActivity : AppCompatActivity() {
 
         SignUpButton.setOnClickListener{
             if (isDataValid()) {
-                addUser(
-                    RegUsernameText.text.toString(), RegNameText.text.toString(),
-                    RegLastNameText.text.toString(), RegEmailText.text.toString(),
-                    RegPwFirstText.text.toString(), RegDateText.text.toString()
+                val result = addUser(User(RegNameText.text.toString(), RegLastNameText.text.toString(), RegEmailText.text.toString(),
+                                          RegPwFirstText.text.toString(), RegUsernameText.text.toString(), RegDateText.text.toString())
                 )
-                startActivity(Intent(this, MainActivity::class.java))
-                val nameToShow = RegNameText.text.toString()
-                Toast.makeText(applicationContext, "Welcome, $nameToShow!", Toast.LENGTH_LONG)
-                    .show()
-                finish()
+                when (result) {
+                    "" -> {
+                        startActivity(Intent(this, MainActivity::class.java))
+                        val nameToShow = RegNameText.text.toString()
+                        Toast.makeText(applicationContext, "Welcome, $nameToShow!", Toast.LENGTH_LONG).show()
+                        finish()
+                    }
+                    "user_name_already_exists" -> {
+                        RegUsername.error = getString(R.string.user_taken)
+                    }
+                    "user_email_already_exists" -> {
+                        RegEmail.error = getString(R.string.email_taken)
+                    }
+                    else -> {
+                        Toast.makeText(applicationContext, getString(R.string.internal_error), Toast.LENGTH_LONG).show()
+                    }
+                }
             }
         }
     }
@@ -85,10 +95,6 @@ class SignUpActivity : AppCompatActivity() {
         RegPassFirst.error = null
         RegDate.error = null
 
-        if (userExists(RegUsernameText.text.toString())){
-            RegUsername.error = getString(R.string.user_taken)
-            valid = false
-        }
         if (RegPwFirstText.text.toString() != RegPwSecondText.text.toString()){
             RegPassFirst.error = getString(R.string.password_mismatch)
             valid = false
@@ -97,7 +103,7 @@ class SignUpActivity : AppCompatActivity() {
             RegEmail.error = getString(R.string.invalid_email)
             valid = false
         }
-        if (LocalDate.parse(RegDateText.text.toString(), DateTimeFormatter.ofPattern("dd/MM/yyyy")) >= LocalDate.now()){
+        if (LocalDate.parse(RegDateText.text.toString()) >= LocalDate.now()){
             RegDate.error = getString(R.string.invalid_date)
             valid = false
         }
