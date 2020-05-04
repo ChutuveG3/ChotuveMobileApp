@@ -2,6 +2,12 @@ package com.example.chotuvemobileapp
 
 import com.google.gson.Gson
 import okhttp3.*
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.create
+import retrofit2.http.FormUrlEncoded
+import retrofit2.http.POST
+import java.lang.StringBuilder
 
 
 /**
@@ -9,8 +15,20 @@ import okhttp3.*
  */
 object LoginDataSource {
 
+    private const val baseUrl = "https://chotuve-app-server-develop.herokuapp.com"
     private val users = HashMap<String, User>()
-    private val client = OkHttpClient()
+    private val client = OkHttpClient.Builder().addInterceptor{chain ->
+        val original = chain.request()
+        val requestBuilder = original.newBuilder().method(original.method, original.body)
+        val request = requestBuilder.build()
+        chain.proceed(request)
+    }.build()
+    val source: ILoginDataSource by lazy {
+        val retrofit = Retrofit.Builder().baseUrl(baseUrl)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(client).build()
+        retrofit.create(ILoginDataSource::class.java)
+    }
 
     fun login(username: String, password: String): Result {
         if (!users.containsKey(username)) return Result(false, Error.UserNotRegistered)
@@ -24,31 +42,6 @@ object LoginDataSource {
         return users[username]!!.first_name
     }
 
-
-
-    fun addUser(user: User): String {
-        val formBody = FormBody.Builder().add("first_name", user.first_name)
-            .add("last_name", user.last_name)
-            .add("email", user.email)
-            .add("password", user.password)
-            .add("user_name", user.user_name)
-            .add("birthdate", user.birthdate).build()
-        val request =
-            Request.Builder().url("https://chotuve-app-server-develop.herokuapp.com/users")
-                .post(formBody).build()
-
-        val response = client.newCall(request).execute()
-        return if (!response.isSuccessful) {
-            val body = response.body!!.string()
-            if (response.code == 400) {
-                Gson().fromJson(body, ResponseBody::class.java).internal_code
-            } else {
-                body
-            }
-        } else {
-            ""
-        }
-    }
 }
 
 

@@ -8,8 +8,10 @@ import android.text.TextWatcher
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.chotuvemobileapp.LoginDataSource.addUser
 import kotlinx.android.synthetic.main.activity_sign_up.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.text.DecimalFormat
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -50,26 +52,43 @@ class SignUpActivity : AppCompatActivity() {
 
         SignUpButton.setOnClickListener{
             if (isDataValid()) {
-                val result = addUser(User(RegNameText.text.toString(), RegLastNameText.text.toString(), RegEmailText.text.toString(),
-                                          RegPwFirstText.text.toString(), RegUsernameText.text.toString(), RegDateText.text.toString())
-                )
-                when (result) {
-                    "" -> {
-                        startActivity(Intent(this, MainActivity::class.java))
-                        val nameToShow = RegNameText.text.toString()
-                        Toast.makeText(applicationContext, "Welcome, $nameToShow!", Toast.LENGTH_LONG).show()
-                        finish()
-                    }
-                    "user_name_already_exists" -> {
-                        RegUsername.error = getString(R.string.user_taken)
-                    }
-                    "user_email_already_exists" -> {
-                        RegEmail.error = getString(R.string.email_taken)
-                    }
-                    else -> {
+                val registerInfo = User(RegNameText.text.toString(), RegLastNameText.text.toString(), RegEmailText.text.toString(),
+                                        RegPwFirstText.text.toString(), RegUsernameText.text.toString(), RegDateText.text.toString())
+
+                LoginDataSource.source.registerUser(registerInfo).enqueue(object : Callback<ResponseBody>{
+                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                         Toast.makeText(applicationContext, getString(R.string.internal_error), Toast.LENGTH_LONG).show()
                     }
-                }
+                    override fun onResponse(
+                        call: Call<ResponseBody>,
+                        response: Response<ResponseBody>
+                    ) {
+                        if (response.code() == 201) {
+                            startActivity(Intent(this@SignUpActivity, MainActivity::class.java))
+                            val nameToShow = RegNameText.text.toString()
+                            Toast.makeText(
+                                applicationContext,
+                                "Welcome, $nameToShow!",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            finish()
+                        } else if (response.code() == 500) {
+
+                            if (response.body()!!.message.internal_code == "user_name_already_exists")
+                                RegUsername.error = getString(R.string.user_taken)
+                            if (response.body()!!.message.internal_code == "user_email_already_exists") {
+                                RegEmail.error = getString(R.string.email_taken)
+                            }
+                        } else {
+                            Toast.makeText(
+                                applicationContext,
+                                getString(R.string.internal_error),
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    }
+
+                })
             }
         }
     }
