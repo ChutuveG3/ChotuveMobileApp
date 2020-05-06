@@ -1,4 +1,4 @@
-package com.example.chotuvemobileapp
+package com.example.chotuvemobileapp.data
 
 
 enum class Error {

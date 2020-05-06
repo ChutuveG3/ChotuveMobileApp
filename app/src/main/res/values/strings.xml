@@ -23,6 +23,7 @@
     <string name="user_taken">Username already taken</string>
     <string name="email_taken">A user with that email already exists</string>
     <string name="internal_error">Something went wrong, please try again</string>
+    <string name="request_failure">We\'re sorry, we were unable to process your request</string>
 
     <string name="invalid_date">You\'re from the future!</string>
     <string name="password_mismatch">Passwords don\'t match</string>

@@ -1,10 +1,10 @@
-package com.example.chotuvemobileapp
+package com.example.chotuvemobileapp.data
 
 import com.google.gson.annotations.SerializedName
 import java.time.LocalDate
 import java.util.*
 
-class User(
+data class User(
     @SerializedName("first_name")
     val first_name: String,
     @SerializedName("last_name")
