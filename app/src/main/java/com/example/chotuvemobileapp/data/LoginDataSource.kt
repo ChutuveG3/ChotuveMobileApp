@@ -1,5 +1,6 @@
 package com.example.chotuvemobileapp.data
 
+import com.example.chotuvemobileapp.BuildConfig
 import com.example.chotuvemobileapp.data.response.AuthErrorResponse
 import com.google.gson.Gson
 import okhttp3.*
@@ -15,8 +16,6 @@ import retrofit2.converter.gson.GsonConverterFactory
  * Class that handles authentication w/ login credentials and retrieves user information.
  */
 object LoginDataSource {
-
-    private const val baseUrl = "https://chotuve-app-server-develop.herokuapp.com/"
     private val users = HashMap<String, User>()
 
     fun login(username: String, password: String): Result {
@@ -41,7 +40,7 @@ object LoginDataSource {
 
         val client = OkHttpClient.Builder().build()
 
-        val retrofit = Retrofit.Builder().baseUrl(baseUrl)
+        val retrofit = Retrofit.Builder().baseUrl(BuildConfig.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(client).build().create(IAppServerApiService::class.java)
 

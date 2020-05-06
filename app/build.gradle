@@ -20,6 +20,15 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField("String", 'BASE_URL', "\"https://chotuve-app-server-prod.herokuapp.com/\"")
+        }
+        staging {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField("String", 'BASE_URL', "\"https://chotuve-app-server-develop.herokuapp.com/\"")
+        }
+        debug {
+            buildConfigField("String", 'BASE_URL', "\"<set_url>\"")
         }
     }
 

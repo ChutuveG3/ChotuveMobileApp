@@ -27,3 +27,10 @@ donde tenemos corriendo el server que le queremos pegar.
 ### Otras utilidades
 
 Mediante adb podemos ver los logs de la app: `adb logcat | grep <log_tag>`
+
+## Build APK
+
+Se define tres tipos de build:
+1. **release**: genera APK de produción.
+2. **satging**: genera APK de staging.
+3. **debug**: APK para pruebas. Configurar `BASE_URL` en el archivo `build.gradle`.
