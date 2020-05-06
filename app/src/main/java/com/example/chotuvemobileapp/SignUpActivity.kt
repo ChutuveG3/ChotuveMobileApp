@@ -114,7 +114,8 @@ class SignUpActivity : AppCompatActivity() {
             RegPassFirst.error = getString(R.string.password_mismatch)
             valid = false
         }
-        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(RegEmailText.text.toString()).matches()){
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(RegEmailText.text.toString()).matches() ||
+                RegEmailText.length() < 5){
             RegEmail.error = getString(R.string.invalid_email)
             valid = false
         }
