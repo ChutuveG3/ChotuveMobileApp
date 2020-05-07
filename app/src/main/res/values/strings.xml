@@ -1,9 +1,6 @@
 <resources>
     <string name="app_name">Chotuve</string>
 
-    <string name="auth_server_url_dev">https://chotuve-auth-server-develop.herokuapp.com/users</string>
-    <string name="auth_server_url_prod">https://chotuve-auth-server-prod.herokuapp.com/users</string>
-
     <string name="action_settings">Settings</string>
     <string name="title_activity_login">Sign in</string>
     <string name="prompt_email">Email</string>
@@ -39,4 +36,9 @@
     <string name="prompt_lastname">Last Name</string>
     <string name="prompt_reenterpw">Re enter password</string>
     <string name="prompt_dob">Date of Birth</string>
+    <string name="upload">Button</string>
+    <string name="upload_video">Upload Video</string>
+    <string name="logo_chotuve">Logo chotuve</string>
+    <string name="path">Video Path</string>
+    <string name="add_video">Add Video</string>
 </resources>

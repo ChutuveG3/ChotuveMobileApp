@@ -29,6 +29,7 @@ android {
             buildConfigField("String", 'BASE_URL', "\"https://chotuve-app-server-develop.herokuapp.com/\"")
         }
         debug {
+            crunchPngs false
             buildConfigField("String", 'BASE_URL', "\"<set_url>\"")
         }
     }
