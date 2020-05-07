@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "83352224797",
+    "firebase_url": "https://chotuve-g3.firebaseio.com",
+    "project_id": "chotuve-g3",
+    "storage_bucket": "chotuve-g3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:83352224797:android:d23fc8dbe528bb1998b2f4",
+        "android_client_info": {
+          "package_name": "com.example.chotuvemobileapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "83352224797-jpjio5apc7dg0ip2ut51a1kjiqeu30kk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.chotuvemobileapp",
+            "certificate_hash": "f9f53b65bd46433cfef6d8ce7cd97b460d5d37d4"
+          }
+        },
+        {
+          "client_id": "83352224797-pnjo53iqigsp98dhr1i47ahl53f6nbe8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBdIBVUyvxC8uKLL5IajJY5-TRug-52IEs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "83352224797-pnjo53iqigsp98dhr1i47ahl53f6nbe8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
