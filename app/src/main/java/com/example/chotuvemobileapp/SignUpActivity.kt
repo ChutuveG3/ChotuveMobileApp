@@ -110,8 +110,12 @@ class SignUpActivity : AppCompatActivity() {
         RegPassFirst.error = null
         RegDate.error = null
 
+        if (RegPwFirstText.text.toString().length < 6){
+            RegPassFirst.error = getString(R.string.invalid_password)
+            valid = false
+        }
         if (RegPwFirstText.text.toString() != RegPwSecondText.text.toString()){
-            RegPassFirst.error = getString(R.string.password_mismatch)
+            RegPassSecond.error = getString(R.string.password_mismatch)
             valid = false
         }
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(RegEmailText.text.toString()).matches() ||

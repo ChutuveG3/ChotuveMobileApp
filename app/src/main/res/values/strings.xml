@@ -25,6 +25,7 @@
     <string name="invalid_date">You\'re from the future!</string>
     <string name="password_mismatch">Passwords don\'t match</string>
     <string name="invalid_email">Invalid email</string>
+    <string name="invalid_pass">Password must be at least 6 characters long</string>
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
