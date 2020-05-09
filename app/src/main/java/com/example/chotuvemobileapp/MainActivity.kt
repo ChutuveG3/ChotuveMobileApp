@@ -5,6 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.OpenableColumns
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.storage.FirebaseStorage
@@ -13,7 +14,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity() {
-    private var uri = null as Uri?
+    var uri = null as Uri?
     private lateinit var mStorageRef : StorageReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,6 +42,19 @@ class MainActivity : AppCompatActivity() {
         if (resultCode == RESULT_OK) {
             uri = data!!.data
         }
+
+        val mUri = uri!!
+        val riversRef : StorageReference = mStorageRef.child(getFileName(mUri))
+
+        riversRef.putFile(mUri)
+            .addOnSuccessListener { taskSnapshot -> // Get a URL to the uploaded content
+                Toast.makeText(applicationContext, "OK updated", Toast.LENGTH_LONG).show()
+                // val downloadUrl: Uri = taskSnapshot.getDownloadUrl()
+            }
+            .addOnFailureListener { Exception ->
+                val errorMessage = Exception.message
+                Toast.makeText(applicationContext, errorMessage, Toast.LENGTH_LONG).show()
+            }
     }
 
     private fun getFileName(uri: Uri) : String {
@@ -49,18 +63,18 @@ class MainActivity : AppCompatActivity() {
             val cursor = contentResolver.query(uri, null, null, null, null)
             try {
                 if (cursor != null && cursor.moveToFirst()) {
-                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
                 }
             } finally {
-                cursor!!.close();
+                cursor!!.close()
             }
         }
 
         if (result == null) {
-            result = uri.getPath();
+            result = uri.path;
             val cut = result!!.lastIndexOf('/')
             if (cut != -1) {
-                result = result.substring(cut + 1);
+                result = result.substring(cut + 1)
             }
         }
         return result
