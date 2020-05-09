@@ -30,7 +30,9 @@ class LoginActivity : AppCompatActivity() {
         SignInButton.setOnClickListener {
             val username = LogInUsername.text.toString()
             val result = login(username, LoginPassword.text.toString())
-            if (result.Success){
+            startActivity(Intent(this, HomeActivity::class.java))
+            finish()
+            /*if (result.Success){
                 startActivity(Intent(this, MainActivity::class.java))
                 val nameToShow = getUsersName(username)
                 Toast.makeText(applicationContext, "Welcome, $nameToShow!", Toast.LENGTH_LONG).show()
@@ -38,7 +40,7 @@ class LoginActivity : AppCompatActivity() {
             }
 
             else if (result.Error == Error.UserNotRegistered) UsernameInput.error = getString(R.string.invalid_username)
-            else PasswordInput.error = getString(R.string.invalid_password)
+            else PasswordInput.error = getString(R.string.invalid_password)*/
         }
     }
     private fun EditText.watchText() {

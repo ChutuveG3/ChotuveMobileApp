@@ -111,7 +111,7 @@ class SignUpActivity : AppCompatActivity() {
         RegDate.error = null
 
         if (RegPwFirstText.text.toString().length < 6){
-            RegPassFirst.error = getString(R.string.invalid_password)
+            RegPassFirst.error = getString(R.string.invalid_pass)
             valid = false
         }
         if (RegPwFirstText.text.toString() != RegPwSecondText.text.toString()){
