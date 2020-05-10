@@ -65,12 +65,14 @@ class SignUpActivity : AppCompatActivity() {
                 LoginDataSource.addUser(registerInfo)  {
                     when (it) {
                         "Failure" -> {
-                            Toast.makeText(applicationContext, getString(R.string.request_failure), Toast.LENGTH_LONG).show()
+                            Toast.makeText(applicationContext, getString(R.string.request_failure),
+                                Toast.LENGTH_LONG).show()
                         }
                         "Success" -> {
                             startActivity(Intent(this, HomeActivity::class.java))
                             val nameToShow = RegNameText.text.toString()
-                            Toast.makeText(applicationContext,"Welcome, $nameToShow!", Toast.LENGTH_LONG).show()
+                            Toast.makeText(applicationContext,"Welcome, $nameToShow!",
+                                Toast.LENGTH_LONG).show()
                             finish()
                         }
                         "user_name_already_exists" -> {
@@ -80,7 +82,8 @@ class SignUpActivity : AppCompatActivity() {
                             RegEmail.error = getString(R.string.email_taken)
                         }
                         else -> {
-                            Toast.makeText( applicationContext, getString(R.string.internal_error), Toast.LENGTH_LONG).show()
+                            Toast.makeText( applicationContext, getString(R.string.internal_error),
+                                Toast.LENGTH_LONG).show()
                         }
                     }
                 }
