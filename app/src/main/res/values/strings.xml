@@ -21,6 +21,10 @@
     <string name="email_taken">A user with that email already exists</string>
     <string name="internal_error">Something went wrong, please try again</string>
     <string name="request_failure">We\'re sorry, we were unable to process your request</string>
+    <string name="input_title">Title</string>
+    <string name="input_description">Description</string>
+    <string name="input_visibility">Visibility</string>
+    <string name="action_upload">Upload</string>
 
     <string name="invalid_date">You\'re from the future!</string>
     <string name="password_mismatch">Passwords don\'t match</string>
@@ -54,4 +58,6 @@
     <string name="menu_slideshow">Slideshow</string>
 
     <string name="home_second">Home Second</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

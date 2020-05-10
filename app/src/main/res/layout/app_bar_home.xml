@@ -8,55 +8,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?attr/colorPrimary"
-            android:minHeight="?attr/actionBarSize"
-            android:theme="?attr/actionBarTheme"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/ChotuveLogo"
-            android:layout_width="136dp"
-            android:layout_height="24dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:tint="@android:color/white"
-            app:layout_constraintBottom_toBottomOf="@+id/toolbar"
-            app:layout_constraintEnd_toEndOf="@+id/toolbar"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/toolbar"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/logo" />
-
-        <SearchView
-            android:id="@+id/SearchIcon"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:closeIcon="@drawable/ic_close_white_32dp"
-            android:commitIcon="@drawable/ic_search_white_32dp"
-            android:layoutDirection="rtl"
-            android:searchIcon="@drawable/ic_search_white_32dp"
-            android:textAlignment="viewStart"
-            android:theme="@style/AppTheme.NoActionBar.Light.TextWhite"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="@+id/toolbar"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="@+id/toolbar"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0"
-            app:showAsAction="always|collapseActionView" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_height="match_parent"/>
 
     <include layout="@layout/content_home" />
 
