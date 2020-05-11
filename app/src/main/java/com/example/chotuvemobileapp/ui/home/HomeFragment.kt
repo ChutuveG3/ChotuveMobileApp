@@ -18,6 +18,7 @@ import com.example.chotuvemobileapp.R
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.fragment_home.view.*
 
 class HomeFragment : Fragment() {
 
@@ -46,6 +47,13 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         AddVideo.setOnClickListener{
             findNavController().navigate(R.id.action_nav_home_to_addVideoFragment)
+        }
+        SearchIcon.setOnSearchClickListener {
+            HomeToolbar.chotuveLogo.visibility = View.GONE
+        }
+        SearchIcon.setOnCloseListener {
+            HomeToolbar.chotuveLogo.visibility = View.VISIBLE
+            return@setOnCloseListener false
         }
     }
 

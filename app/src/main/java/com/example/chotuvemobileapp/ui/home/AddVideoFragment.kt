@@ -39,6 +39,11 @@ class AddVideoFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         mStorageRef = FirebaseStorage.getInstance().reference
 
+        AddVideoToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_32dp);
+        AddVideoToolbar.setNavigationOnClickListener{
+            findNavController().navigate(R.id.action_addVideoFragment_to_nav_home)
+        }
+
         AddVideoScreen.alpha = 1F
         UploadVideoProgressBar.visibility = View.INVISIBLE
 
