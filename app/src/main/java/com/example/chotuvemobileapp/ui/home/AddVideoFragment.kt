@@ -39,12 +39,13 @@ class AddVideoFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         mStorageRef = FirebaseStorage.getInstance().reference
 
-        AddVideoToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_32dp);
+        AddVideoToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_32dp)
         AddVideoToolbar.setNavigationOnClickListener{
             findNavController().navigate(R.id.action_addVideoFragment_to_nav_home)
         }
 
-        AddVideoScreen.alpha = 1F
+        UploadButton.alpha = .5F
+        UploadButton.isEnabled = false
         UploadVideoProgressBar.visibility = View.INVISIBLE
 
         // Public visibility by default.
@@ -84,6 +85,8 @@ class AddVideoFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        UploadButton.isEnabled = true
+        UploadButton.alpha = 1F
         if (requestCode == PICK_VIDEO_REQUEST) {
             if (resultCode == Activity.RESULT_OK) {
                 uri = data!!.data
@@ -117,7 +120,7 @@ class AddVideoFragment : Fragment() {
         }
 
         if (result == null) {
-            result = uri.path;
+            result = uri.path
             val cut = result!!.lastIndexOf('/')
             if (cut != -1) {
                 result = result.substring(cut + 1)
