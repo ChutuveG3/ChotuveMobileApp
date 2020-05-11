@@ -7,6 +7,7 @@
     tools:context=".ui.profile.ProfileFragment">
 
     <ImageView
+        tools:ignore="ContentDescription"
         android:id="@+id/BackgroundPic"
         android:layout_width="0dp"
         android:layout_height="201dp"
@@ -16,6 +17,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
+        tools:ignore="ContentDescription"
         android:id="@+id/ProfilePicEdit"
         android:layout_width="119dp"
         android:layout_height="121dp"
