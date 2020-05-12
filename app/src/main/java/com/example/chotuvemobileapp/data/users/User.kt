@@ -1,4 +1,4 @@
-package com.example.chotuvemobileapp.data
+package com.example.chotuvemobileapp.data.users
 
 import com.google.gson.annotations.SerializedName
 import java.time.LocalDate

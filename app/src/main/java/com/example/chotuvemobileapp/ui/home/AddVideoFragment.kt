@@ -5,26 +5,29 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.OpenableColumns
-import android.view.ContextThemeWrapper
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 
 import com.example.chotuvemobileapp.R
+import com.example.chotuvemobileapp.data.videos.Video
+import com.example.chotuvemobileapp.data.videos.VideoDataSource
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.fragment_add_video.*
+import java.io.File
+import java.time.LocalDateTime
 
 class AddVideoFragment : Fragment() {
 
     private val PICK_VIDEO_REQUEST = 1
     private var uri = null as Uri?
+    private var fileSize: Long = 0
     private lateinit var mStorageRef : StorageReference
 
     override fun onCreateView(
@@ -56,23 +59,43 @@ class AddVideoFragment : Fragment() {
                 AddVideoScreen.alpha = 0.2F
                 AddVideoScreen.isClickable = false
                 UploadVideoProgressBar.visibility = View.VISIBLE
-                val riversRef : StorageReference = mStorageRef.child(getFileName(uri!!))
-                riversRef.putFile(uri!!)
-                    .addOnSuccessListener { taskSnapshot -> // Get a URL to the uploaded content
-                        Toast.makeText(context, getString(R.string.video_uploaded_message), Toast.LENGTH_LONG).show()
-                        // val downloadUrl: Uri = taskSnapshot.getDownloadUrl()
-                        UploadVideoProgressBar.visibility = View.GONE
-                        AddVideoScreen.alpha = 1F
-                        findNavController().navigate(R.id.action_addVideoFragment_to_nav_home)
+                val fileName = getFileName(uri!!)
+                val storageReference : StorageReference = mStorageRef.child(fileName)
+                storageReference.putFile(uri!!)
+                    .addOnSuccessListener {   // Get a URL to the uploaded content
+                        storageReference.downloadUrl.addOnSuccessListener { uri ->
+                            val visibility: String = if (publicRadioButton.isChecked) "public"
+                            else "private"
+                            val videoToSend = Video(VideoTitleInputText.text.toString(),
+                                VideoDescriptionInputText.text.toString(),
+                                visibility,
+                                uri.toString(),
+                                LocalDateTime.now().toString(),
+                                fileName,
+                                fileSize
+                            )
+
+                            VideoDataSource.addVideo(videoToSend){
+                                when(it){
+                                    "Success" ->{
+                                        UploadVideoProgressBar.visibility = View.GONE
+                                        AddVideoScreen.alpha = 1F
+                                        Toast.makeText(context, getString(R.string.video_uploaded_message), Toast.LENGTH_LONG).show()
+                                        findNavController().navigate(R.id.action_addVideoFragment_to_nav_home)
+                                    }
+                                    else ->{
+                                        fail()
+                                    }
+                                }
+                            }
+                        }.addOnFailureListener{
+                            fail()
+                        }
                     }
                     .addOnFailureListener { Exception ->
                         Toast.makeText(context, Exception.message, Toast.LENGTH_LONG).show()
-                        UploadVideoProgressBar.visibility = View.GONE
-                        AddVideoScreen.alpha = 1F
-                        AddVideoScreen.isClickable = true
+                        fail()
                     }
-            } catch (e: NullPointerException ) {
-                Toast.makeText(context, "Select file before upload", Toast.LENGTH_LONG).show()
             } catch (e: Exception) {
                 Toast.makeText(context, "Unknown error", Toast.LENGTH_LONG).show()
             }
@@ -85,15 +108,17 @@ class AddVideoFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        UploadButton.isEnabled = true
-        UploadButton.alpha = 1F
         if (requestCode == PICK_VIDEO_REQUEST) {
             if (resultCode == Activity.RESULT_OK) {
+                UploadButton.isEnabled = true
+                UploadButton.alpha = 1F
                 uri = data!!.data
 
+                val file = File(uri.toString())
+                fileSize = file.length()
+
                 Glide.with(requireContext()).load(uri).into(SelectFileButton)
-                // Set file name as default title.
-                // VideoTitleInputText.text = (EditText)getFileName(uri!!)
+
                 VideoTitleInputText.setText(getFileName(uri!!), TextView.BufferType.EDITABLE)
             }
         }
@@ -127,5 +152,11 @@ class AddVideoFragment : Fragment() {
             }
         }
         return result
+    }
+
+    private  fun fail(){
+        UploadVideoProgressBar.visibility = View.GONE
+        AddVideoScreen.alpha = 1F
+        AddVideoScreen.isClickable = true
     }
 }

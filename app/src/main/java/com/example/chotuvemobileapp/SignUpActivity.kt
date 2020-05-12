@@ -8,12 +8,9 @@ import android.text.TextWatcher
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.chotuvemobileapp.data.LoginDataSource
-import com.example.chotuvemobileapp.data.User
+import com.example.chotuvemobileapp.data.users.LoginDataSource
+import com.example.chotuvemobileapp.data.users.User
 import kotlinx.android.synthetic.main.activity_sign_up.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.text.DecimalFormat
 import java.time.LocalDate
 import java.util.*

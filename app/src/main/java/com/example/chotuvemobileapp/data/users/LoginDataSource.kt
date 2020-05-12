@@ -1,7 +1,8 @@
-package com.example.chotuvemobileapp.data
+package com.example.chotuvemobileapp.data.users
 
 import com.example.chotuvemobileapp.BuildConfig
 import com.example.chotuvemobileapp.data.response.AuthErrorResponse
+import com.example.chotuvemobileapp.data.services.IAppServerApiService
 import com.google.gson.Gson
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
