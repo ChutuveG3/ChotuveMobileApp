@@ -41,5 +41,6 @@
     <string name="visibility_private">Private</string>
     <string name="video_uploaded_message">Your video has been successfully uploaded!</string>
     <string name="failed_login">Incorrect email or password</string>
+    <string name="shared_preferences_file">CHOTUVE_PREFERENCES</string>
 
 </resources>

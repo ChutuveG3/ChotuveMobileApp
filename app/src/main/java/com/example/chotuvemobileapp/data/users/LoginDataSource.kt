@@ -2,6 +2,7 @@ package com.example.chotuvemobileapp.data.users
 
 import com.example.chotuvemobileapp.BuildConfig
 import com.example.chotuvemobileapp.data.response.AuthErrorResponse
+import com.example.chotuvemobileapp.data.response.LoginResponse
 import com.example.chotuvemobileapp.data.services.IAppServerApiService
 import com.google.gson.Gson
 import okhttp3.OkHttpClient
@@ -33,7 +34,8 @@ object LoginDataSource {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>){
                 when {
                     response.isSuccessful -> {
-                        myCallback.invoke("Success")
+                        val resp = Gson().fromJson(response.body()!!.string(), LoginResponse::class.java)
+                        myCallback.invoke(resp.token)
                     }
                     else -> {
                         myCallback.invoke("InvalidParams")

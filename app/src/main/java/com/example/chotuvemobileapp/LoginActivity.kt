@@ -1,5 +1,6 @@
 package com.example.chotuvemobileapp
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -36,9 +37,8 @@ class LoginActivity : AppCompatActivity() {
                     LoginPassword.text.toString()
                 ) {
                     when (it) {
-                        "Success" -> {
-                            startActivity(Intent(this, HomeActivity::class.java))
-                            finish()
+                        "Failure" -> {
+                            Toast.makeText(applicationContext, getString(R.string.internal_error), Toast.LENGTH_LONG).show()
                         }
                         "InvalidParams" -> {
                             UsernameInput.error = getString(R.string.failed_login)
@@ -46,11 +46,11 @@ class LoginActivity : AppCompatActivity() {
                             PasswordInput.getChildAt(1).visibility = View.GONE
                         }
                         else -> {
-                            Toast.makeText(
-                                applicationContext,
-                                getString(R.string.internal_error),
-                                Toast.LENGTH_LONG
-                            ).show()
+                            val preferences = applicationContext.getSharedPreferences(getString(R.string.shared_preferences_file), Context.MODE_PRIVATE).edit()
+                            preferences.putString("token", it)
+                            preferences.apply()
+                            startActivity(Intent(this, HomeActivity::class.java))
+                            finish()
                         }
                     }
                 }
