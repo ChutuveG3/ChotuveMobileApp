@@ -4,10 +4,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import android.widget.EditText
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.chotuvemobileapp.data.users.LoginDataSource.login
+import com.example.chotuvemobileapp.data.users.LoginDataSource
 import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.activity_sign_up.*
+import java.time.LocalDate
 
 class LoginActivity : AppCompatActivity() {
 
@@ -25,25 +29,39 @@ class LoginActivity : AppCompatActivity() {
         LoginPassword.watchText()
 
         SignInButton.setOnClickListener {
-            val username = LogInUsername.text.toString()
-            val result = login(username, LoginPassword.text.toString())
-            startActivity(Intent(this, HomeActivity::class.java))
-            finish()
-            /*if (result.Success){
-                startActivity(Intent(this, MainActivity::class.java))
-                val nameToShow = getUsersName(username)
-                Toast.makeText(applicationContext, "Welcome, $nameToShow!", Toast.LENGTH_LONG).show()
-                finish()
+
+            if(isDataValid()) {
+                LoginDataSource.login(
+                    LogInUsername.text.toString(),
+                    LoginPassword.text.toString()
+                ) {
+                    when (it) {
+                        "Success" -> {
+                            startActivity(Intent(this, HomeActivity::class.java))
+                            finish()
+                        }
+                        "InvalidParams" -> {
+                            UsernameInput.error = getString(R.string.failed_login)
+                            PasswordInput.error = getString(R.string.failed_login)
+                            PasswordInput.getChildAt(1).visibility = View.GONE
+                        }
+                        else -> {
+                            Toast.makeText(
+                                applicationContext,
+                                getString(R.string.internal_error),
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    }
+                }
             }
 
-            else if (result.Error == Error.UserNotRegistered) UsernameInput.error = getString(R.string.invalid_username)
-            else PasswordInput.error = getString(R.string.invalid_password)*/
         }
     }
     private fun EditText.watchText() {
         this.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(editable: Editable?) {
-                SignInButton.isEnabled = isDataValid()
+                SignInButton.isEnabled = isDataCorrect()
                 if (SignInButton.isEnabled) SignInButton.alpha = 1f
             }
 
@@ -53,10 +71,28 @@ class LoginActivity : AppCompatActivity() {
         })
     }
 
-    fun isDataValid(): Boolean {
+    fun isDataCorrect(): Boolean {
         UsernameInput.error = null
         PasswordInput.error = null
         return LogInUsername.text.toString().isNotEmpty() && LoginPassword.text.toString().isNotEmpty()
+    }
+
+    private fun isDataValid(): Boolean{
+        var valid = true
+
+        UsernameInput.error = null
+        PasswordInput.error = null
+
+        if (LoginPassword.text.toString().length < 6){
+            PasswordInput.error = getString(R.string.invalid_pass)
+            valid = false
+        }
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(LogInUsername.text.toString()).matches() ||
+            LogInUsername.length() < 5){
+            UsernameInput.error = getString(R.string.invalid_email)
+            valid = false
+        }
+        return valid
     }
 }
 

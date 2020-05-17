@@ -40,5 +40,6 @@
     <string name="visibility_public">Public</string>
     <string name="visibility_private">Private</string>
     <string name="video_uploaded_message">Your video has been successfully uploaded!</string>
+    <string name="failed_login">Incorrect email or password</string>
 
 </resources>

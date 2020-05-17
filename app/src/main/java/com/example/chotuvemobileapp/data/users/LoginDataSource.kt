@@ -17,24 +17,30 @@ import retrofit2.converter.gson.GsonConverterFactory
  * Class that handles authentication w/ login credentials and retrieves user information.
  */
 object LoginDataSource {
-    private val users = HashMap<String, User>()
 
-    fun login(username: String, password: String): Result {
-        if (!users.containsKey(username)) return Result(
-            false,
-            Error.UserNotRegistered
-        )
-        val user = users[username]
-        if (user!!.password != password) return Result(
-            false,
-            Error.IncorrectPassword
-        )
+    fun login(email: String, password: String, myCallback: (String) -> Unit){
 
-        return Result(true, null)
-    }
+        val client = OkHttpClient.Builder().build()
 
-    fun getUsersName(username: String): String{
-        return users[username]!!.first_name
+        val retrofit = Retrofit.Builder().baseUrl("https://reqres.in/api/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(client).build().create(IAppServerApiService::class.java)
+
+        retrofit.loginUser(email, password).enqueue(object : Callback<ResponseBody> {
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                myCallback.invoke("Failure")
+            }
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>){
+                when {
+                    response.isSuccessful -> {
+                        myCallback.invoke("Success")
+                    }
+                    else -> {
+                        myCallback.invoke("InvalidParams")
+                    }
+                }
+            }
+        })
     }
 
     fun addUser(user : User, myCallback: (String) -> Unit){
@@ -54,7 +60,7 @@ object LoginDataSource {
                     response.isSuccessful -> {
                         myCallback.invoke("Success")
                     }
-                    response.code() == 500 -> {
+                    response.code() == 502 -> {
                         val error = Gson().fromJson(response.errorBody()!!.string(), AuthErrorResponse::class.java)
                         myCallback.invoke(error.message.internal_code)
                     }
