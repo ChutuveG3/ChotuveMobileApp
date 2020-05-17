@@ -83,7 +83,7 @@ class AddVideoFragment : Fragment() {
                                         Toast.makeText(context, getString(R.string.video_uploaded_message), Toast.LENGTH_LONG).show()
                                         findNavController().navigate(R.id.action_addVideoFragment_to_nav_home)
                                     }
-                                    else ->{
+                                    else -> {
                                         fail()
                                     }
                                 }
@@ -159,4 +159,5 @@ class AddVideoFragment : Fragment() {
         AddVideoScreen.alpha = 1F
         AddVideoScreen.isClickable = true
     }
+
 }

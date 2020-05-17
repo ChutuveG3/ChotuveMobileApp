@@ -34,9 +34,7 @@
     <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
 
-    <string name="select_file">SELECT FILE</string>
     <string name="previewText">Preview:</string>
-    <string name="todo">TODO</string>
     <string name="visibility_public">Public</string>
     <string name="visibility_private">Private</string>
     <string name="video_uploaded_message">Your video has been successfully uploaded!</string>
