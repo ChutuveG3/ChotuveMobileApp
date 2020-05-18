@@ -1,5 +1,6 @@
 package com.example.chotuvemobileapp.ui.home
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -21,10 +22,12 @@ import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.fragment_add_video.*
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
 
 class AddVideoFragment : Fragment() {
-
     private val PICK_VIDEO_REQUEST = 1
+    private val DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
     private var uri = null as Uri?
     private var fileSize = null as String?
     private lateinit var mStorageRef : StorageReference
@@ -58,6 +61,7 @@ class AddVideoFragment : Fragment() {
                 AddVideoScreen.alpha = 0.2F
                 AddVideoScreen.isClickable = false
                 UploadVideoProgressBar.visibility = View.VISIBLE
+
                 val fileName = getFileName(uri!!)
                 val storageReference : StorageReference = mStorageRef.child(fileName)
                 storageReference.putFile(uri!!)
@@ -69,11 +73,10 @@ class AddVideoFragment : Fragment() {
                                 VideoDescriptionInputText.text.toString(),
                                 visibility,
                                 uri.toString(),
-                                LocalDateTime.now().toString(),
+                                nowDateTimeStr(),
                                 fileName,
                                 fileSize!!
                             )
-
                             VideoDataSource.addVideo(videoToSend){
                                 when(it){
                                     "Success" ->{
@@ -87,7 +90,8 @@ class AddVideoFragment : Fragment() {
                                     }
                                 }
                             }
-                        }.addOnFailureListener{
+                        }.addOnFailureListener{ Exception ->
+                            Toast.makeText(context, Exception.message, Toast.LENGTH_LONG).show()
                             fail()
                         }
                     }
@@ -175,4 +179,9 @@ class AddVideoFragment : Fragment() {
         return fileSize
     }
 
+    private fun nowDateTimeStr() : String {
+        val current = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ofPattern(DATE_FORMAT)
+        return current.format(formatter)
+    }
 }
