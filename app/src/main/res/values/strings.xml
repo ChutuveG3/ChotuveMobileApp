@@ -43,5 +43,10 @@
     <string name="failed_login">Incorrect email or password</string>
     <string name="shared_preferences_file">CHOTUVE_PREFERENCES</string>
     <string name="successful_signup">Welcome to chotuve</string>
+    <string name="profile_details">Details</string>
+    <string name="edit">Edit</string>
+
+    <string name="name">First Name</string>
+    <string name="last_name">Last Name</string>
 
 </resources>
