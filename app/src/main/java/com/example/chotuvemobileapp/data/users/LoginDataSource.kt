@@ -23,7 +23,7 @@ object LoginDataSource {
 
         val client = OkHttpClient.Builder().build()
 
-        val retrofit = Retrofit.Builder().baseUrl("https://reqres.in/api/")
+        val retrofit = Retrofit.Builder().baseUrl(BuildConfig.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .client(client).build().create(IAppServerApiService::class.java)
 

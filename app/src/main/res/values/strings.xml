@@ -42,5 +42,6 @@
     <string name="video_uploaded_message">Your video has been successfully uploaded!</string>
     <string name="failed_login">Incorrect email or password</string>
     <string name="shared_preferences_file">CHOTUVE_PREFERENCES</string>
+    <string name="successful_signup">Welcome to chotuve</string>
 
 </resources>

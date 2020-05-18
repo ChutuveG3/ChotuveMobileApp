@@ -22,7 +22,7 @@ interface IAppServerApiService {
     ): Call<ResponseBody>
 
     @FormUrlEncoded
-    @POST("login/")
+    @POST("users/sessions")
     fun loginUser(
         @Field("email") email: String,
         @Field("password") password: String
