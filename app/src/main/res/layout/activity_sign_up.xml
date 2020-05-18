@@ -14,17 +14,18 @@
         android:id="@+id/RegUsername"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/imageView3">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/RegUsernameText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:backgroundTint="#E6E6E6"
             android:hint="@string/prompt_username"
             android:inputType="text" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -33,8 +34,8 @@
         android:id="@+id/RegName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/RegUsername">
@@ -43,6 +44,7 @@
             android:id="@+id/RegNameText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:backgroundTint="#E6E6E6"
             android:hint="@string/prompt_name"
             android:inputType="text" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -51,8 +53,8 @@
         android:id="@+id/RegLastName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/RegName">
@@ -61,6 +63,7 @@
             android:id="@+id/RegLastNameText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:backgroundTint="#E6E6E6"
             android:hint="@string/prompt_lastname"
             android:inputType="text" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -69,8 +72,8 @@
         android:id="@+id/RegEmail"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/RegLastName">
@@ -79,6 +82,7 @@
             android:id="@+id/RegEmailText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:backgroundTint="#E6E6E6"
             android:hint="@string/prompt_email"
             android:inputType="textEmailAddress" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -87,17 +91,19 @@
         android:id="@+id/RegPassFirst"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/RegEmail"
-        app:passwordToggleEnabled="true">
+        app:passwordToggleEnabled="true"
+        app:passwordToggleTint="@color/colorPrimaryDark">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/RegPwFirstText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:backgroundTint="#E6E6E6"
             android:hint="@string/prompt_password"
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -106,17 +112,19 @@
         android:id="@+id/RegPassSecond"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/RegPassFirst"
-        app:passwordToggleEnabled="true">
+        app:passwordToggleEnabled="true"
+        app:passwordToggleTint="@color/colorPrimaryDark">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/RegPwSecondText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:backgroundTint="#E6E6E6"
             android:hint="@string/prompt_reenterpw"
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -125,8 +133,8 @@
         android:id="@+id/RegDate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/RegPassSecond">
@@ -135,23 +143,41 @@
             android:id="@+id/RegDateText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:backgroundTint="#E6E6E6"
             android:focusable="false"
-            android:inputType="date"
-            android:hint="@string/prompt_dob" />
+            android:hint="@string/prompt_dob"
+            android:inputType="date" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <Button
         android:id="@+id/SignUpButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="32dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="32dp"
         android:backgroundTint="@color/colorPrimaryDark"
         android:text="@string/action_sign_up"
         android:textColor="@android:color/background_light"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/RegDate" />
+        app:layout_constraintTop_toBottomOf="@+id/RegDate"
+        app:layout_constraintVertical_bias="0.251" />
+
+    <ImageView
+        android:id="@+id/imageView3"
+        android:layout_width="277dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="32dp"
+        android:tint="@color/colorPrimaryDark"
+        app:layout_constraintBottom_toTopOf="@+id/RegUsername"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/logo"
+        android:contentDescription="TODO" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

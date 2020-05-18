@@ -5,11 +5,8 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.chotuvemobileapp.data.Error
-import com.example.chotuvemobileapp.data.LoginDataSource.getUsersName
-import com.example.chotuvemobileapp.data.LoginDataSource.login
+import com.example.chotuvemobileapp.data.users.LoginDataSource.login
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity() {
@@ -30,7 +27,9 @@ class LoginActivity : AppCompatActivity() {
         SignInButton.setOnClickListener {
             val username = LogInUsername.text.toString()
             val result = login(username, LoginPassword.text.toString())
-            if (result.Success){
+            startActivity(Intent(this, HomeActivity::class.java))
+            finish()
+            /*if (result.Success){
                 startActivity(Intent(this, MainActivity::class.java))
                 val nameToShow = getUsersName(username)
                 Toast.makeText(applicationContext, "Welcome, $nameToShow!", Toast.LENGTH_LONG).show()
@@ -38,7 +37,7 @@ class LoginActivity : AppCompatActivity() {
             }
 
             else if (result.Error == Error.UserNotRegistered) UsernameInput.error = getString(R.string.invalid_username)
-            else PasswordInput.error = getString(R.string.invalid_password)
+            else PasswordInput.error = getString(R.string.invalid_password)*/
         }
     }
     private fun EditText.watchText() {

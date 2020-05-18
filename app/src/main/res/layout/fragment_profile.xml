@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.profile.ProfileFragment">
+
+    <ImageView
+        tools:ignore="ContentDescription"
+        android:id="@+id/BackgroundPic"
+        android:layout_width="0dp"
+        android:layout_height="201dp"
+        android:src="@drawable/ic_photo_size_select_actual_grey_78dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        tools:ignore="ContentDescription"
+        android:id="@+id/ProfilePicEdit"
+        android:layout_width="119dp"
+        android:layout_height="121dp"
+        android:layout_marginTop="140dp"
+        android:src="@drawable/ic_add_a_photo_grey_78dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.13"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/BackgroundPic" />
+</androidx.constraintlayout.widget.ConstraintLayout>
