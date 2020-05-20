@@ -6,39 +6,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentStatePagerAdapter
-import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.example.chotuvemobileapp.R
 import com.example.chotuvemobileapp.data.users.ProfileInfoDataSource
 import kotlinx.android.synthetic.main.fragment_profile.*
-import kotlinx.android.synthetic.main.profile_view_fragment.*
 
 class ProfileFragment : Fragment() {
 
     private lateinit var mPager: ViewPager2
-    var firstName: String = ""
-    var lastName: String = ""
-    var email: String = ""
-    var birthDate: String = ""
-    var userName = ""
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val token = requireActivity().applicationContext
-            .getSharedPreferences(getString(R.string.shared_preferences_file), Context.MODE_PRIVATE).getString("token", "Fail")
-        ProfileInfoDataSource.getProfileInfo(token!!){
-            if(it != null){
-                firstName = it.first_name
-                lastName = it.last_name
-                userName = it.user_name
-                email = it.email
-                birthDate = it.birthdate
-            }
-        }
-    }
+    lateinit var firstName: String
+    lateinit var lastName: String
+    lateinit var email: String
+    lateinit var birthDate: String
+    private lateinit var userName: String
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,14 +31,36 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        ProfileScreen.alpha = .2F
+        ProfileScreen.isClickable = false
+        ProfileProgressBar.visibility = View.VISIBLE
+        val token = requireActivity().applicationContext
+            .getSharedPreferences(getString(R.string.shared_preferences_file), Context.MODE_PRIVATE).getString("token", "Fail")
         mPager = ProfileViewPager
-        val pagerAdapter = ScreenSlidePagerAdapter(this)
-        mPager.adapter = pagerAdapter
-
-        val nameToDisplay = "Nombre Apellido"
-        NameTextView.text = nameToDisplay
-        UsernameTextView.text = "usuario"
-
+        ProfileInfoDataSource.getProfileInfo(token!!){
+            if(it != null){
+                firstName = it.first_name
+                lastName = it.last_name
+                userName = it.user_name
+                email = it.email
+                birthDate = it.birthdate
+            }
+            else{
+                firstName = ""
+                lastName = ""
+                userName = ""
+                email = ""
+                birthDate = ""
+            }
+            val nameToDisplay = "$firstName $lastName"
+            NameTextView.text = nameToDisplay
+            UsernameTextView.text = userName
+            val pagerAdapter = ScreenSlidePagerAdapter(this)
+            mPager.adapter = pagerAdapter
+            ProfileScreen.alpha = 1F
+            ProfileScreen.isClickable = true
+            ProfileProgressBar.visibility = View.GONE
+        }
     }
 
     private inner class ScreenSlidePagerAdapter(fa: Fragment) : FragmentStateAdapter(fa) {
