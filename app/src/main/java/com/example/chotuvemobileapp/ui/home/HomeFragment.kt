@@ -47,8 +47,6 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        text_home.text = requireActivity().applicationContext
-            .getSharedPreferences(getString(R.string.shared_preferences_file), Context.MODE_PRIVATE).getString("token", "Fail")
         AddVideo.setOnClickListener{
             findNavController().navigate(R.id.action_nav_home_to_addVideoFragment)
         }
