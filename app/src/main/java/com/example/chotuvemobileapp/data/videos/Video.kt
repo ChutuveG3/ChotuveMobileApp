@@ -18,5 +18,5 @@ data class Video(
     @SerializedName("file_name")
     val fileName: String,
     @SerializedName("file_size")
-    val fileSize: Long
+    val fileSize: String
     )

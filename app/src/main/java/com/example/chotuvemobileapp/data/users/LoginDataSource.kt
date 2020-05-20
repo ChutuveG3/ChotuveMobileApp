@@ -12,6 +12,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 
 /**
@@ -47,7 +48,9 @@ object LoginDataSource {
 
     fun addUser(user : User, myCallback: (String) -> Unit){
 
-        val client = OkHttpClient.Builder().build()
+        val client = OkHttpClient.Builder()
+            .callTimeout(10, TimeUnit.SECONDS)
+            .build()
 
         val retrofit = Retrofit.Builder().baseUrl(BuildConfig.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())

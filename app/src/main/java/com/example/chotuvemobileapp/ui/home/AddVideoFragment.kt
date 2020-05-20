@@ -1,33 +1,35 @@
 package com.example.chotuvemobileapp.ui.home
 
+import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.provider.OpenableColumns
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
-
 import com.example.chotuvemobileapp.R
 import com.example.chotuvemobileapp.data.videos.Video
 import com.example.chotuvemobileapp.data.videos.VideoDataSource
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.fragment_add_video.*
-import java.io.File
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
 
 class AddVideoFragment : Fragment() {
-
     private val PICK_VIDEO_REQUEST = 1
+    private val DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
     private var uri = null as Uri?
-    private var fileSize: Long = 0
+    private var fileSize = null as String?
     private lateinit var mStorageRef : StorageReference
 
     override fun onCreateView(
@@ -59,6 +61,7 @@ class AddVideoFragment : Fragment() {
                 AddVideoScreen.alpha = 0.2F
                 AddVideoScreen.isClickable = false
                 UploadVideoProgressBar.visibility = View.VISIBLE
+
                 val fileName = getFileName(uri!!)
                 val storageReference : StorageReference = mStorageRef.child(fileName)
                 storageReference.putFile(uri!!)
@@ -70,11 +73,10 @@ class AddVideoFragment : Fragment() {
                                 VideoDescriptionInputText.text.toString(),
                                 visibility,
                                 uri.toString(),
-                                LocalDateTime.now().toString(),
+                                nowDateTimeStr(),
                                 fileName,
-                                fileSize
+                                fileSize!!
                             )
-
                             VideoDataSource.addVideo(videoToSend){
                                 when(it){
                                     "Success" ->{
@@ -83,12 +85,13 @@ class AddVideoFragment : Fragment() {
                                         Toast.makeText(context, getString(R.string.video_uploaded_message), Toast.LENGTH_LONG).show()
                                         findNavController().navigate(R.id.action_addVideoFragment_to_nav_home)
                                     }
-                                    else ->{
+                                    else -> {
                                         fail()
                                     }
                                 }
                             }
-                        }.addOnFailureListener{
+                        }.addOnFailureListener{ Exception ->
+                            Toast.makeText(context, Exception.message, Toast.LENGTH_LONG).show()
                             fail()
                         }
                     }
@@ -114,8 +117,7 @@ class AddVideoFragment : Fragment() {
                 UploadButton.alpha = 1F
                 uri = data!!.data
 
-                val file = File(uri.toString())
-                fileSize = file.length()
+                fileSize = context?.let { getFileSize(it, uri) }
 
                 Glide.with(requireContext()).load(uri).into(SelectFileButton)
 
@@ -158,5 +160,28 @@ class AddVideoFragment : Fragment() {
         UploadVideoProgressBar.visibility = View.GONE
         AddVideoScreen.alpha = 1F
         AddVideoScreen.isClickable = true
+    }
+
+    private fun getFileSize(context: Context, uri: Uri?): String? {
+        var fileSize: String? = null
+        val cursor = context.contentResolver
+            .query(uri!!, null, null, null, null, null)
+        try {
+            if (cursor != null && cursor.moveToFirst()) {
+                val sizeIndex = cursor.getColumnIndex(OpenableColumns.SIZE)
+                if (!cursor.isNull(sizeIndex)) {
+                    fileSize = cursor.getString(sizeIndex)
+                }
+            }
+        } finally {
+            cursor!!.close()
+        }
+        return fileSize
+    }
+
+    private fun nowDateTimeStr() : String {
+        val current = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ofPattern(DATE_FORMAT)
+        return current.format(formatter)
     }
 }
