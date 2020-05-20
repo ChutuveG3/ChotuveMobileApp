@@ -10,6 +10,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.example.chotuvemobileapp.R
 import com.example.chotuvemobileapp.data.users.ProfileInfoDataSource
+import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.fragment_profile.*
 
 class ProfileFragment : Fragment() {
@@ -57,6 +58,13 @@ class ProfileFragment : Fragment() {
             UsernameTextView.text = userName
             val pagerAdapter = ScreenSlidePagerAdapter(this)
             mPager.adapter = pagerAdapter
+            TabLayoutMediator(ProfileTabLayout, mPager){ tab, position ->
+                when (position) {
+                    0 -> tab.text = "DETAILS"
+                    1 -> tab.text = "VIDEOS"
+                    else -> tab.text = "COMMENTS"
+                }
+            }.attach()
             ProfileScreen.alpha = 1F
             ProfileScreen.isClickable = true
             ProfileProgressBar.visibility = View.GONE
