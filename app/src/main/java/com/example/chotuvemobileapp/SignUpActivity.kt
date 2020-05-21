@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -38,6 +39,8 @@ class SignUpActivity : AppCompatActivity() {
             dialog.show()
         }
 
+        SignupProgressBar.visibility = View.GONE
+
         SignUpButton.isEnabled = false
         SignUpButton.alpha = .5f
 
@@ -50,6 +53,9 @@ class SignUpActivity : AppCompatActivity() {
 
         SignUpButton.setOnClickListener{
             if (isDataValid()) {
+                SignupScreen.alpha = .2F
+                SignupScreen.isClickable = false
+                SignupProgressBar.visibility = View.VISIBLE
                 val registerInfo = User(
                     RegNameText.text.toString(),
                     RegLastNameText.text.toString(),
@@ -83,6 +89,9 @@ class SignUpActivity : AppCompatActivity() {
                                 Toast.LENGTH_LONG).show()
                         }
                     }
+                    SignupScreen.alpha = 1F
+                    SignupScreen.isClickable = true
+                    SignupProgressBar.visibility = View.GONE
                 }
 
             }
