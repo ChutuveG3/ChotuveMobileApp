@@ -4,6 +4,7 @@ import com.example.chotuvemobileapp.BuildConfig
 import com.example.chotuvemobileapp.data.services.IAppServerApiService
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.Retrofit
@@ -13,7 +14,15 @@ import java.util.concurrent.TimeUnit
 object VideoDataSource {
 
     fun addVideo(video: Video, myCallback: (String) -> Unit){
-        val client = OkHttpClient.Builder().callTimeout(20, TimeUnit.SECONDS).build()
+
+        val logging = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+
+        val client = OkHttpClient.Builder()
+            .connectTimeout(2, TimeUnit.MINUTES)
+            .readTimeout(2, TimeUnit.MINUTES)
+            .writeTimeout(2, TimeUnit.MINUTES)
+            .callTimeout(3, TimeUnit.MINUTES)
+            .addInterceptor(logging).build()
 
         val retrofit = Retrofit.Builder().baseUrl(BuildConfig.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())

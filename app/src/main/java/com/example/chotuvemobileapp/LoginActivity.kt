@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.WindowManager
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -33,7 +34,7 @@ class LoginActivity : AppCompatActivity() {
 
             if(isDataValid()) {
                 LoginScreen.alpha = .2F
-                LoginScreen.isClickable = false
+                window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 LoginProgressBar.visibility = View.VISIBLE
 
                 LoginDataSource.login(
@@ -58,7 +59,7 @@ class LoginActivity : AppCompatActivity() {
                         }
                     }
                     LoginScreen.alpha = 1F
-                    LoginScreen.isClickable = true
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                     LoginProgressBar.visibility = View.GONE
                 }
             }

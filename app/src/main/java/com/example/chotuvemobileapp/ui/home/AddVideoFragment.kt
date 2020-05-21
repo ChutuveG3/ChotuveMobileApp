@@ -10,6 +10,7 @@ import android.provider.OpenableColumns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
@@ -59,7 +60,7 @@ class AddVideoFragment : Fragment() {
         UploadButton.setOnClickListener{
             try {
                 AddVideoScreen.alpha = 0.2F
-                AddVideoScreen.isClickable = false
+                requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 UploadVideoProgressBar.visibility = View.VISIBLE
 
                 val fileName = getFileName(uri!!)
@@ -81,6 +82,7 @@ class AddVideoFragment : Fragment() {
                                 when(it){
                                     "Success" ->{
                                         UploadVideoProgressBar.visibility = View.GONE
+                                        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                                         AddVideoScreen.alpha = 1F
                                         Toast.makeText(context, getString(R.string.video_uploaded_message), Toast.LENGTH_LONG).show()
                                         findNavController().navigate(R.id.action_addVideoFragment_to_nav_home)
@@ -159,7 +161,7 @@ class AddVideoFragment : Fragment() {
     private  fun fail(){
         UploadVideoProgressBar.visibility = View.GONE
         AddVideoScreen.alpha = 1F
-        AddVideoScreen.isClickable = true
+        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
     }
 
     private fun getFileSize(context: Context, uri: Uri?): String? {

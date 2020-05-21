@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
@@ -33,8 +34,9 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         ProfileScreen.alpha = .2F
-        ProfileScreen.isClickable = false
+        requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         ProfileProgressBar.visibility = View.VISIBLE
+
         val token = requireActivity().applicationContext
             .getSharedPreferences(getString(R.string.shared_preferences_file), Context.MODE_PRIVATE).getString("token", "Fail")
         mPager = ProfileViewPager
@@ -66,7 +68,7 @@ class ProfileFragment : Fragment() {
                 }
             }.attach()
             ProfileScreen.alpha = 1F
-            ProfileScreen.isClickable = true
+            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             ProfileProgressBar.visibility = View.GONE
         }
     }
