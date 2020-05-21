@@ -7,6 +7,7 @@ import com.example.chotuvemobileapp.data.services.IAppServerApiService
 import com.google.gson.Gson
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -22,7 +23,14 @@ object LoginDataSource {
 
     fun login(email: String, password: String, myCallback: (String) -> Unit){
 
-        val client = OkHttpClient.Builder().build()
+        val logging = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+
+        val client = OkHttpClient.Builder()
+            .connectTimeout(2, TimeUnit.MINUTES)
+            .readTimeout(2, TimeUnit.MINUTES)
+            .writeTimeout(2, TimeUnit.MINUTES)
+            .callTimeout(3, TimeUnit.MINUTES)
+            .addInterceptor(logging).build()
 
         val retrofit = Retrofit.Builder().baseUrl(BuildConfig.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
@@ -48,9 +56,14 @@ object LoginDataSource {
 
     fun addUser(user : User, myCallback: (String) -> Unit){
 
+        val logging = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+
         val client = OkHttpClient.Builder()
-            .callTimeout(10, TimeUnit.SECONDS)
-            .build()
+            .connectTimeout(2, TimeUnit.MINUTES)
+            .readTimeout(2, TimeUnit.MINUTES)
+            .writeTimeout(2, TimeUnit.MINUTES)
+            .callTimeout(3, TimeUnit.MINUTES)
+            .addInterceptor(logging).build()
 
         val retrofit = Retrofit.Builder().baseUrl(BuildConfig.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())

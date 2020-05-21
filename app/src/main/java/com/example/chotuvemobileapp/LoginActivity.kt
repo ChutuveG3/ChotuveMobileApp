@@ -11,8 +11,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.chotuvemobileapp.data.users.LoginDataSource
 import kotlinx.android.synthetic.main.activity_login.*
-import kotlinx.android.synthetic.main.activity_sign_up.*
-import java.time.LocalDate
 
 class LoginActivity : AppCompatActivity() {
 
@@ -26,12 +24,18 @@ class LoginActivity : AppCompatActivity() {
         SignInButton.isEnabled = false
         SignInButton.alpha = .5f
 
+        LoginProgressBar.visibility = View.GONE
+
         LogInUsername.watchText()
         LoginPassword.watchText()
 
         SignInButton.setOnClickListener {
 
             if(isDataValid()) {
+                LoginScreen.alpha = .2F
+                LoginScreen.isClickable = false
+                LoginProgressBar.visibility = View.VISIBLE
+
                 LoginDataSource.login(
                     LogInUsername.text.toString(),
                     LoginPassword.text.toString()
@@ -53,9 +57,11 @@ class LoginActivity : AppCompatActivity() {
                             finish()
                         }
                     }
+                    LoginScreen.alpha = 1F
+                    LoginScreen.isClickable = true
+                    LoginProgressBar.visibility = View.GONE
                 }
             }
-
         }
     }
     private fun EditText.watchText() {
