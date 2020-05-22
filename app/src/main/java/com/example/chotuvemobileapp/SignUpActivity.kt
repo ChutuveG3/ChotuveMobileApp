@@ -37,6 +37,7 @@ class SignUpActivity : AppCompatActivity() {
                 RegDateText.setText(text)
 
             }, year, month, day)
+            dialog.datePicker.maxDate = Calendar.getInstance().timeInMillis
             dialog.show()
         }
 
