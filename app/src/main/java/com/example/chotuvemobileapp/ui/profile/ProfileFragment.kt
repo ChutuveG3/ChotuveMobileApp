@@ -33,7 +33,8 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ProfileScreen.alpha = .2F
+        ProfileAppbar.alpha = .2F
+        ProfileScrollView.alpha = .2F
         requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         ProfileProgressBar.visibility = View.VISIBLE
 
@@ -67,7 +68,8 @@ class ProfileFragment : Fragment() {
                     else -> tab.text = "COMMENTS"
                 }
             }.attach()
-            ProfileScreen.alpha = 1F
+            ProfileAppbar.alpha = 1F
+            ProfileScrollView.alpha = 1F
             requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
             ProfileProgressBar.visibility = View.GONE
         }
