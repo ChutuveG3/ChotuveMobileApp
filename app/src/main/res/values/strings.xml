@@ -43,8 +43,12 @@
     <string name="successful_signup">Welcome to chotuve</string>
     <string name="profile_details">Details</string>
     <string name="edit">Edit</string>
+    <string name="save">Save</string>
 
     <string name="name">First Name</string>
     <string name="last_name">Last Name</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

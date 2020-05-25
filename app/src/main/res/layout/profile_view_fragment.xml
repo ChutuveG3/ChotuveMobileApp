@@ -97,7 +97,7 @@
         app:layout_constraintTop_toBottomOf="@+id/text_date_of_birth" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/GoToEditProfileButton"
         android:layout_width="0dp"
         android:layout_height="60dp"
         android:layout_marginStart="84dp"

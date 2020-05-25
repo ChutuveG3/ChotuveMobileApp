@@ -1,5 +1,6 @@
 package com.example.chotuvemobileapp.ui.profile
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,6 +9,7 @@ import android.view.ViewGroup
 
 import com.example.chotuvemobileapp.R
 import kotlinx.android.synthetic.main.profile_view_fragment.*
+import okhttp3.internal.userAgent
 
 class ProfileDetailsFragment : Fragment() {
 
@@ -15,6 +17,7 @@ class ProfileDetailsFragment : Fragment() {
     var lastName: String = ""
     var email: String = ""
     var birthDate: String = ""
+    var username = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,6 +26,7 @@ class ProfileDetailsFragment : Fragment() {
             lastName = it.getString("lastName", "")
             email = it.getString("email", "")
             birthDate = it.getString("birthDate", "")
+            username = it.getString("username", "")
         }
     }
     override fun onCreateView(
@@ -40,16 +44,26 @@ class ProfileDetailsFragment : Fragment() {
         LastNameText.text = lastName
         EmailText.text = email
         DOBText.text = birthDate
+
+        GoToEditProfileButton.setOnClickListener{
+            val intent = Intent(context, EditProfileActivity::class.java)
+            intent.putExtra("firstName", firstName)
+            intent.putExtra("lastName", lastName)
+            intent.putExtra("dateOfBirth", birthDate)
+            intent.putExtra("username", username)
+            startActivity(intent)
+        }
     }
     companion object {
         @JvmStatic
-        fun newInstance(firstName: String, lastName: String, email: String, birthDate: String) =
+        fun newInstance(firstName: String, lastName: String, email: String, birthDate: String, username: String) =
             ProfileDetailsFragment().apply {
                 arguments = Bundle().apply {
                     putString("firstName", firstName)
                     putString("lastName", lastName)
                     putString("email", email)
                     putString("birthDate", birthDate)
+                    putString("username", username)
                 }
             }
     }

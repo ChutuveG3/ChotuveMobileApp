@@ -79,9 +79,8 @@ class ProfileFragment : Fragment() {
         override fun getItemCount(): Int = 3
         override fun createFragment(position: Int): Fragment {
             return when(position){
-                0 -> {
-                    ProfileDetailsFragment.newInstance(firstName, lastName, email, birthDate)
-                }
+                0 -> ProfileDetailsFragment.newInstance(firstName, lastName, email, birthDate, userName)
+                1 -> ProfileVideosFragment()
                 else -> ProfileDetailsFragment()
             }
         }
