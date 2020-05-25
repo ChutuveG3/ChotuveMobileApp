@@ -9,7 +9,6 @@ import android.view.ViewGroup
 
 import com.example.chotuvemobileapp.R
 import kotlinx.android.synthetic.main.profile_view_fragment.*
-import okhttp3.internal.userAgent
 
 class ProfileDetailsFragment : Fragment() {
 

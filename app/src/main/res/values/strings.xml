@@ -44,6 +44,8 @@
     <string name="profile_details">Details</string>
     <string name="edit">Edit</string>
     <string name="save">Save</string>
+    <string name="video_description">Description</string>
+    <string name="video_comments">Comments</string>
 
     <string name="name">First Name</string>
     <string name="last_name">Last Name</string>

@@ -6,8 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".ui.profile.ProfileVideosFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/ProfileVideoRecyclerView"
         android:layout_width="0dp"
