@@ -4,6 +4,7 @@ import com.example.chotuvemobileapp.BuildConfig
 import com.example.chotuvemobileapp.data.response.AuthErrorResponse
 import com.example.chotuvemobileapp.data.response.LoginResponse
 import com.example.chotuvemobileapp.data.services.IAppServerApiService
+import com.example.chotuvemobileapp.data.utilities.HttpUtilities.buildClient
 import com.google.gson.Gson
 import okhttp3.OkHttpClient
 import okhttp3.ResponseBody
@@ -23,18 +24,7 @@ object LoginDataSource {
 
     fun login(email: String, password: String, myCallback: (String) -> Unit){
 
-        val logging = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
-
-        val client = OkHttpClient.Builder()
-            .connectTimeout(2, TimeUnit.MINUTES)
-            .readTimeout(2, TimeUnit.MINUTES)
-            .writeTimeout(2, TimeUnit.MINUTES)
-            .callTimeout(3, TimeUnit.MINUTES)
-            .addInterceptor(logging).build()
-
-        val retrofit = Retrofit.Builder().baseUrl(BuildConfig.BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(client).build().create(IAppServerApiService::class.java)
+        val retrofit = buildClient()
 
         retrofit.loginUser(email, password).enqueue(object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {

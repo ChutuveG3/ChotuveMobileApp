@@ -135,6 +135,7 @@ class AddVideoFragment : Fragment() {
         startActivityForResult(Intent.createChooser(intent, "Select video"), PICK_VIDEO_REQUEST)
     }
 
+    @SuppressLint("Recycle")
     private fun getFileName(uri: Uri) : String {
         var result = null as String?
         if (uri.scheme.equals("content")) {
@@ -164,6 +165,7 @@ class AddVideoFragment : Fragment() {
         requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
     }
 
+    @SuppressLint("Recycle")
     private fun getFileSize(context: Context, uri: Uri?): String? {
         var fileSize: String? = null
         val cursor = context.contentResolver

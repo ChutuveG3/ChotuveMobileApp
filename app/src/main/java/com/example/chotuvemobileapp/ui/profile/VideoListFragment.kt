@@ -12,8 +12,16 @@ import com.example.chotuvemobileapp.entities.VideoItem
 import com.example.chotuvemobileapp.helpers.VideosAdapter
 import kotlinx.android.synthetic.main.fragment_profile_videos.*
 
-class ProfileVideosFragment : Fragment() {
+class VideoListFragment : Fragment() {
     private lateinit var videos: ArrayList<VideoItem>
+    private var nVideos: Int = 0
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            nVideos = it.getInt("videos", 0)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -27,12 +35,22 @@ class ProfileVideosFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val dummyVideos = ArrayList<VideoItem>()
-        for (i in 1..6){
+        for (i in 1..nVideos){
             dummyVideos.add(VideoItem("Video $i", "User $i", "$i/$i/$i"))
         }
         videos = dummyVideos
 
         ProfileVideoRecyclerView.adapter = VideosAdapter(videos)
         ProfileVideoRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance(i: Int) =
+            VideoListFragment().apply {
+                arguments = Bundle().apply {
+                    putInt("videos", i)
+                }
+            }
     }
 }

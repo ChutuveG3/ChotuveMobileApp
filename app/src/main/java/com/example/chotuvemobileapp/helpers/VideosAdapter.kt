@@ -41,6 +41,7 @@ class VideosAdapter(private val mVideos: List<VideoItem>) : RecyclerView.Adapter
             intent.putExtra("videoTitle", video.title)
             intent.putExtra("videoAuthor", video.user)
             intent.putExtra("videoDate", video.date)
+            intent.putExtra("comments", position)
             it.context.startActivity(intent)
         }
     }

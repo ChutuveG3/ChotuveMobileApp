@@ -5,21 +5,17 @@ import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.chotuvemobileapp.entities.CommentItem
 import com.example.chotuvemobileapp.helpers.CommentsAdapter
+import com.example.chotuvemobileapp.ui.CommentsFragment
+import com.example.chotuvemobileapp.ui.EmptyListFragment
 import kotlinx.android.synthetic.main.activity_play_video.*
 
 class PlayVideoActivity : AppCompatActivity() {
 
-    private lateinit var comments: ArrayList<CommentItem>
+    private var nComments = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play_video)
-
-        val dummyComments = ArrayList<CommentItem>()
-        for (i in 1..16){
-            dummyComments.add(CommentItem("Soy el usuario $i y opino que este video es una poronga, que quilombo es armar todo esto lpm", "User $i", "$i/$i/$i"))
-        }
-        comments = dummyComments
 
         VideoTitle.text = intent.getStringExtra("videoTitle")
         VideoAuthor.text = intent.getStringExtra("videoAuthor")
@@ -27,7 +23,11 @@ class PlayVideoActivity : AppCompatActivity() {
         val description = (intent.getStringExtra("videoDate")!!).plus("\nEsto es una descripción recontra hadcodeada para ver que onda esto de reproducir un video\nViva Perón!!")
 
         VideoDescription.text = description
-        VideoCommentsRecyclerView.adapter = CommentsAdapter(comments)
-        VideoCommentsRecyclerView.layoutManager = LinearLayoutManager(this)
+
+        nComments = intent.getIntExtra("comments", 0)
+
+        if (nComments == 0) supportFragmentManager.beginTransaction().add(R.id.VideoCommentsFragment, EmptyListFragment()).commit()
+        else supportFragmentManager.beginTransaction().add(R.id.VideoCommentsFragment, CommentsFragment.newInstance(nComments)).commit()
+
     }
 }

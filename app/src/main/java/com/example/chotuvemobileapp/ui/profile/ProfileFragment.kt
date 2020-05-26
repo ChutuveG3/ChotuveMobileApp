@@ -11,6 +11,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.example.chotuvemobileapp.R
 import com.example.chotuvemobileapp.data.users.ProfileInfoDataSource
+import com.example.chotuvemobileapp.ui.CommentsFragment
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.fragment_profile.*
 
@@ -63,9 +64,9 @@ class ProfileFragment : Fragment() {
             mPager.adapter = pagerAdapter
             TabLayoutMediator(ProfileTabLayout, mPager){ tab, position ->
                 when (position) {
-                    0 -> tab.text = "DETAILS"
-                    1 -> tab.text = "VIDEOS"
-                    else -> tab.text = "COMMENTS"
+                    0 -> tab.text = getString(R.string.profile_details)
+                    1 -> tab.text = getString(R.string.videos)
+                    else -> tab.text = getString(R.string.video_comments)
                 }
             }.attach()
             ProfileAppbar.alpha = 1F
@@ -80,8 +81,8 @@ class ProfileFragment : Fragment() {
         override fun createFragment(position: Int): Fragment {
             return when(position){
                 0 -> ProfileDetailsFragment.newInstance(firstName, lastName, email, birthDate, userName)
-                1 -> ProfileVideosFragment()
-                else -> ProfileDetailsFragment()
+                1 -> VideoListFragment.newInstance(3)
+                else -> CommentsFragment.newInstance(19)
             }
         }
     }

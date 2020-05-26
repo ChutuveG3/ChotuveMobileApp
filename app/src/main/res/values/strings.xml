@@ -46,6 +46,8 @@
     <string name="save">Save</string>
     <string name="video_description">Description</string>
     <string name="video_comments">Comments</string>
+    <string name="videos">Videos</string>
+    <string name="empty_list_text">Looks like there\'s nothing to see here…</string>
 
     <string name="name">First Name</string>
     <string name="last_name">Last Name</string>
