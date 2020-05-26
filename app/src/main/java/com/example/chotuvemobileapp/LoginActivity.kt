@@ -1,15 +1,16 @@
 package com.example.chotuvemobileapp
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
+import android.view.WindowManager
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.chotuvemobileapp.data.Error
-import com.example.chotuvemobileapp.data.LoginDataSource.getUsersName
-import com.example.chotuvemobileapp.data.LoginDataSource.login
+import com.example.chotuvemobileapp.data.users.LoginDataSource
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity() {
@@ -24,27 +25,50 @@ class LoginActivity : AppCompatActivity() {
         SignInButton.isEnabled = false
         SignInButton.alpha = .5f
 
+        LoginProgressBar.visibility = View.GONE
+
         LogInUsername.watchText()
         LoginPassword.watchText()
 
         SignInButton.setOnClickListener {
-            val username = LogInUsername.text.toString()
-            val result = login(username, LoginPassword.text.toString())
-            if (result.Success){
-                startActivity(Intent(this, MainActivity::class.java))
-                val nameToShow = getUsersName(username)
-                Toast.makeText(applicationContext, "Welcome, $nameToShow!", Toast.LENGTH_LONG).show()
-                finish()
-            }
 
-            else if (result.Error == Error.UserNotRegistered) UsernameInput.error = getString(R.string.invalid_username)
-            else PasswordInput.error = getString(R.string.invalid_password)
+            if(isDataValid()) {
+                LoginScreen.alpha = .2F
+                window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                LoginProgressBar.visibility = View.VISIBLE
+
+                LoginDataSource.login(
+                    LogInUsername.text.toString(),
+                    LoginPassword.text.toString()
+                ) {
+                    when (it) {
+                        "Failure" -> {
+                            Toast.makeText(applicationContext, getString(R.string.internal_error), Toast.LENGTH_LONG).show()
+                        }
+                        "InvalidParams" -> {
+                            UsernameInput.error = getString(R.string.failed_login)
+                            PasswordInput.error = getString(R.string.failed_login)
+                            PasswordInput.getChildAt(1).visibility = View.GONE
+                        }
+                        else -> {
+                            val preferences = applicationContext.getSharedPreferences(getString(R.string.shared_preferences_file), Context.MODE_PRIVATE).edit()
+                            preferences.putString("token", it)
+                            preferences.apply()
+                            startActivity(Intent(this, HomeActivity::class.java))
+                            finish()
+                        }
+                    }
+                    LoginScreen.alpha = 1F
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                    LoginProgressBar.visibility = View.GONE
+                }
+            }
         }
     }
     private fun EditText.watchText() {
         this.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(editable: Editable?) {
-                SignInButton.isEnabled = isDataValid()
+                SignInButton.isEnabled = isDataCorrect()
                 if (SignInButton.isEnabled) SignInButton.alpha = 1f
             }
 
@@ -54,10 +78,28 @@ class LoginActivity : AppCompatActivity() {
         })
     }
 
-    fun isDataValid(): Boolean {
+    fun isDataCorrect(): Boolean {
         UsernameInput.error = null
         PasswordInput.error = null
         return LogInUsername.text.toString().isNotEmpty() && LoginPassword.text.toString().isNotEmpty()
+    }
+
+    private fun isDataValid(): Boolean{
+        var valid = true
+
+        UsernameInput.error = null
+        PasswordInput.error = null
+
+        if (LoginPassword.text.toString().length < 6){
+            PasswordInput.error = getString(R.string.invalid_pass)
+            valid = false
+        }
+        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(LogInUsername.text.toString()).matches() ||
+            LogInUsername.length() < 5){
+            UsernameInput.error = getString(R.string.invalid_email)
+            valid = false
+        }
+        return valid
     }
 }
 

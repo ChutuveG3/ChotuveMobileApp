@@ -5,15 +5,14 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
+import android.view.WindowManager
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.chotuvemobileapp.data.LoginDataSource
-import com.example.chotuvemobileapp.data.User
+import com.example.chotuvemobileapp.data.users.LoginDataSource
+import com.example.chotuvemobileapp.data.users.User
 import kotlinx.android.synthetic.main.activity_sign_up.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import java.text.DecimalFormat
 import java.time.LocalDate
 import java.util.*
@@ -38,8 +37,11 @@ class SignUpActivity : AppCompatActivity() {
                 RegDateText.setText(text)
 
             }, year, month, day)
+            dialog.datePicker.maxDate = Calendar.getInstance().timeInMillis
             dialog.show()
         }
+
+        SignupProgressBar.visibility = View.GONE
 
         SignUpButton.isEnabled = false
         SignUpButton.alpha = .5f
@@ -53,6 +55,10 @@ class SignUpActivity : AppCompatActivity() {
 
         SignUpButton.setOnClickListener{
             if (isDataValid()) {
+                SignupScreen.alpha = .2F
+                window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                SignupProgressBar.visibility = View.VISIBLE
+
                 val registerInfo = User(
                     RegNameText.text.toString(),
                     RegLastNameText.text.toString(),
@@ -65,12 +71,14 @@ class SignUpActivity : AppCompatActivity() {
                 LoginDataSource.addUser(registerInfo)  {
                     when (it) {
                         "Failure" -> {
-                            Toast.makeText(applicationContext, getString(R.string.request_failure), Toast.LENGTH_LONG).show()
+                            Toast.makeText(applicationContext, getString(R.string.request_failure),
+                                Toast.LENGTH_LONG).show()
                         }
                         "Success" -> {
-                            startActivity(Intent(this, MainActivity::class.java))
+                            startActivity(Intent(this, LoginActivity::class.java))
                             val nameToShow = RegNameText.text.toString()
-                            Toast.makeText(applicationContext,"Welcome, $nameToShow!", Toast.LENGTH_LONG).show()
+                            Toast.makeText(applicationContext,"Welcome, $nameToShow! \n Now please sign in",
+                                Toast.LENGTH_LONG).show()
                             finish()
                         }
                         "user_name_already_exists" -> {
@@ -80,9 +88,13 @@ class SignUpActivity : AppCompatActivity() {
                             RegEmail.error = getString(R.string.email_taken)
                         }
                         else -> {
-                            Toast.makeText( applicationContext, getString(R.string.internal_error), Toast.LENGTH_LONG).show()
+                            Toast.makeText( applicationContext, getString(R.string.internal_error),
+                                Toast.LENGTH_LONG).show()
                         }
                     }
+                    SignupScreen.alpha = 1F
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                    SignupProgressBar.visibility = View.GONE
                 }
 
             }
@@ -110,8 +122,12 @@ class SignUpActivity : AppCompatActivity() {
         RegPassFirst.error = null
         RegDate.error = null
 
+        if (RegPwFirstText.text.toString().length < 6){
+            RegPassFirst.error = getString(R.string.invalid_pass)
+            valid = false
+        }
         if (RegPwFirstText.text.toString() != RegPwSecondText.text.toString()){
-            RegPassFirst.error = getString(R.string.password_mismatch)
+            RegPassSecond.error = getString(R.string.password_mismatch)
             valid = false
         }
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(RegEmailText.text.toString()).matches() ||

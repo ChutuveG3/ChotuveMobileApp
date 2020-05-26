@@ -12,3 +12,8 @@
 /captures
 .externalNativeBuild
 .cxx
+
+# Ignore APKs
+/app/release/*
+/app/debug/*
+/app/staging/*

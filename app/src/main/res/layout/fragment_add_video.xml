@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/UploadVideoScreen"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.home.AddVideoFragment">
+
+    <ProgressBar
+        android:id="@+id/UploadVideoProgressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint="@color/colorPrimaryDark"
+        android:progressTint="@color/colorPrimaryDark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/AddVideoScreen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/AddVideoToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="24dp"
+            android:fontFamily="@font/circular_std_medium"
+            android:text="@string/upload_video"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="36sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/AddVideoToolbar"
+            tools:layout_conversion_absoluteHeight="53dp"
+            tools:layout_conversion_absoluteWidth="224dp" />
+
+        <TextView
+            android:id="@+id/previewText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="50dp"
+            android:ems="10"
+            android:text="@string/previewText"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textView"
+            tools:layout_conversion_absoluteHeight="41dp"
+            tools:layout_conversion_absoluteWidth="385dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginStart="48dp"
+            android:layout_marginEnd="48dp"
+            android:background="#E6E6E6"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/previewText" />
+
+        <ImageButton
+            android:id="@+id/SelectFileButton"
+            android:layout_width="128dp"
+            android:layout_height="128dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="24dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:padding="20dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_file_upload_black_24dp"
+            app:layout_constraintEnd_toStartOf="@+id/AccesibilityRadioGroup"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/previewText"
+            tools:ignore="ContentDescription" />
+
+        <RadioGroup
+            android:id="@+id/AccesibilityRadioGroup"
+            android:layout_width="167dp"
+            android:layout_height="105dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="50dp"
+            app:layout_constraintBottom_toTopOf="@+id/TitleInput"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/SelectFileButton"
+            app:layout_constraintTop_toBottomOf="@+id/previewText"
+            app:layout_constraintVertical_bias="0.565">
+
+            <RadioButton
+                android:id="@+id/publicRadioButton"
+                android:layout_width="match_parent"
+                android:layout_height="53dp"
+                android:text="@string/visibility_public"
+                tools:layout_conversion_absoluteHeight="32dp"
+                tools:layout_conversion_absoluteWidth="130dp"
+                tools:layout_editor_absoluteX="305dp"
+                tools:layout_editor_absoluteY="150dp" />
+
+            <RadioButton
+                android:id="@+id/privateRadioButton"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:text="@string/visibility_private"
+                tools:layout_conversion_absoluteHeight="32dp"
+                tools:layout_conversion_absoluteWidth="130dp"
+                tools:layout_editor_absoluteX="305dp"
+                tools:layout_editor_absoluteY="182dp" />
+
+        </RadioGroup>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/TitleInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="48dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="48dp"
+            app:boxBackgroundColor="#FFFAFA"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/SelectFileButton">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/VideoTitleInputText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#E6E6E6"
+                android:hint="@string/input_title"
+                tools:layout_conversion_absoluteHeight="45dp"
+                tools:layout_conversion_absoluteWidth="387dp"
+                tools:layout_editor_absoluteX="48dp"
+                tools:layout_editor_absoluteY="301dp"
+                android:inputType="text" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/VideoDescriptionInputText"
+            android:layout_width="match_parent"
+            android:layout_height="132dp"
+            android:layout_marginStart="48dp"
+            android:layout_marginEnd="48dp"
+            android:backgroundTint="#E6E6E6"
+            android:gravity="top"
+            android:hint="@string/input_description"
+            android:inputType="textMultiLine"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/TitleInput"
+            tools:layout_conversion_absoluteHeight="111dp"
+            tools:layout_conversion_absoluteWidth="387dp" />
+
+        <Button
+            android:id="@+id/UploadButton"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="48dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="48dp"
+            android:backgroundTint="@color/colorPrimaryDark"
+            android:text="@string/action_upload"
+            android:textColor="#FFFFFF"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/VideoDescriptionInputText"
+            tools:layout_conversion_absoluteHeight="48dp"
+            tools:layout_conversion_absoluteWidth="387dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
