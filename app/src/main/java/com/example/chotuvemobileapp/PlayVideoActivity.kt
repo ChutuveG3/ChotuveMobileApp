@@ -26,8 +26,8 @@ class PlayVideoActivity : AppCompatActivity() {
 
         nComments = intent.getIntExtra("comments", 0)
 
-        if (nComments == 0) supportFragmentManager.beginTransaction().add(R.id.VideoCommentsFragment, EmptyListFragment()).commit()
-        else supportFragmentManager.beginTransaction().add(R.id.VideoCommentsFragment, CommentsFragment.newInstance(nComments)).commit()
+        if (nComments == 0) supportFragmentManager.beginTransaction().replace(R.id.VideoCommentsFragment, EmptyListFragment()).commit()
+        else supportFragmentManager.beginTransaction().replace(R.id.VideoCommentsFragment, CommentsFragment.newInstance(nComments)).commit()
 
     }
 }
