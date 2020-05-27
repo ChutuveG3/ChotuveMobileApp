@@ -1,6 +1,7 @@
 package com.example.chotuvemobileapp
 
 import android.app.DatePickerDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -75,8 +76,16 @@ class SignUpActivity : AppCompatActivity() {
                                 Toast.LENGTH_LONG).show()
                         }
                         "Success" -> {
+                            // Persist username
+                            val preferences = applicationContext
+                                .getSharedPreferences(getString(R.string.shared_preferences_file),
+                                                                Context.MODE_PRIVATE)
+                                .edit()
+                            preferences.putString("username", registerInfo.user_name)
+                            preferences.apply()
+                            // Go to Login
                             startActivity(Intent(this, LoginActivity::class.java))
-                            val nameToShow = RegNameText.text.toString()
+                            val nameToShow = registerInfo.first_name
                             Toast.makeText(applicationContext,"Welcome, $nameToShow! \n Now please sign in",
                                 Toast.LENGTH_LONG).show()
                             finish()
