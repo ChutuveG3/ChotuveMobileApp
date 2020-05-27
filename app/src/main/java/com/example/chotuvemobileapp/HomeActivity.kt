@@ -27,7 +27,10 @@ class HomeActivity : AppCompatActivity() {
 
         val token = applicationContext
             .getSharedPreferences(getString(R.string.shared_preferences_file), Context.MODE_PRIVATE).getString("token", "Fail")
-        if (token == "Fail") startActivity(Intent(this, LoginActivity::class.java))
+        if (token == "Fail") {
+            startActivity(Intent(this, LoginActivity::class.java))
+            finish()
+        }
 
         setContentView(R.layout.activity_home)
 
