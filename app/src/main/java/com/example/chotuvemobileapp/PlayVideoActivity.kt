@@ -1,10 +1,11 @@
 package com.example.chotuvemobileapp
 
+import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
-import android.util.DisplayMetrics
+import android.os.Handler
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
@@ -12,19 +13,17 @@ import android.widget.MediaController
 import androidx.appcompat.app.AppCompatActivity
 import com.example.chotuvemobileapp.ui.CommentsFragment
 import com.example.chotuvemobileapp.ui.EmptyListFragment
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.activity_play_video.*
 
 
 class PlayVideoActivity : AppCompatActivity() {
 
-    private lateinit var mStorageRef : StorageReference
     private var nComments = 0
     private var fullscreen = false
-    private val metrics = DisplayMetrics()
-    private lateinit var originalParams: ViewGroup.LayoutParams
+    private var backgroundColor = 0
+    private val delayTime: Long = 5000
 
+    @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play_video)
@@ -33,6 +32,7 @@ class PlayVideoActivity : AppCompatActivity() {
         VideoAuthor.text = intent.getStringExtra("videoAuthor")
         VideoProgressBar.visibility = View.VISIBLE
 
+        backgroundColor = getColor(R.color.white)
         val description = (intent.getStringExtra("videoDate")!!).plus("\nEsto es una descripción recontra hadcodeada para ver que onda esto de reproducir un video\nViva Perón!!")
 
         VideoDescription.text = description
@@ -42,9 +42,7 @@ class PlayVideoActivity : AppCompatActivity() {
         if (nComments == 0) supportFragmentManager.beginTransaction().replace(R.id.VideoCommentsFragment, EmptyListFragment()).commit()
         else supportFragmentManager.beginTransaction().replace(R.id.VideoCommentsFragment, CommentsFragment.newInstance(nComments)).commit()
 
-        mStorageRef = FirebaseStorage.getInstance().reference
-
-        val uri = Uri.parse("https://firebasestorage.googleapis.com/v0/b/chotuve-g3.appspot.com/o/VID-20200430-WA0008.mp4?alt=media&token=3777c88c-2116-490b-a652-12d1f84106ed")
+        val uri = Uri.parse("https://firebasestorage.googleapis.com/v0/b/lol-videos-8dc74.appspot.com/o/Blog_Images%2Fvideo%3A10142?alt=media&token=9f7734fa-f714-4838-bd65-8a4d594ec2ce")
 
         val mediaController = MediaController(this)
         mediaController.setAnchorView(VideoWrapper)
@@ -53,7 +51,6 @@ class PlayVideoActivity : AppCompatActivity() {
         Video.setMediaController(mediaController)
         Video.setVideoURI(uri)
         Video.setOnPreparedListener{
-            originalParams = Video.layoutParams
             VideoProgressBar.visibility = View.GONE
             Video.start()
         }
@@ -75,25 +72,39 @@ class PlayVideoActivity : AppCompatActivity() {
             }
         }
 
-        val metrics = DisplayMetrics()
-        windowManager.defaultDisplay.getMetrics(metrics)
+        Video.setOnClickListener {
+            FullscreenToggle.visibility = View.VISIBLE
+            Handler().postDelayed({FullscreenToggle.visibility = View.GONE}, delayTime)
+            Handler().postDelayed({
+                if (fullscreen){
+                window.decorView.apply {
+                    systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                }}
+            }, delayTime)
+        }
 
         FullscreenToggle.setOnClickListener {
             if (!fullscreen) {
                 window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
+                window.decorView.apply {
+                    systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                }
                 this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-                val newParams = Video.layoutParams
-                newParams.height = metrics.heightPixels
-                newParams.width = metrics.widthPixels
-                Video.layoutParams = newParams
+                window.decorView.setBackgroundColor(getColor(R.color.black))
+                Video.layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT
+                Video.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
                 fullscreen = true
             }
             else{
+                this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_USER
+                window.decorView.setBackgroundColor(backgroundColor)
                 window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-                Video.layoutParams = originalParams
+                Video.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+                Video.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
                 fullscreen = false
             }
         }
+        Handler().postDelayed({FullscreenToggle.visibility = View.GONE}, delayTime)
 
     }
 }
