@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.fragment.app.FragmentManager
 import com.example.chotuvemobileapp.R
+import com.example.chotuvemobileapp.helpers.Utilities.createDatePicker
 import kotlinx.android.synthetic.main.activity_edit_profile.*
 
 class EditProfileActivity : AppCompatActivity() {
@@ -17,8 +18,9 @@ class EditProfileActivity : AppCompatActivity() {
         DOBEditText.setText(intent.getStringExtra("dateOfBirth"))
         UsernameTextView.text = intent.getStringExtra("username")
 
+        createDatePicker(DOBEditText, this)
+
         SaveProfileButton.setOnClickListener {
-            supportFragmentManager.popBackStack("ProfileFragment", FragmentManager.POP_BACK_STACK_INCLUSIVE)
             finish()
         }
 

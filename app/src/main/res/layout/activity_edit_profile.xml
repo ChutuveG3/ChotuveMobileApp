@@ -196,7 +196,9 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/text_date_of_birth"
                 android:autofillHints=""
+                android:focusableInTouchMode="false"
                 tools:ignore="LabelFor" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>
