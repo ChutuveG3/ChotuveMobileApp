@@ -51,6 +51,8 @@ class PlayVideoActivity : AppCompatActivity() {
         Video.setMediaController(mediaController)
         Video.setVideoURI(uri)
         Video.setOnPreparedListener{
+            Video.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            Video.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
             VideoProgressBar.visibility = View.GONE
             Video.start()
         }
