@@ -1,16 +1,12 @@
 package com.example.chotuvemobileapp.data.videos
 
-import com.example.chotuvemobileapp.BuildConfig
-import com.example.chotuvemobileapp.data.services.IAppServerApiService
 import com.example.chotuvemobileapp.data.utilities.HttpUtilities.buildClient
-import okhttp3.OkHttpClient
+import com.example.chotuvemobileapp.entities.VideoItem
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import okhttp3.ResponseBody
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.TimeUnit
 
 object VideoDataSource {
 
@@ -34,4 +30,29 @@ object VideoDataSource {
             }
         })
     }
+
+    fun getVideosFrom(user: String? = null, myCallback: (ArrayList<VideoItem>) -> Unit){
+
+        val retrofit = buildClient(url = "http://www.mocky.io/v2/5ed021563500007100ff9ae9/")
+        val method = if (user != null) retrofit.getVideosFrom(user) else retrofit.getAllVideos()
+        val fail = ArrayList<VideoItem>()
+        method.enqueue(object : retrofit2.Callback<ResponseBody> {
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                myCallback.invoke(fail)
+            }
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>){
+                when {
+                    response.isSuccessful -> {
+                        val types = object : TypeToken<ArrayList<VideoItem>>() {}.type
+                        val videos = Gson().fromJson<ArrayList<VideoItem>>(response.body()!!.string(), types)
+                        myCallback.invoke(videos)
+                    }
+                    else -> {
+                        myCallback.invoke(fail)
+                    }
+                }
+            }
+        })
+    }
+
 }

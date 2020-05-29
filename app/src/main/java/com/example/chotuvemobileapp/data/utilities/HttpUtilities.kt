@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit
 
 object HttpUtilities {
 
-    fun buildClient(interceptor: Interceptor? = null): IAppServerApiService{
+    fun buildClient(interceptor: Interceptor? = null, url: String = BuildConfig.BASE_URL): IAppServerApiService{
         val logging = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
 
         val client = OkHttpClient.Builder()
@@ -25,7 +25,7 @@ object HttpUtilities {
 
         val builtClient = client.build()
 
-        return Retrofit.Builder().baseUrl(BuildConfig.BASE_URL)
+        return Retrofit.Builder().baseUrl(url)
             .addConverterFactory(GsonConverterFactory.create())
             .client(builtClient).build().create(IAppServerApiService::class.java)
     }

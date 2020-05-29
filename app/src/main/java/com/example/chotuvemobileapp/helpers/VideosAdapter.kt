@@ -10,6 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.chotuvemobileapp.PlayVideoActivity
 import com.example.chotuvemobileapp.R
 import com.example.chotuvemobileapp.entities.VideoItem
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class VideosAdapter(private val mVideos: List<VideoItem>) : RecyclerView.Adapter<VideosAdapter.ViewHolder>() {
     inner class ViewHolder(listItemView: View) : RecyclerView.ViewHolder(listItemView){
@@ -35,13 +38,17 @@ class VideosAdapter(private val mVideos: List<VideoItem>) : RecyclerView.Adapter
         val video = mVideos[position]
         holder.title.text = video.title
         holder.user.text = video.user
-        holder.date.text = video.date
+        val dateToDisplay = LocalDateTime.parse(video.date, DateTimeFormatter.ofPattern("dd/MM/yyyy'T'HH:mm:ss"))
+            .format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+        holder.date.text = dateToDisplay
         holder.itemView.setOnClickListener {
             val intent = Intent(it.context, PlayVideoActivity::class.java)
             intent.putExtra("videoTitle", video.title)
             intent.putExtra("videoAuthor", video.user)
-            intent.putExtra("videoDate", video.date)
+            intent.putExtra("videoDate", dateToDisplay)
             intent.putExtra("comments", position)
+            intent.putExtra("description", video.description)
+            intent.putExtra("url", video.url)
             it.context.startActivity(intent)
         }
     }

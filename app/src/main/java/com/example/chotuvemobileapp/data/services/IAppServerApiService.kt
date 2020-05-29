@@ -26,6 +26,11 @@ interface IAppServerApiService {
     ): Call<ResponseBody>
 
     @GET("users/me")
-    fun getOwnProfile(
-    ): Call<ResponseBody>
+    fun getOwnProfile(): Call<ResponseBody>
+
+    @GET("videos")
+    fun getAllVideos(): Call<ResponseBody>
+
+    @GET("videos/{user}")
+    fun getVideosFrom(@Path("user") user: String) : Call<ResponseBody>
 }
