@@ -71,7 +71,7 @@ class SignUpActivity : AppCompatActivity() {
                             // Go to Login
                             startActivity(Intent(this, LoginActivity::class.java))
                             val nameToShow = registerInfo.first_name
-                            Toast.makeText(applicationContext,"Welcome, $nameToShow! \n Now please sign in",
+                            Toast.makeText(applicationContext,"Welcome, $nameToShow! \nNow please sign in",
                                 Toast.LENGTH_LONG).show()
                             finish()
                         }

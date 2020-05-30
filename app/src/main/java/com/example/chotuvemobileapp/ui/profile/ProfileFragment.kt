@@ -57,11 +57,9 @@ class ProfileFragment : Fragment() {
         )
         ProfileProgressBar.visibility = View.VISIBLE
 
-        val token = requireActivity().applicationContext
-            .getSharedPreferences(getString(R.string.shared_preferences_file), Context.MODE_PRIVATE)
-            .getString("token", "Fail")
+        val prefs = requireActivity().applicationContext.getSharedPreferences(getString(R.string.shared_preferences_file), Context.MODE_PRIVATE)
         mPager = ProfileViewPager
-        ProfileInfoDataSource.getProfileInfo(token!!) {
+        ProfileInfoDataSource.getProfileInfo(preferences = prefs) {
             if (it != null) {
                 firstName = it.first_name
                 lastName = it.last_name

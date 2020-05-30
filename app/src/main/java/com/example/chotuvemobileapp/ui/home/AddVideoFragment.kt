@@ -62,8 +62,9 @@ class AddVideoFragment : Fragment() {
                 AddVideoScreen.alpha = 0.2F
                 requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 UploadVideoProgressBar.visibility = View.VISIBLE
-                val owner = requireActivity().applicationContext
-                    .getSharedPreferences(getString(R.string.shared_preferences_file), Context.MODE_PRIVATE).getString("username", "unknown")
+                val prefs = requireActivity().applicationContext.getSharedPreferences(getString(R.string.shared_preferences_file),
+                                                                                                        Context.MODE_PRIVATE)
+                val owner = prefs.getString("username", "unknown")
                 val fileName = getFileName(uri!!)
                 val storageReference : StorageReference = mStorageRef.child(fileName)
                 storageReference.putFile(uri!!)
@@ -80,7 +81,7 @@ class AddVideoFragment : Fragment() {
                                 fileSize!!,
                                 owner!!
                             )
-                            VideoDataSource.addVideo(videoToSend){
+                            VideoDataSource.addVideo(videoToSend, prefs){
                                 when(it){
                                     "Success" ->{
                                         UploadVideoProgressBar.visibility = View.GONE

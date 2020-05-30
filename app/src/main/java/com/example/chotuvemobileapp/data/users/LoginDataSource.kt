@@ -1,5 +1,6 @@
 package com.example.chotuvemobileapp.data.users
 
+import android.content.SharedPreferences
 import com.example.chotuvemobileapp.BuildConfig
 import com.example.chotuvemobileapp.data.response.AuthErrorResponse
 import com.example.chotuvemobileapp.data.response.LoginResponse
@@ -46,18 +47,7 @@ object LoginDataSource {
 
     fun addUser(user : User, myCallback: (String) -> Unit){
 
-        val logging = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
-
-        val client = OkHttpClient.Builder()
-            .connectTimeout(2, TimeUnit.MINUTES)
-            .readTimeout(2, TimeUnit.MINUTES)
-            .writeTimeout(2, TimeUnit.MINUTES)
-            .callTimeout(3, TimeUnit.MINUTES)
-            .addInterceptor(logging).build()
-
-        val retrofit = Retrofit.Builder().baseUrl(BuildConfig.BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(client).build().create(IAppServerApiService::class.java)
+        val retrofit = buildClient()
 
         retrofit.registerUser(user).enqueue(object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {

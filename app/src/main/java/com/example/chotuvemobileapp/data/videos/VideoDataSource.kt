@@ -1,5 +1,7 @@
 package com.example.chotuvemobileapp.data.videos
 
+import android.content.SharedPreferences
+import com.example.chotuvemobileapp.data.utilities.HttpUtilities.buildAuthenticatedClient
 import com.example.chotuvemobileapp.data.utilities.HttpUtilities.buildClient
 import com.example.chotuvemobileapp.entities.VideoItem
 import com.google.gson.Gson
@@ -10,9 +12,9 @@ import retrofit2.Response
 
 object VideoDataSource {
 
-    fun addVideo(video: Video, myCallback: (String) -> Unit){
+    fun addVideo(video: Video, preferences: SharedPreferences, myCallback: (String) -> Unit){
 
-        val retrofit = buildClient()
+        val retrofit = buildAuthenticatedClient(preferences)
 
         retrofit.uploadVideo(video).enqueue(object : retrofit2.Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
@@ -31,9 +33,9 @@ object VideoDataSource {
         })
     }
 
-    fun getVideosFrom(user: String? = null, myCallback: (ArrayList<VideoItem>) -> Unit){
+    fun getVideosFrom(preferences: SharedPreferences, user: String? = null, myCallback: (ArrayList<VideoItem>) -> Unit){
 
-        val retrofit = buildClient(url = "http://www.mocky.io/v2/5ed021563500007100ff9ae9/")
+        val retrofit = buildAuthenticatedClient(url = "http://www.mocky.io/v2/5ed021563500007100ff9ae9/", preferences = preferences)
         val method = if (user != null) retrofit.getVideosFrom(user) else retrofit.getAllVideos()
         val fail = ArrayList<VideoItem>()
         method.enqueue(object : retrofit2.Callback<ResponseBody> {

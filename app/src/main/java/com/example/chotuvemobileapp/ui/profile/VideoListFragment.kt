@@ -1,5 +1,6 @@
 package com.example.chotuvemobileapp.ui.profile
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -43,7 +44,7 @@ class VideoListFragment : Fragment() {
         VideoListRecyclerView.alpha = 0.2F
 
         val recyclerView = VideoListRecyclerView
-        VideoDataSource.getVideosFrom(user){
+        VideoDataSource.getVideosFrom(requireActivity().getSharedPreferences(getString(R.string.shared_preferences_file), Context.MODE_PRIVATE), user){
             videos = it
             recyclerView.adapter = VideosAdapter(videos)
             progressBar.visibility = View.GONE
