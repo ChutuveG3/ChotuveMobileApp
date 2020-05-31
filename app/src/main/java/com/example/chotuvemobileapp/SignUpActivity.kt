@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.chotuvemobileapp.data.users.LoginDataSource
 import com.example.chotuvemobileapp.data.users.User
 import com.example.chotuvemobileapp.helpers.Utilities.createDatePicker
+import com.example.chotuvemobileapp.helpers.Utilities.watchText
 import kotlinx.android.synthetic.main.activity_sign_up.*
 import java.text.DecimalFormat
 import java.time.LocalDate
@@ -32,12 +33,12 @@ class SignUpActivity : AppCompatActivity() {
         SignUpButton.isEnabled = false
         SignUpButton.alpha = .5f
 
-        RegUsernameText.watchText()
-        RegNameText.watchText()
-        RegLastNameText.watchText()
-        RegEmailText.watchText()
-        RegPwFirstText.watchText()
-        RegPwSecondText.watchText()
+        RegUsernameText.watchText(SignUpButton, this::isDataCorrect)
+        RegNameText.watchText(SignUpButton, this::isDataCorrect)
+        RegLastNameText.watchText(SignUpButton, this::isDataCorrect)
+        RegEmailText.watchText(SignUpButton, this::isDataCorrect)
+        RegPwFirstText.watchText(SignUpButton, this::isDataCorrect)
+        RegPwSecondText.watchText(SignUpButton, this::isDataCorrect)
 
         SignUpButton.setOnClickListener{
             if (isDataValid()) {
@@ -75,16 +76,9 @@ class SignUpActivity : AppCompatActivity() {
                                 Toast.LENGTH_LONG).show()
                             finish()
                         }
-                        "user_name_already_exists" -> {
-                            RegUsername.error = getString(R.string.user_taken)
-                        }
-                        "user_email_already_exists" -> {
-                            RegEmail.error = getString(R.string.email_taken)
-                        }
-                        else -> {
-                            Toast.makeText( applicationContext, getString(R.string.internal_error),
-                                Toast.LENGTH_LONG).show()
-                        }
+                        "user_name_already_exists" -> RegUsername.error = getString(R.string.user_taken)
+                        "user_email_already_exists" -> RegEmail.error = getString(R.string.email_taken)
+                        else -> Toast.makeText( applicationContext, getString(R.string.internal_error), Toast.LENGTH_LONG).show()
                     }
                     SignupScreen.alpha = 1F
                     window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
@@ -93,19 +87,6 @@ class SignUpActivity : AppCompatActivity() {
 
             }
         }
-    }
-
-    private fun EditText.watchText() {
-        this.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(editable: Editable?) {
-                SignUpButton.isEnabled = isDataCorrect()
-                if (SignUpButton.isEnabled) SignUpButton.alpha = 1f
-            }
-
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
-        })
     }
 
     private fun isDataValid(): Boolean{

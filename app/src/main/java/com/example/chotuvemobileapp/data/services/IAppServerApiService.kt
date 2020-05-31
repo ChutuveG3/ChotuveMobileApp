@@ -1,6 +1,7 @@
 package com.example.chotuvemobileapp.data.services
 
 import com.example.chotuvemobileapp.data.users.User
+import com.example.chotuvemobileapp.data.users.UserForModification
 import com.example.chotuvemobileapp.data.videos.Video
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -28,9 +29,16 @@ interface IAppServerApiService {
     @GET("users/me")
     fun getOwnProfile(): Call<ResponseBody>
 
+    @PUT("users/{user}")
+    fun modifyProfile(@Path("user") user: String,
+                      @Body userInfo: UserForModification): Call<ResponseBody>
+
     @GET("videos")
-    fun getAllVideos(@Query("page") pageNumber: Int, @Query("limit") pageSize: Int): Call<ResponseBody>
+    fun getAllVideos(@Query("page") pageNumber: Int,
+                     @Query("limit") pageSize: Int): Call<ResponseBody>
 
     @GET("videos/{user}")
-    fun getVideosFrom(@Path("user") user: String, @Query("page") pageNumber: Int, @Query("limit") pageSize: Int) : Call<ResponseBody>
+    fun getVideosFrom(@Path("user") user: String,
+                      @Query("page") pageNumber: Int,
+                      @Query("limit") pageSize: Int) : Call<ResponseBody>
 }

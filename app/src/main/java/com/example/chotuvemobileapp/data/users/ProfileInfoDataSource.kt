@@ -30,4 +30,22 @@ object ProfileInfoDataSource {
             }
         })
     }
+
+    fun modifyProfileInfo(preferences: SharedPreferences, user:String, userInfo: UserForModification, myCallback: (String) -> Unit){
+
+        val retrofit = buildAuthenticatedClient(preferences)
+
+        retrofit.modifyProfile(user, userInfo).enqueue(object : Callback<ResponseBody> {
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                myCallback.invoke("Failure")
+            }
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>){
+                when {
+                    response.isSuccessful -> myCallback.invoke("Success")
+                    response.code() == 400 -> myCallback.invoke("EmailInvalid")
+                    else -> myCallback.invoke("ServerError")
+                }
+            }
+        })
+    }
 }

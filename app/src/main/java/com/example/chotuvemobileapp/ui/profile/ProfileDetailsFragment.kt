@@ -50,6 +50,7 @@ class ProfileDetailsFragment : Fragment() {
             intent.putExtra("lastName", lastName)
             intent.putExtra("dateOfBirth", birthDate)
             intent.putExtra("username", username)
+            intent.putExtra("email", email)
             startActivity(intent)
         }
     }
