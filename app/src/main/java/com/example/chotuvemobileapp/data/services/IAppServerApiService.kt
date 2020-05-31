@@ -29,8 +29,8 @@ interface IAppServerApiService {
     fun getOwnProfile(): Call<ResponseBody>
 
     @GET("videos")
-    fun getAllVideos(): Call<ResponseBody>
+    fun getAllVideos(@Query("page") pageNumber: Int, @Query("limit") pageSize: Int): Call<ResponseBody>
 
     @GET("videos/{user}")
-    fun getVideosFrom(@Path("user") user: String) : Call<ResponseBody>
+    fun getVideosFrom(@Path("user") user: String, @Query("page") pageNumber: Int, @Query("limit") pageSize: Int) : Call<ResponseBody>
 }

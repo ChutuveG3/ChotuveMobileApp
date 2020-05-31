@@ -2,7 +2,6 @@ package com.example.chotuvemobileapp.data.videos
 
 import android.content.SharedPreferences
 import com.example.chotuvemobileapp.data.utilities.HttpUtilities.buildAuthenticatedClient
-import com.example.chotuvemobileapp.data.utilities.HttpUtilities.buildClient
 import com.example.chotuvemobileapp.entities.VideoItem
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -33,10 +32,10 @@ object VideoDataSource {
         })
     }
 
-    fun getVideosFrom(preferences: SharedPreferences, user: String? = null, myCallback: (ArrayList<VideoItem>) -> Unit){
+    fun getVideosFrom(preferences: SharedPreferences, pageNumber: Int, pageSize: Int, user: String? = null, myCallback: (ArrayList<VideoItem>) -> Unit){
 
         val retrofit = buildAuthenticatedClient(url = "http://www.mocky.io/v2/5ed021563500007100ff9ae9/", preferences = preferences)
-        val method = if (user != null) retrofit.getVideosFrom(user) else retrofit.getAllVideos()
+        val method = if (user != null) retrofit.getVideosFrom(user, pageNumber, pageSize) else retrofit.getAllVideos(pageNumber, pageSize)
         val fail = ArrayList<VideoItem>()
         method.enqueue(object : retrofit2.Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
