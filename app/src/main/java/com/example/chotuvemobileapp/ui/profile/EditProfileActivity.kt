@@ -39,7 +39,6 @@ class EditProfileActivity : AppCompatActivity() {
         LastNameEditText.setText(lastName)
         DOBEditText.setText(dob)
         EmailEditText.setText(email)
-        UsernameTextView.text = username
 
         createDatePicker(DOBEditText, this)
 

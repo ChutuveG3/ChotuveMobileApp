@@ -11,7 +11,8 @@
         android:id="@+id/appbar"
 
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
@@ -28,10 +29,11 @@
                 <LinearLayout
                     android:id="@+id/linearLayout"
                     android:layout_width="0dp"
-                    android:layout_height="0dp"
+                    android:layout_height="200dp"
+                    android:layout_marginBottom="50dp"
                     android:background="@color/colorPrimaryDark"
                     android:orientation="vertical"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@id/ProfilePicBorder"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
@@ -45,13 +47,13 @@
                     android:layout_width="0dp"
                     android:layout_height="180dp"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     android:background="#FFFFFF"
                     android:src="@drawable/ic_photo_size_select_actual_grey_78dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/linearLayout"
                     tools:ignore="ContentDescription" />
 
                 <LinearLayout
@@ -77,27 +79,9 @@
                     app:layout_constraintTop_toTopOf="@id/ProfilePicBorder"
                     tools:ignore="ContentDescription" />
 
-                <TextView
-                    android:id="@+id/UsernameTextView"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:fontFamily="@font/fira_sans_condensed_italic"
-                    android:textColor="@android:color/darker_gray"
-                    android:textSize="18sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintLeft_toLeftOf="@id/ProfilePicBorder"
-                    app:layout_constraintStart_toEndOf="@+id/ProfilePicBorder"
-                    app:layout_constraintTop_toBottomOf="@+id/BackgroundPic" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </com.google.android.material.appbar.CollapsingToolbarLayout>
-
-        <com.google.android.material.tabs.TabLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:tabGravity="fill" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -134,17 +118,20 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
-                android:layout_marginTop="32dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="32dp"
+                app:helperTextEnabled="false"
+                app:hintTextColor="@color/colorPrimaryDark"
+                app:hintTextAppearance="@style/TextAppearance.AppCompat.Medium.Inverse"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:hintTextAppearance="@style/TextAppearance.AppCompat.Body1">
+                app:layout_constraintTop_toTopOf="parent">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/FirstNameEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="#E6E6E6"
                     android:hint="@string/name" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -154,15 +141,19 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
                 android:layout_marginEnd="32dp"
+                app:helperText="Your first and last name will be displayed in your profile"
+                app:helperTextEnabled="true"
+                app:hintTextAppearance="@style/TextAppearance.AppCompat.Medium.Inverse"
+                app:hintTextColor="@color/colorPrimaryDark"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/EditProfileFirstName"
-                app:hintTextAppearance="@style/TextAppearance.AppCompat.Body1">
+                app:layout_constraintTop_toBottomOf="@+id/EditProfileFirstName">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/LastNameEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="#E6E6E6"
                     android:hint="@string/prompt_lastname" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -171,16 +162,19 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="32dp"
+                app:hintTextAppearance="@style/TextAppearance.AppCompat.Medium.Inverse"
+                app:hintTextColor="@color/colorPrimaryDark"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/EditProfileLastName"
-                app:hintTextAppearance="@style/TextAppearance.AppCompat.Body1">
+                app:layout_constraintTop_toBottomOf="@+id/EditProfileLastName">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/DOBEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="#E6E6E6"
                     android:focusable="false"
                     android:hint="@string/prompt_dob"
                     android:inputType="date" />
@@ -191,16 +185,19 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="32dp"
+                app:hintTextAppearance="@style/TextAppearance.AppCompat.Medium.Inverse"
+                app:hintTextColor="@color/colorPrimaryDark"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/EditProfileDOB"
-                app:hintTextAppearance="@style/TextAppearance.AppCompat.Body1">
+                app:layout_constraintTop_toBottomOf="@+id/EditProfileDOB">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/EmailEditText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:backgroundTint="#E6E6E6"
                     android:hint="@string/prompt_email"
                     android:inputType="textEmailAddress" />
             </com.google.android.material.textfield.TextInputLayout>
