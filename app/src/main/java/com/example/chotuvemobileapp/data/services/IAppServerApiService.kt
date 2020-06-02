@@ -29,9 +29,8 @@ interface IAppServerApiService {
     @GET("users/me")
     fun getOwnProfile(): Call<ResponseBody>
 
-    @PUT("users/{user}")
-    fun modifyProfile(@Path("user") user: String,
-                      @Body userInfo: UserForModification): Call<ResponseBody>
+    @PUT("users/me")
+    fun modifyProfile(@Body userInfo: UserForModification): Call<ResponseBody>
 
     @GET("videos")
     fun getAllVideos(@Query("page") pageNumber: Int,

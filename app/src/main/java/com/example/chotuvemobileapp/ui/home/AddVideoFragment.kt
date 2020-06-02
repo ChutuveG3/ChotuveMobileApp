@@ -19,6 +19,8 @@ import com.bumptech.glide.Glide
 import com.example.chotuvemobileapp.R
 import com.example.chotuvemobileapp.data.videos.Video
 import com.example.chotuvemobileapp.data.videos.VideoDataSource
+import com.example.chotuvemobileapp.helpers.PickRequest
+import com.example.chotuvemobileapp.helpers.Utilities.startSelectActivity
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.fragment_add_video.*
@@ -27,7 +29,6 @@ import java.time.format.DateTimeFormatter
 
 
 class AddVideoFragment : Fragment() {
-    private val PICK_VIDEO_REQUEST = 1
     private val DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
     private var uri = null as Uri?
     private var fileSize = null as String?
@@ -110,13 +111,13 @@ class AddVideoFragment : Fragment() {
         }
 
         SelectFileButton.setOnClickListener {
-            startSelectVideoActivity()
+            startSelectActivity(requireActivity(), "video/*", "Select Video", PickRequest.Video)
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PICK_VIDEO_REQUEST) {
+        if (requestCode == PickRequest.Video.value) {
             if (resultCode == Activity.RESULT_OK) {
                 UploadButton.isEnabled = true
                 UploadButton.alpha = 1F
@@ -129,13 +130,6 @@ class AddVideoFragment : Fragment() {
                 VideoTitleInputText.setText(getFileName(uri!!), TextView.BufferType.EDITABLE)
             }
         }
-    }
-
-    private fun startSelectVideoActivity() {
-        val intent = Intent(Intent.ACTION_PICK).apply {
-            type = "video/*"
-        }
-        startActivityForResult(Intent.createChooser(intent, "Select video"), PICK_VIDEO_REQUEST)
     }
 
     @SuppressLint("Recycle")

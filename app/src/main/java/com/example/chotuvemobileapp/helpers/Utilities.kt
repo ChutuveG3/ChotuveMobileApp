@@ -1,11 +1,14 @@
 package com.example.chotuvemobileapp.helpers
 
+import android.app.Activity
 import android.app.DatePickerDialog
 import android.content.Context
+import android.content.Intent
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.Button
 import android.widget.EditText
+import androidx.core.app.ActivityCompat.startActivityForResult
 import java.text.DecimalFormat
 import java.util.*
 
@@ -42,5 +45,12 @@ object Utilities {
 
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
         })
+    }
+
+    fun startSelectActivity(activity: Activity, selectType: String, title: String, responseCode: PickRequest) {
+        val intent = Intent(Intent.ACTION_PICK).apply {
+            type = selectType
+        }
+        startActivityForResult(activity, Intent.createChooser(intent, title), responseCode.value, null)
     }
 }
