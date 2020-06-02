@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.chotuvemobileapp.R
-import com.example.chotuvemobileapp.entities.VideoItem
 import com.example.chotuvemobileapp.ui.profile.VideoListFragment
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
@@ -37,7 +36,4 @@ class HomeFragment : Fragment() {
 
         childFragmentManager.beginTransaction().replace(R.id.HomeVideosFragment, VideoListFragment.newInstance(8)).commit()
     }
-
-
-
 }

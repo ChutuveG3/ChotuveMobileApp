@@ -87,13 +87,13 @@ class EditProfileActivity : AppCompatActivity() {
         if (requestCode == PickRequest.ProfilePic.value){
             if (resultCode == Activity.RESULT_OK){
                 val uri = data!!.data
-                Glide.with(applicationContext).load(uri).into(ProfilePic)
+                Glide.with(applicationContext).load(uri).centerCrop().into(ProfilePic)
             }
         }
         else if (requestCode == PickRequest.BackgroundPic.value){
             if (resultCode == Activity.RESULT_OK){
                 val uri = data!!.data
-                Glide.with(applicationContext).load(uri).into(BackgroundPic)
+                Glide.with(applicationContext).load(uri).centerCrop().into(BackgroundPic)
             }
         }
     }
