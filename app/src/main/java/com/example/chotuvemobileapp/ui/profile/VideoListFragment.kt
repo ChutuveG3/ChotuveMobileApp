@@ -16,7 +16,6 @@ import kotlinx.android.synthetic.main.fragment_profile_videos.*
 
 class VideoListFragment : Fragment() {
     private var videos = ArrayList<VideoItem>()
-    private var nVideos: Int = 0
     private var user: String? = null
     private var currentPage = 1
     private val pageSize = 10
@@ -24,7 +23,6 @@ class VideoListFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            nVideos = it.getInt("videos", 0)
             user = it.getString("user")
         }
     }
@@ -74,10 +72,9 @@ class VideoListFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(i: Int, user: String? = null) =
+        fun newInstance(user: String? = null) =
             VideoListFragment().apply {
                 arguments = Bundle().apply {
-                    putInt("videos", i)
                     putString("user", user)
                 }
             }

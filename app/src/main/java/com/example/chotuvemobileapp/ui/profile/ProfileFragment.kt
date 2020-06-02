@@ -42,7 +42,7 @@ class ProfileFragment : Fragment() {
         override fun createFragment(position: Int): Fragment {
             return when(position){
                 0 -> ProfileDetailsFragment.newInstance(firstName, lastName, email, birthDate, userName)
-                1 -> VideoListFragment.newInstance(3, userName)
+                1 -> VideoListFragment.newInstance("Me")
                 else -> CommentsFragment.newInstance(19)
             }
         }
