@@ -1,6 +1,7 @@
 package com.example.chotuvemobileapp
 
 import android.app.DatePickerDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -12,6 +13,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.chotuvemobileapp.data.users.LoginDataSource
 import com.example.chotuvemobileapp.data.users.User
+import com.example.chotuvemobileapp.helpers.Utilities.createDatePicker
 import kotlinx.android.synthetic.main.activity_sign_up.*
 import java.text.DecimalFormat
 import java.time.LocalDate
@@ -23,23 +25,7 @@ class SignUpActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
 
-        val calendar = Calendar.getInstance()
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
-
-        RegDateText.setOnClickListener {
-            val dialog = DatePickerDialog(this, DatePickerDialog.OnDateSetListener{ _, mYear, mMonth, mDay ->
-                val df = DecimalFormat("00")
-                val trueMonth = df.format(mMonth + 1)
-                val trueDay = df.format(mDay)
-                val text = "$mYear-$trueMonth-$trueDay"
-                RegDateText.setText(text)
-
-            }, year, month, day)
-            dialog.datePicker.maxDate = Calendar.getInstance().timeInMillis
-            dialog.show()
-        }
+        createDatePicker(RegDateText, this)
 
         SignupProgressBar.visibility = View.GONE
 
@@ -75,9 +61,17 @@ class SignUpActivity : AppCompatActivity() {
                                 Toast.LENGTH_LONG).show()
                         }
                         "Success" -> {
+                            // Persist username
+                            val preferences = applicationContext
+                                .getSharedPreferences(getString(R.string.shared_preferences_file),
+                                                                Context.MODE_PRIVATE)
+                                .edit()
+                            preferences.putString("username", registerInfo.user_name)
+                            preferences.apply()
+                            // Go to Login
                             startActivity(Intent(this, LoginActivity::class.java))
-                            val nameToShow = RegNameText.text.toString()
-                            Toast.makeText(applicationContext,"Welcome, $nameToShow! \n Now please sign in",
+                            val nameToShow = registerInfo.first_name
+                            Toast.makeText(applicationContext,"Welcome, $nameToShow! \nNow please sign in",
                                 Toast.LENGTH_LONG).show()
                             finish()
                         }

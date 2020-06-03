@@ -62,7 +62,9 @@ class AddVideoFragment : Fragment() {
                 AddVideoScreen.alpha = 0.2F
                 requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 UploadVideoProgressBar.visibility = View.VISIBLE
-
+                val prefs = requireActivity().applicationContext.getSharedPreferences(getString(R.string.shared_preferences_file),
+                                                                                                        Context.MODE_PRIVATE)
+                val owner = prefs.getString("username", "unknown")
                 val fileName = getFileName(uri!!)
                 val storageReference : StorageReference = mStorageRef.child(fileName)
                 storageReference.putFile(uri!!)
@@ -76,9 +78,10 @@ class AddVideoFragment : Fragment() {
                                 uri.toString(),
                                 nowDateTimeStr(),
                                 fileName,
-                                fileSize!!
+                                fileSize!!,
+                                owner!!
                             )
-                            VideoDataSource.addVideo(videoToSend){
+                            VideoDataSource.addVideo(videoToSend, prefs){
                                 when(it){
                                     "Success" ->{
                                         UploadVideoProgressBar.visibility = View.GONE
@@ -135,6 +138,7 @@ class AddVideoFragment : Fragment() {
         startActivityForResult(Intent.createChooser(intent, "Select video"), PICK_VIDEO_REQUEST)
     }
 
+    @SuppressLint("Recycle")
     private fun getFileName(uri: Uri) : String {
         var result = null as String?
         if (uri.scheme.equals("content")) {
@@ -164,6 +168,7 @@ class AddVideoFragment : Fragment() {
         requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
     }
 
+    @SuppressLint("Recycle")
     private fun getFileSize(context: Context, uri: Uri?): String? {
         var fileSize: String? = null
         val cursor = context.contentResolver

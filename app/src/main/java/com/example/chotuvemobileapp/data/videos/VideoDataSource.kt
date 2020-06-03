@@ -1,32 +1,19 @@
 package com.example.chotuvemobileapp.data.videos
 
-import com.example.chotuvemobileapp.BuildConfig
-import com.example.chotuvemobileapp.data.services.IAppServerApiService
-import okhttp3.OkHttpClient
+import android.content.SharedPreferences
+import com.example.chotuvemobileapp.data.utilities.HttpUtilities.buildAuthenticatedClient
+import com.example.chotuvemobileapp.entities.VideoItem
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import okhttp3.ResponseBody
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import java.util.concurrent.TimeUnit
 
 object VideoDataSource {
 
-    fun addVideo(video: Video, myCallback: (String) -> Unit){
+    fun addVideo(video: Video, preferences: SharedPreferences, myCallback: (String) -> Unit){
 
-        val logging = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
-
-        val client = OkHttpClient.Builder()
-            .connectTimeout(2, TimeUnit.MINUTES)
-            .readTimeout(2, TimeUnit.MINUTES)
-            .writeTimeout(2, TimeUnit.MINUTES)
-            .callTimeout(3, TimeUnit.MINUTES)
-            .addInterceptor(logging).build()
-
-        val retrofit = Retrofit.Builder().baseUrl(BuildConfig.BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .client(client).build().create(IAppServerApiService::class.java)
+        val retrofit = buildAuthenticatedClient(preferences)
 
         retrofit.uploadVideo(video).enqueue(object : retrofit2.Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
@@ -44,4 +31,33 @@ object VideoDataSource {
             }
         })
     }
+
+    fun getVideosFrom(preferences: SharedPreferences, pageNumber: Int, pageSize: Int, user: String? = null, myCallback: (ArrayList<VideoItem>) -> Unit){
+
+        val retrofit = buildAuthenticatedClient(preferences = preferences)
+        val method = when (user) {
+            null -> retrofit.getAllVideos(pageNumber, pageSize)
+            "Me" -> retrofit.getMyVideos(pageNumber, pageSize)
+            else -> retrofit.getVideosFrom(user, pageNumber, pageSize)
+        }
+        val fail = ArrayList<VideoItem>()
+        method.enqueue(object : retrofit2.Callback<ResponseBody> {
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                myCallback.invoke(fail)
+            }
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>){
+                when {
+                    response.isSuccessful -> {
+                        val types = object : TypeToken<ArrayList<VideoItem>>() {}.type
+                        val videos = Gson().fromJson<ArrayList<VideoItem>>(response.body()!!.string(), types)
+                        myCallback.invoke(videos)
+                    }
+                    else -> {
+                        myCallback.invoke(fail)
+                    }
+                }
+            }
+        })
+    }
+
 }
