@@ -14,6 +14,9 @@ import java.util.*
 
 object Utilities {
 
+    const val DATE_FORMAT_LONG = "yyyy-MM-dd'T'HH:mm:ss"
+    const val DATE_FORMAT_SHORT = "dd/MM/yyyy"
+
     fun createDatePicker(field: EditText, context: Context){
         val calendar = Calendar.getInstance()
         val year = calendar.get(Calendar.YEAR)
