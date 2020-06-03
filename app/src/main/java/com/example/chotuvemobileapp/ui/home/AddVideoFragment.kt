@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -111,7 +112,10 @@ class AddVideoFragment : Fragment() {
         }
 
         SelectFileButton.setOnClickListener {
-            startSelectActivity(requireActivity(), "video/*", "Select Video", PickRequest.Video)
+            val intent = Intent(Intent.ACTION_PICK).apply {
+                type = "video/*"
+            }
+            startActivityForResult(Intent.createChooser(intent, "Select Video"), PickRequest.Video.value)
         }
     }
 
@@ -125,7 +129,7 @@ class AddVideoFragment : Fragment() {
 
                 fileSize = context?.let { getFileSize(it, uri) }
 
-                Glide.with(requireContext()).load(uri).into(SelectFileButton)
+                Glide.with(requireContext()).load(uri).centerCrop().into(SelectFileButton)
 
                 VideoTitleInputText.setText(getFileName(uri!!), TextView.BufferType.EDITABLE)
             }
