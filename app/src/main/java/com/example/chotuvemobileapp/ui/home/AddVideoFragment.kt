@@ -13,12 +13,15 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.example.chotuvemobileapp.R
 import com.example.chotuvemobileapp.data.videos.Video
 import com.example.chotuvemobileapp.data.videos.VideoDataSource
+import com.example.chotuvemobileapp.helpers.PickRequest
+import com.example.chotuvemobileapp.helpers.Utilities.startSelectActivity
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.fragment_add_video.*
@@ -27,7 +30,6 @@ import java.time.format.DateTimeFormatter
 
 
 class AddVideoFragment : Fragment() {
-    private val PICK_VIDEO_REQUEST = 1
     private val DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
     private var uri = null as Uri?
     private var fileSize = null as String?
@@ -62,7 +64,9 @@ class AddVideoFragment : Fragment() {
                 AddVideoScreen.alpha = 0.2F
                 requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 UploadVideoProgressBar.visibility = View.VISIBLE
-
+                val prefs = requireActivity().applicationContext.getSharedPreferences(getString(R.string.shared_preferences_file),
+                                                                                                        Context.MODE_PRIVATE)
+                val owner = prefs.getString("username", "unknown")
                 val fileName = getFileName(uri!!)
                 val storageReference : StorageReference = mStorageRef.child(fileName)
                 storageReference.putFile(uri!!)
@@ -76,9 +80,10 @@ class AddVideoFragment : Fragment() {
                                 uri.toString(),
                                 nowDateTimeStr(),
                                 fileName,
-                                fileSize!!
+                                fileSize!!,
+                                owner!!
                             )
-                            VideoDataSource.addVideo(videoToSend){
+                            VideoDataSource.addVideo(videoToSend, prefs){
                                 when(it){
                                     "Success" ->{
                                         UploadVideoProgressBar.visibility = View.GONE
@@ -107,13 +112,16 @@ class AddVideoFragment : Fragment() {
         }
 
         SelectFileButton.setOnClickListener {
-            startSelectVideoActivity()
+            val intent = Intent(Intent.ACTION_PICK).apply {
+                type = "video/*"
+            }
+            startActivityForResult(Intent.createChooser(intent, "Select Video"), PickRequest.Video.value)
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == PICK_VIDEO_REQUEST) {
+        if (requestCode == PickRequest.Video.value) {
             if (resultCode == Activity.RESULT_OK) {
                 UploadButton.isEnabled = true
                 UploadButton.alpha = 1F
@@ -121,20 +129,14 @@ class AddVideoFragment : Fragment() {
 
                 fileSize = context?.let { getFileSize(it, uri) }
 
-                Glide.with(requireContext()).load(uri).into(SelectFileButton)
+                Glide.with(requireContext()).load(uri).centerCrop().into(SelectFileButton)
 
                 VideoTitleInputText.setText(getFileName(uri!!), TextView.BufferType.EDITABLE)
             }
         }
     }
 
-    private fun startSelectVideoActivity() {
-        val intent = Intent(Intent.ACTION_PICK).apply {
-            type = "video/*"
-        }
-        startActivityForResult(Intent.createChooser(intent, "Select video"), PICK_VIDEO_REQUEST)
-    }
-
+    @SuppressLint("Recycle")
     private fun getFileName(uri: Uri) : String {
         var result = null as String?
         if (uri.scheme.equals("content")) {
@@ -164,6 +166,7 @@ class AddVideoFragment : Fragment() {
         requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
     }
 
+    @SuppressLint("Recycle")
     private fun getFileSize(context: Context, uri: Uri?): String? {
         var fileSize: String? = null
         val cursor = context.contentResolver

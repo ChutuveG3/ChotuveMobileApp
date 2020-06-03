@@ -1,8 +1,6 @@
 package com.example.chotuvemobileapp.data.videos
 
-import android.net.Uri
 import com.google.gson.annotations.SerializedName
-import java.time.format.DateTimeFormatter
 
 data class Video(
     @SerializedName("title")
@@ -18,5 +16,7 @@ data class Video(
     @SerializedName("file_name")
     val fileName: String,
     @SerializedName("file_size")
-    val fileSize: String
-    )
+    val fileSize: String,
+    @SerializedName("username")
+    val username: String
+)

@@ -1,6 +1,7 @@
 package com.example.chotuvemobileapp
 
 import android.app.DatePickerDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -12,6 +13,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.chotuvemobileapp.data.users.LoginDataSource
 import com.example.chotuvemobileapp.data.users.User
+import com.example.chotuvemobileapp.helpers.Utilities.createDatePicker
+import com.example.chotuvemobileapp.helpers.Utilities.watchText
 import kotlinx.android.synthetic.main.activity_sign_up.*
 import java.text.DecimalFormat
 import java.time.LocalDate
@@ -23,35 +26,19 @@ class SignUpActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sign_up)
 
-        val calendar = Calendar.getInstance()
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
-
-        RegDateText.setOnClickListener {
-            val dialog = DatePickerDialog(this, DatePickerDialog.OnDateSetListener{ _, mYear, mMonth, mDay ->
-                val df = DecimalFormat("00")
-                val trueMonth = df.format(mMonth + 1)
-                val trueDay = df.format(mDay)
-                val text = "$mYear-$trueMonth-$trueDay"
-                RegDateText.setText(text)
-
-            }, year, month, day)
-            dialog.datePicker.maxDate = Calendar.getInstance().timeInMillis
-            dialog.show()
-        }
+        createDatePicker(RegDateText, this)
 
         SignupProgressBar.visibility = View.GONE
 
         SignUpButton.isEnabled = false
         SignUpButton.alpha = .5f
 
-        RegUsernameText.watchText()
-        RegNameText.watchText()
-        RegLastNameText.watchText()
-        RegEmailText.watchText()
-        RegPwFirstText.watchText()
-        RegPwSecondText.watchText()
+        RegUsernameText.watchText(SignUpButton, this::isDataCorrect)
+        RegNameText.watchText(SignUpButton, this::isDataCorrect)
+        RegLastNameText.watchText(SignUpButton, this::isDataCorrect)
+        RegEmailText.watchText(SignUpButton, this::isDataCorrect)
+        RegPwFirstText.watchText(SignUpButton, this::isDataCorrect)
+        RegPwSecondText.watchText(SignUpButton, this::isDataCorrect)
 
         SignUpButton.setOnClickListener{
             if (isDataValid()) {
@@ -75,22 +62,23 @@ class SignUpActivity : AppCompatActivity() {
                                 Toast.LENGTH_LONG).show()
                         }
                         "Success" -> {
+                            // Persist username
+                            val preferences = applicationContext
+                                .getSharedPreferences(getString(R.string.shared_preferences_file),
+                                                                Context.MODE_PRIVATE)
+                                .edit()
+                            preferences.putString("username", registerInfo.user_name)
+                            preferences.apply()
+                            // Go to Login
                             startActivity(Intent(this, LoginActivity::class.java))
-                            val nameToShow = RegNameText.text.toString()
-                            Toast.makeText(applicationContext,"Welcome, $nameToShow! \n Now please sign in",
+                            val nameToShow = registerInfo.first_name
+                            Toast.makeText(applicationContext,"Welcome, $nameToShow! \nNow please sign in",
                                 Toast.LENGTH_LONG).show()
                             finish()
                         }
-                        "user_name_already_exists" -> {
-                            RegUsername.error = getString(R.string.user_taken)
-                        }
-                        "user_email_already_exists" -> {
-                            RegEmail.error = getString(R.string.email_taken)
-                        }
-                        else -> {
-                            Toast.makeText( applicationContext, getString(R.string.internal_error),
-                                Toast.LENGTH_LONG).show()
-                        }
+                        "user_name_already_exists" -> RegUsername.error = getString(R.string.user_taken)
+                        "user_email_already_exists" -> RegEmail.error = getString(R.string.email_taken)
+                        else -> Toast.makeText( applicationContext, getString(R.string.internal_error), Toast.LENGTH_LONG).show()
                     }
                     SignupScreen.alpha = 1F
                     window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
@@ -99,19 +87,6 @@ class SignUpActivity : AppCompatActivity() {
 
             }
         }
-    }
-
-    private fun EditText.watchText() {
-        this.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(editable: Editable?) {
-                SignUpButton.isEnabled = isDataCorrect()
-                if (SignUpButton.isEnabled) SignUpButton.alpha = 1f
-            }
-
-            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
-        })
     }
 
     private fun isDataValid(): Boolean{
