@@ -3,7 +3,6 @@ package com.example.chotuvemobileapp.data.utilities
 import android.content.SharedPreferences
 import com.example.chotuvemobileapp.BuildConfig
 import com.example.chotuvemobileapp.data.services.IAppServerApiService
-import okhttp3.Authenticator
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -22,7 +21,7 @@ object HttpUtilities {
     }
 
     fun buildAuthenticatedClient(preferences: SharedPreferences, url: String = BuildConfig.BASE_URL): IAppServerApiService{
-        val headers = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.HEADERS)
+        val headers = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
         val client = makeBasicClient()
         val token = preferences.getString("token", "")
         val interceptor = Interceptor {

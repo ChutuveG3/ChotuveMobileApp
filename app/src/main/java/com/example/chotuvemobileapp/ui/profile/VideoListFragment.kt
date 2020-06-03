@@ -16,15 +16,14 @@ import kotlinx.android.synthetic.main.fragment_profile_videos.*
 
 class VideoListFragment : Fragment() {
     private var videos = ArrayList<VideoItem>()
-    private var nVideos: Int = 0
     private var user: String? = null
     private var currentPage = 1
+    private var loadedAllVideos = false
     private val pageSize = 10
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            nVideos = it.getInt("videos", 0)
             user = it.getString("user")
         }
     }
@@ -60,11 +59,12 @@ class VideoListFragment : Fragment() {
             object : RecyclerView.OnScrollListener(){
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
-                    if(!recyclerView.canScrollVertically(1)){
+                    if(!recyclerView.canScrollVertically(1) && !loadedAllVideos){
                         currentPage += 1
                         VideoDataSource.getVideosFrom(prefs, currentPage, pageSize, user){
                             videos.addAll(it)
                             recyclerView.adapter!!.notifyItemRangeInserted(recyclerView.adapter!!.itemCount, it.count())
+                            if (it.isEmpty()) loadedAllVideos = true
                         }
                     }
                 }
@@ -74,10 +74,9 @@ class VideoListFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(i: Int, user: String? = null) =
+        fun newInstance(user: String? = null) =
             VideoListFragment().apply {
                 arguments = Bundle().apply {
-                    putInt("videos", i)
                     putString("user", user)
                 }
             }
