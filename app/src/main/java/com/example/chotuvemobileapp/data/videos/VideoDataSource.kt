@@ -34,10 +34,12 @@ object VideoDataSource {
 
     fun getVideosFrom(preferences: SharedPreferences, pageNumber: Int, pageSize: Int, user: String? = null, myCallback: (ArrayList<VideoItem>) -> Unit){
 
-        val retrofit = buildAuthenticatedClient(url = "http://www.mocky.io/v2/5ed021563500007100ff9ae9/", preferences = preferences)
-        val method = if (user == null) retrofit.getAllVideos(pageNumber, pageSize)
-                        else if (user == "Me") retrofit.getMyVideos(pageNumber, pageSize)
-                        else retrofit.getVideosFrom(user, pageNumber, pageSize)
+        val retrofit = buildAuthenticatedClient(preferences = preferences)
+        val method = when (user) {
+            null -> retrofit.getAllVideos(pageNumber, pageSize)
+            "Me" -> retrofit.getMyVideos(pageNumber, pageSize)
+            else -> retrofit.getVideosFrom(user, pageNumber, pageSize)
+        }
         val fail = ArrayList<VideoItem>()
         method.enqueue(object : retrofit2.Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {

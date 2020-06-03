@@ -13,16 +13,17 @@ import java.util.concurrent.TimeUnit
 
 object HttpUtilities {
 
-    private val logging = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
-    private val client = OkHttpClient.Builder()
-        .connectTimeout(2, TimeUnit.MINUTES)
-        .readTimeout(2, TimeUnit.MINUTES)
-        .writeTimeout(2, TimeUnit.MINUTES)
-        .callTimeout(3, TimeUnit.MINUTES)
-        .addInterceptor(logging)
+    private fun makeBasicClient(): OkHttpClient.Builder{
+        return OkHttpClient.Builder()
+            .connectTimeout(2, TimeUnit.MINUTES)
+            .readTimeout(2, TimeUnit.MINUTES)
+            .writeTimeout(2, TimeUnit.MINUTES)
+            .callTimeout(3, TimeUnit.MINUTES)
+    }
 
     fun buildAuthenticatedClient(preferences: SharedPreferences, url: String = BuildConfig.BASE_URL): IAppServerApiService{
-
+        val headers = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+        val client = makeBasicClient()
         val token = preferences.getString("token", "")
         val interceptor = Interceptor {
             val original = it.request()
@@ -31,7 +32,8 @@ object HttpUtilities {
         }
 
         val builtClient = client.authenticator(TokenAuthenticator(preferences))
-            .addInterceptor(interceptor).build()
+            .addInterceptor(interceptor)
+            .addInterceptor(headers).build()
 
         return Retrofit.Builder().baseUrl(url)
             .addConverterFactory(GsonConverterFactory.create())
@@ -39,8 +41,10 @@ object HttpUtilities {
     }
 
     fun buildClient(url: String = BuildConfig.BASE_URL): IAppServerApiService{
+        val client = makeBasicClient()
+        val body = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
         return Retrofit.Builder().baseUrl(url)
             .addConverterFactory(GsonConverterFactory.create())
-            .client(client.build()).build().create(IAppServerApiService::class.java)
+            .client(client.addInterceptor(body).build()).build().create(IAppServerApiService::class.java)
     }
 }

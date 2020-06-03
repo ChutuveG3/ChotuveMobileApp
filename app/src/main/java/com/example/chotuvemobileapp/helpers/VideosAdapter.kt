@@ -39,10 +39,10 @@ class VideosAdapter(private val mVideos: List<VideoItem>) : RecyclerView.Adapter
         val video = mVideos[position]
         holder.title.text = video.title
         holder.user.text = video.user
-        val dateToDisplay = LocalDateTime.parse(video.date, DateTimeFormatter.ofPattern("dd/MM/yyyy'T'HH:mm:ss"))
+        val dateToDisplay = LocalDateTime.parse(video.date, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"))
             .format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
         holder.date.text = dateToDisplay
-        Glide.with(holder.itemView.context).load(Uri.parse(video.url)).into(holder.videoThumbnail)
+        Glide.with(holder.itemView.context).load(Uri.parse(video.url)).centerCrop().into(holder.videoThumbnail)
         holder.itemView.setOnClickListener {
             val intent = Intent(it.context, PlayVideoActivity::class.java)
             intent.putExtra("videoTitle", video.title)

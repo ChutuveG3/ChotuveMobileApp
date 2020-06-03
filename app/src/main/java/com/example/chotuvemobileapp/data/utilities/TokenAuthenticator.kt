@@ -14,7 +14,7 @@ class TokenAuthenticator(private val preferences: SharedPreferences) : Authentic
         val updatedToken = getUpdatedToken()
         if (updatedToken != null) {
             preferences.edit().putString("token", updatedToken).apply()
-            return response.request.newBuilder().addHeader("authorization", updatedToken).build()
+            return response.request.newBuilder().removeHeader("authorization").addHeader("authorization", updatedToken).build()
         }
         return null
     }

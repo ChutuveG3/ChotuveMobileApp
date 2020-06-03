@@ -18,6 +18,7 @@ class VideoListFragment : Fragment() {
     private var videos = ArrayList<VideoItem>()
     private var user: String? = null
     private var currentPage = 1
+    private var loadedAllVideos = false
     private val pageSize = 10
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,11 +59,12 @@ class VideoListFragment : Fragment() {
             object : RecyclerView.OnScrollListener(){
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
-                    if(!recyclerView.canScrollVertically(1)){
+                    if(!recyclerView.canScrollVertically(1) && !loadedAllVideos){
                         currentPage += 1
                         VideoDataSource.getVideosFrom(prefs, currentPage, pageSize, user){
                             videos.addAll(it)
                             recyclerView.adapter!!.notifyItemRangeInserted(recyclerView.adapter!!.itemCount, it.count())
+                            if (it.isEmpty()) loadedAllVideos = true
                         }
                     }
                 }

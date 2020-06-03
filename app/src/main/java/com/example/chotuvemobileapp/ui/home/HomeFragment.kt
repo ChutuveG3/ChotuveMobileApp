@@ -34,7 +34,7 @@ class HomeFragment : Fragment() {
             return@setOnCloseListener false
         }
 
-        childFragmentManager.beginTransaction().replace(R.id.HomeVideosFragment, VideoListFragment.newInstance(8)).commit()
+        childFragmentManager.beginTransaction().replace(R.id.HomeVideosFragment, VideoListFragment.newInstance()).commit()
     }
 
 
