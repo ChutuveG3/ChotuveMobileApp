@@ -12,6 +12,8 @@ import com.bumptech.glide.Glide
 import com.example.chotuvemobileapp.PlayVideoActivity
 import com.example.chotuvemobileapp.R
 import com.example.chotuvemobileapp.entities.VideoItem
+import com.example.chotuvemobileapp.helpers.Utilities.DATE_FORMAT_LONG
+import com.example.chotuvemobileapp.helpers.Utilities.DATE_FORMAT_SHORT
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -39,8 +41,8 @@ class VideosAdapter(private val mVideos: List<VideoItem>) : RecyclerView.Adapter
         val video = mVideos[position]
         holder.title.text = video.title
         holder.user.text = video.user
-        val dateToDisplay = LocalDateTime.parse(video.date, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss"))
-            .format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
+        val dateToDisplay = LocalDateTime.parse(video.date, DateTimeFormatter.ofPattern(DATE_FORMAT_LONG))
+            .format(DateTimeFormatter.ofPattern(DATE_FORMAT_SHORT))
         holder.date.text = dateToDisplay
         Glide.with(holder.itemView.context).load(Uri.parse(video.url)).centerCrop().into(holder.videoThumbnail)
         holder.itemView.setOnClickListener {

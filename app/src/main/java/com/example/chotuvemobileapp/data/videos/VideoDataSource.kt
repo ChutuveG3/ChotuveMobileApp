@@ -21,12 +21,8 @@ object VideoDataSource {
             }
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>){
                 when {
-                    response.isSuccessful -> {
-                        myCallback.invoke("Success")
-                    }
-                    else -> {
-                        myCallback.invoke("ServerError")
-                    }
+                    response.isSuccessful -> myCallback.invoke("Success")
+                    else ->  myCallback.invoke("ServerError")
                 }
             }
         })

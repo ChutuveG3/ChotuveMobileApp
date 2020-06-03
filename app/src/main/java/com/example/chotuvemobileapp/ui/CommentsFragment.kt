@@ -36,7 +36,7 @@ class CommentsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val dummyComments = ArrayList<CommentItem>()
         for (i in 1..nComments){
-            dummyComments.add(CommentItem("Soy el usuario $i y opino que este video es una poronga, que quilombo es armar todo esto lpm", "User $i", "$i/$i/$i"))
+            dummyComments.add(CommentItem("Comentario hardcodeado #$i.\nHardcodear es malo", "User $i", "$i/$i/$i"))
         }
         comments = dummyComments
         CommentsRecyclerView.adapter = CommentsAdapter(comments)

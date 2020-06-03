@@ -53,7 +53,11 @@ class HomeActivity : AppCompatActivity() {
                     applicationContext.getSharedPreferences(
                         getString(R.string.shared_preferences_file),
                         Context.MODE_PRIVATE
-                    ).edit().remove("token").apply()
+                    ).edit().remove("token")
+                            .remove("username")
+                            .remove("email")
+                            .remove("password")
+                            .apply()
                     startActivity(Intent(this, HomeActivity::class.java))
                     true
                 }

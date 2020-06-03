@@ -62,14 +62,6 @@ class SignUpActivity : AppCompatActivity() {
                                 Toast.LENGTH_LONG).show()
                         }
                         "Success" -> {
-                            // Persist username
-                            val preferences = applicationContext
-                                .getSharedPreferences(getString(R.string.shared_preferences_file),
-                                                                Context.MODE_PRIVATE)
-                                .edit()
-                            preferences.putString("username", registerInfo.user_name)
-                            preferences.apply()
-                            // Go to Login
                             startActivity(Intent(this, LoginActivity::class.java))
                             val nameToShow = registerInfo.first_name
                             Toast.makeText(applicationContext,"Welcome, $nameToShow! \nNow please sign in",

@@ -13,7 +13,6 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.TextView
 import android.widget.Toast
-import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -21,7 +20,7 @@ import com.example.chotuvemobileapp.R
 import com.example.chotuvemobileapp.data.videos.Video
 import com.example.chotuvemobileapp.data.videos.VideoDataSource
 import com.example.chotuvemobileapp.helpers.PickRequest
-import com.example.chotuvemobileapp.helpers.Utilities.startSelectActivity
+import com.example.chotuvemobileapp.helpers.Utilities.DATE_FORMAT_LONG
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.fragment_add_video.*
@@ -30,7 +29,6 @@ import java.time.format.DateTimeFormatter
 
 
 class AddVideoFragment : Fragment() {
-    private val DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
     private var uri = null as Uri?
     private var fileSize = null as String?
     private lateinit var mStorageRef : StorageReference
@@ -66,22 +64,19 @@ class AddVideoFragment : Fragment() {
                 UploadVideoProgressBar.visibility = View.VISIBLE
                 val prefs = requireActivity().applicationContext.getSharedPreferences(getString(R.string.shared_preferences_file),
                                                                                                         Context.MODE_PRIVATE)
-                val owner = prefs.getString("username", "unknown")
                 val fileName = getFileName(uri!!)
                 val storageReference : StorageReference = mStorageRef.child(fileName)
                 storageReference.putFile(uri!!)
                     .addOnSuccessListener {   // Get a URL to the uploaded content
                         storageReference.downloadUrl.addOnSuccessListener { uri ->
-                            val visibility: String = if (publicRadioButton.isChecked) "public"
-                            else "private"
+                            val visibility: String = if (publicRadioButton.isChecked) "public" else "private"
                             val videoToSend = Video(VideoTitleInputText.text.toString(),
                                 VideoDescriptionInputText.text.toString(),
                                 visibility,
                                 uri.toString(),
                                 nowDateTimeStr(),
                                 fileName,
-                                fileSize!!,
-                                owner!!
+                                fileSize!!
                             )
                             VideoDataSource.addVideo(videoToSend, prefs){
                                 when(it){
@@ -186,7 +181,7 @@ class AddVideoFragment : Fragment() {
 
     private fun nowDateTimeStr() : String {
         val current = LocalDateTime.now()
-        val formatter = DateTimeFormatter.ofPattern(DATE_FORMAT)
+        val formatter = DateTimeFormatter.ofPattern(DATE_FORMAT_LONG)
         return current.format(formatter)
     }
 }
