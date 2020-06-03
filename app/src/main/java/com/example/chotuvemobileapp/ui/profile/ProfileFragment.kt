@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.example.chotuvemobileapp.R
@@ -35,6 +36,12 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         startFragment()
+        ProfilePic.setOnClickListener {
+            findNavController().navigate(R.id.action_nav_gallery_to_fullSizeImageFragment)
+        }
+        BackgroundPic.setOnClickListener {
+            findNavController().navigate(R.id.action_nav_gallery_to_fullSizeImageFragment)
+        }
     }
 
     private inner class ScreenSlidePagerAdapter(fa: Fragment) : FragmentStateAdapter(fa) {

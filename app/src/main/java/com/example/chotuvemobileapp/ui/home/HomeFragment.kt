@@ -36,7 +36,4 @@ class HomeFragment : Fragment() {
 
         childFragmentManager.beginTransaction().replace(R.id.HomeVideosFragment, VideoListFragment.newInstance()).commit()
     }
-
-
-
 }

@@ -19,7 +19,11 @@
         android:id="@+id/nav_gallery"
         android:name="com.example.chotuvemobileapp.ui.profile.ProfileFragment"
         android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_nav_gallery_to_fullSizeImageFragment"
+            app:destination="@id/fullSizeImageFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_slideshow"
@@ -35,4 +39,9 @@
             android:id="@+id/action_addVideoFragment_to_nav_home"
             app:destination="@id/nav_home" />
     </fragment>
+    <fragment
+        android:id="@+id/fullSizeImageFragment"
+        android:name="com.example.chotuvemobileapp.ui.profile.FullSizeImageFragment"
+        android:label="fragment_full_size_image"
+        tools:layout="@layout/fragment_full_size_image" />
 </navigation>

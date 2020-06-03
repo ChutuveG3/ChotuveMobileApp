@@ -54,7 +54,7 @@ class HomeActivity : AppCompatActivity() {
                         getString(R.string.shared_preferences_file),
                         Context.MODE_PRIVATE
                     ).edit().remove("token").apply()
-                    startActivity(Intent(this, LoginActivity::class.java))
+                    startActivity(Intent(this, HomeActivity::class.java))
                     true
                 }
                 else -> {

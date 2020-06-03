@@ -12,11 +12,11 @@ import kotlinx.android.synthetic.main.profile_view_fragment.*
 
 class ProfileDetailsFragment : Fragment() {
 
-    var firstName: String = ""
-    var lastName: String = ""
+    private var firstName: String = ""
+    private var lastName: String = ""
     var email: String = ""
-    var birthDate: String = ""
-    var username = ""
+    private var birthDate: String = ""
+    private var username = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,7 +49,7 @@ class ProfileDetailsFragment : Fragment() {
             intent.putExtra("firstName", firstName)
             intent.putExtra("lastName", lastName)
             intent.putExtra("dateOfBirth", birthDate)
-            intent.putExtra("username", username)
+            intent.putExtra("email", email)
             startActivity(intent)
         }
     }

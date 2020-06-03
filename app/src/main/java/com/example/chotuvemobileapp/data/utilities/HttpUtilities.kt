@@ -3,7 +3,6 @@ package com.example.chotuvemobileapp.data.utilities
 import android.content.SharedPreferences
 import com.example.chotuvemobileapp.BuildConfig
 import com.example.chotuvemobileapp.data.services.IAppServerApiService
-import okhttp3.Authenticator
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

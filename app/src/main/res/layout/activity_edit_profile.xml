@@ -8,10 +8,11 @@
     android:layout_height="match_parent">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appbar"
+        android:id="@+id/EditProfileAppbar"
 
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent">
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
@@ -28,10 +29,11 @@
                 <LinearLayout
                     android:id="@+id/linearLayout"
                     android:layout_width="0dp"
-                    android:layout_height="0dp"
+                    android:layout_height="200dp"
+                    android:layout_marginBottom="50dp"
                     android:background="@color/colorPrimaryDark"
                     android:orientation="vertical"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintBottom_toBottomOf="@id/ProfilePicBorder"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
@@ -45,13 +47,13 @@
                     android:layout_width="0dp"
                     android:layout_height="180dp"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     android:background="#FFFFFF"
                     android:src="@drawable/ic_photo_size_select_actual_grey_78dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/linearLayout"
                     tools:ignore="ContentDescription" />
 
                 <LinearLayout
@@ -77,65 +79,24 @@
                     app:layout_constraintTop_toTopOf="@id/ProfilePicBorder"
                     tools:ignore="ContentDescription" />
 
-                <TextView
-                    android:id="@+id/UsernameTextView"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:fontFamily="@font/fira_sans_condensed_italic"
-                    android:textColor="@android:color/darker_gray"
-                    android:textSize="18sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintLeft_toLeftOf="@id/ProfilePicBorder"
-                    app:layout_constraintStart_toEndOf="@+id/ProfilePicBorder"
-                    app:layout_constraintTop_toBottomOf="@+id/BackgroundPic" />
             </androidx.constraintlayout.widget.ConstraintLayout>
+
         </com.google.android.material.appbar.CollapsingToolbarLayout>
+
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollView2"
         android:layout_width="match_parent"
+
+
         android:layout_height="match_parent"
-
-
         app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/EditProfileScreen"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
-            <TextView
-                android:id="@+id/text_first_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="24dp"
-                android:text="@string/name"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/text_last_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="4dp"
-                android:text="@string/last_name"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/FirstNameEditText" />
-
-            <TextView
-                android:id="@+id/text_date_of_birth"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="4dp"
-                android:text="@string/prompt_dob"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/LastNameEditText" />
 
             <Button
                 android:id="@+id/SaveProfileButton"
@@ -144,64 +105,116 @@
                 android:layout_marginStart="84dp"
                 android:layout_marginTop="32dp"
                 android:layout_marginEnd="84dp"
-                android:layout_marginBottom="32dp"
+                android:layout_marginBottom="48dp"
                 android:backgroundTint="@color/colorPrimaryDark"
                 android:text="@string/save"
                 android:textColor="#FFFFFF"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/DOBEditText" />
+                app:layout_constraintTop_toBottomOf="@+id/EditProfileEmail" />
 
-            <EditText
-                android:id="@+id/FirstNameEditText"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/EditProfileFirstName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="32dp"
-                android:ems="10"
-                android:inputType="textPersonName"
+                app:helperTextEnabled="false"
+                app:hintTextAppearance="@style/TextAppearance.AppCompat.Medium.Inverse"
+                app:hintTextColor="@color/colorPrimaryDark"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_first_name"
-                android:autofillHints=""
-                tools:ignore="LabelFor" />
+                app:layout_constraintTop_toTopOf="parent">
 
-            <EditText
-                android:id="@+id/LastNameEditText"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/FirstNameEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#E6E6E6"
+                    android:hint="@string/name" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/EditProfileLastName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
-                android:layout_marginTop="4dp"
                 android:layout_marginEnd="32dp"
-                android:ems="10"
-                android:inputType="textPersonName"
+                app:helperText="Your first and last name will be displayed in your profile"
+                app:helperTextEnabled="true"
+                app:hintTextAppearance="@style/TextAppearance.AppCompat.Medium.Inverse"
+                app:hintTextColor="@color/colorPrimaryDark"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_last_name"
-                android:autofillHints=""
-                tools:ignore="LabelFor" />
+                app:layout_constraintTop_toBottomOf="@+id/EditProfileFirstName">
 
-            <EditText
-                android:id="@+id/DOBEditText"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/LastNameEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#E6E6E6"
+                    android:hint="@string/prompt_lastname" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/EditProfileDOB"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="32dp"
-                android:ems="10"
-                android:inputType="date"
+                app:hintTextAppearance="@style/TextAppearance.AppCompat.Medium.Inverse"
+                app:hintTextColor="@color/colorPrimaryDark"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_date_of_birth"
-                android:autofillHints=""
-                android:focusableInTouchMode="false"
-                tools:ignore="LabelFor" />
+                app:layout_constraintTop_toBottomOf="@+id/EditProfileLastName">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/DOBEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#E6E6E6"
+                    android:focusable="false"
+                    android:hint="@string/prompt_dob"
+                    android:inputType="date" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/EditProfileEmail"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="32dp"
+                app:hintTextAppearance="@style/TextAppearance.AppCompat.Medium.Inverse"
+                app:hintTextColor="@color/colorPrimaryDark"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/EditProfileDOB">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/EmailEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#E6E6E6"
+                    android:hint="@string/prompt_email"
+                    android:inputType="textEmailAddress" />
+            </com.google.android.material.textfield.TextInputLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.core.widget.NestedScrollView>
+
+    <ProgressBar
+        android:id="@+id/EditProfileProgressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:indeterminateTint="@color/colorPrimaryDark"
+        android:progressTint="@color/colorPrimaryDark" />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
