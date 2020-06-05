@@ -31,7 +31,13 @@ import java.time.format.DateTimeFormatter
 class AddVideoFragment : Fragment() {
     private var uri = null as Uri?
     private var fileSize = null as String?
-    private lateinit var mStorageRef : StorageReference
+    private val mStorageRef by lazy {
+        FirebaseStorage.getInstance().reference
+    }
+    private val prefs by lazy {
+        requireActivity().applicationContext.getSharedPreferences(getString(R.string.shared_preferences_file),
+        Context.MODE_PRIVATE)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,7 +49,6 @@ class AddVideoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mStorageRef = FirebaseStorage.getInstance().reference
 
         AddVideoToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_32dp)
         AddVideoToolbar.setNavigationOnClickListener{
@@ -53,7 +58,6 @@ class AddVideoFragment : Fragment() {
         UploadButton.alpha = .5F
         UploadButton.isEnabled = false
         UploadVideoProgressBar.visibility = View.INVISIBLE
-
         // Public visibility by default.
         publicRadioButton.isChecked = true
 
@@ -62,17 +66,15 @@ class AddVideoFragment : Fragment() {
                 AddVideoScreen.alpha = 0.2F
                 requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 UploadVideoProgressBar.visibility = View.VISIBLE
-                val prefs = requireActivity().applicationContext.getSharedPreferences(getString(R.string.shared_preferences_file),
-                                                                                                        Context.MODE_PRIVATE)
+
                 val fileName = getFileName(uri!!)
                 val storageReference : StorageReference = mStorageRef.child(fileName)
                 storageReference.putFile(uri!!)
                     .addOnSuccessListener {   // Get a URL to the uploaded content
                         storageReference.downloadUrl.addOnSuccessListener { uri ->
-                            val visibility: String = if (publicRadioButton.isChecked) "public" else "private"
                             val videoToSend = Video(VideoTitleInputText.text.toString(),
                                 VideoDescriptionInputText.text.toString(),
-                                visibility,
+                                if (publicRadioButton.isChecked) "public" else "private",
                                 uri.toString(),
                                 nowDateTimeStr(),
                                 fileName,

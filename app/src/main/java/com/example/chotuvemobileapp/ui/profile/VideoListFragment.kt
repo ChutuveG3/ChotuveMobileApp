@@ -20,6 +20,11 @@ class VideoListFragment : Fragment() {
     private var currentPage = 1
     private var loadedAllVideos = false
     private val pageSize = 10
+    private val progressBar by lazy { VideoListProgressBar }
+    private val recyclerView by lazy { VideoListRecyclerView }
+    private val prefs by lazy {
+        requireActivity().getSharedPreferences(getString(R.string.shared_preferences_file), Context.MODE_PRIVATE)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,13 +44,9 @@ class VideoListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val progressBar = VideoListProgressBar
         progressBar.visibility = View.VISIBLE
-        VideoListRecyclerView.alpha = 0.2F
+        recyclerView.alpha = 0.2F
 
-        val prefs = requireActivity().getSharedPreferences(getString(R.string.shared_preferences_file), Context.MODE_PRIVATE)
-
-        val recyclerView = VideoListRecyclerView
         VideoDataSource.getVideosFrom(prefs, currentPage, pageSize, user){
             videos = it
             recyclerView.adapter = VideosAdapter(videos)

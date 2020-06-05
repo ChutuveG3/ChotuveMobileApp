@@ -7,6 +7,7 @@ import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
@@ -23,10 +24,15 @@ class PlayVideoActivity : AppCompatActivity() {
     private var fullscreen = false
     private var backgroundColor = 0
     private val delayTime: Long = 5000
+    private val displayMetrics = DisplayMetrics()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play_video)
+
+        windowManager.defaultDisplay.getMetrics(displayMetrics)
+        VideoWrapper.maxHeight = displayMetrics.heightPixels / 2
 
         VideoTitle.text = intent.getStringExtra("videoTitle")
         VideoAuthor.text = intent.getStringExtra("videoAuthor")
@@ -90,7 +96,9 @@ class PlayVideoActivity : AppCompatActivity() {
 
     private fun setLayout(height: Int){
         Video.layoutParams.height = height
+        VideoWrapper.layoutParams.height = height
         Video.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+        VideoWrapper.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
     }
 
     private fun setFullscreenFlags(){
@@ -102,10 +110,11 @@ class PlayVideoActivity : AppCompatActivity() {
     @SuppressLint("SourceLockedOrientationActivity")
     private fun makeFullScreen(){
         window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
-        setFullscreenFlags()
-        this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         window.decorView.setBackgroundColor(getColor(R.color.black))
         window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
+        setFullscreenFlags()
+        if(Video.width > Video.height) this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        else VideoWrapper.maxHeight = displayMetrics.heightPixels
         setLayout(ViewGroup.LayoutParams.MATCH_PARENT)
         fullscreen = true
     }
@@ -116,6 +125,7 @@ class PlayVideoActivity : AppCompatActivity() {
         window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
         setLayout(ViewGroup.LayoutParams.WRAP_CONTENT)
+        if(Video.height > Video.width) VideoWrapper.maxHeight = displayMetrics.heightPixels / 2
         fullscreen = false
     }
 

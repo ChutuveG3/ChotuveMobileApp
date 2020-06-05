@@ -5,11 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.example.chotuvemobileapp.HomeActivity
 import com.example.chotuvemobileapp.R
 import com.example.chotuvemobileapp.data.users.ProfileInfoDataSource
 import com.example.chotuvemobileapp.ui.CommentsFragment
@@ -24,6 +24,9 @@ class ProfileFragment : Fragment() {
     lateinit var email: String
     lateinit var birthDate: String
     private lateinit var userName: String
+    private val prefs by lazy {
+        requireActivity().applicationContext.getSharedPreferences(getString(R.string.shared_preferences_file), Context.MODE_PRIVATE)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,9 +40,6 @@ class ProfileFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         startFragment()
         ProfilePic.setOnClickListener {
-            findNavController().navigate(R.id.action_nav_gallery_to_fullSizeImageFragment)
-        }
-        BackgroundPic.setOnClickListener {
             findNavController().navigate(R.id.action_nav_gallery_to_fullSizeImageFragment)
         }
     }
@@ -58,13 +58,9 @@ class ProfileFragment : Fragment() {
     private fun startFragment() {
         ProfileAppbar.alpha = .2F
         ProfileScrollView.alpha = .2F
-        requireActivity().window.setFlags(
-            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-        )
+        ProfilePic.isClickable = false
         ProfileProgressBar.visibility = View.VISIBLE
 
-        val prefs = requireActivity().applicationContext.getSharedPreferences(getString(R.string.shared_preferences_file), Context.MODE_PRIVATE)
         mPager = ProfileViewPager
         ProfileInfoDataSource.getProfileInfo(preferences = prefs) {
             if (it != null) {
@@ -94,8 +90,12 @@ class ProfileFragment : Fragment() {
             }.attach()
             ProfileAppbar.alpha = 1F
             ProfileScrollView.alpha = 1F
-            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            ProfilePic.isClickable = true
             ProfileProgressBar.visibility = View.GONE
+            openDrawer.setOnClickListener {
+                val home=  activity as HomeActivity
+                home.openDrawer()
+            }
         }
     }
 
