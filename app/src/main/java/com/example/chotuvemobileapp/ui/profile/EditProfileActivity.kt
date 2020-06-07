@@ -16,6 +16,7 @@ import com.example.chotuvemobileapp.helpers.PickRequest
 import com.example.chotuvemobileapp.helpers.Utilities.createDatePicker
 import com.example.chotuvemobileapp.helpers.Utilities.startSelectActivity
 import com.example.chotuvemobileapp.helpers.Utilities.watchText
+import com.example.chotuvemobileapp.viewmodels.ProfileViewModel
 import kotlinx.android.synthetic.main.activity_edit_profile.*
 
 class EditProfileActivity : AppCompatActivity() {
@@ -23,10 +24,15 @@ class EditProfileActivity : AppCompatActivity() {
         applicationContext.getSharedPreferences(getString(R.string.shared_preferences_file), Context.MODE_PRIVATE)
     }
     private val userInfo by lazy {
-        UserForModification(FirstNameEditText.text.toString(),
-        LastNameEditText.text.toString(),
-        EmailEditText.text.toString(),
-        DOBEditText.text.toString())
+        UserForModification(
+            FirstNameEditText.text.toString(),
+            LastNameEditText.text.toString(),
+            EmailEditText.text.toString(),
+            DOBEditText.text.toString()
+        )
+    }
+    private val viewModel by lazy {
+        ProfileViewModel.getInstance(prefs)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,10 +44,10 @@ class EditProfileActivity : AppCompatActivity() {
         EmailEditText.watchText(SaveProfileButton, this::isDataValid)
         DOBEditText.watchText(SaveProfileButton, this::isDataValid)
 
-        FirstNameEditText.setText(intent.getStringExtra("firstName"))
-        LastNameEditText.setText(intent.getStringExtra("lastName"))
-        DOBEditText.setText(intent.getStringExtra("dateOfBirth"))
-        EmailEditText.setText(intent.getStringExtra("email"))
+        FirstNameEditText.setText(viewModel.getUserInfo().value!!.first_name)
+        LastNameEditText.setText(viewModel.getUserInfo().value!!.last_name)
+        DOBEditText.setText(viewModel.getUserInfo().value!!.birthdate)
+        EmailEditText.setText(viewModel.getUserInfo().value!!.email)
 
         createDatePicker(DOBEditText, this)
 
@@ -53,25 +59,38 @@ class EditProfileActivity : AppCompatActivity() {
 
         SaveProfileButton.setOnClickListener {
             if (isEmailValid()) {
-                EditProfileProgressBar.visibility = View.VISIBLE
-                EditProfileAppbar.alpha = .2F
-                EditProfileScreen.alpha = .2F
-                window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-
+                startLoadingScreen()
                 ProfileInfoDataSource.modifyProfileInfo(prefs, userInfo){
                     when(it){
-                        "Success" -> finish()
+                        "Success" -> {
+                            viewModel.updateUserInfo(userInfo.first_name, userInfo.last_name, userInfo.birthdate, userInfo.email)
+                            finish()
+                        }
                         "EmailInvalid" -> EditProfileEmail.error = getString(R.string.email_taken)
                         "Failure" -> Toast.makeText(applicationContext, getString(R.string.request_failure), Toast.LENGTH_LONG).show()
                         else -> Toast.makeText(applicationContext, getString(R.string.internal_error), Toast.LENGTH_LONG).show()
                     }
-                    EditProfileAppbar.alpha = 1F
-                    EditProfileScreen.alpha = 1F
-                    EditProfileProgressBar.visibility = View.GONE
-                    window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                    stopLoadingScreen()
                 }
             }
         }
+    }
+
+    private fun stopLoadingScreen() {
+        EditProfileAppbar.alpha = 1F
+        EditProfileScreen.alpha = 1F
+        EditProfileProgressBar.visibility = View.GONE
+        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+    }
+
+    private fun startLoadingScreen() {
+        EditProfileProgressBar.visibility = View.VISIBLE
+        EditProfileAppbar.alpha = .2F
+        EditProfileScreen.alpha = .2F
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

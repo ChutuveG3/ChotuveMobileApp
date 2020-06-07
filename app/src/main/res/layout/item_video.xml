@@ -30,6 +30,7 @@
         android:layout_height="50dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
+        android:visibility="gone"
         app:cardCornerRadius="25dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/VideoThumbnail">
@@ -55,7 +56,8 @@
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/VideoUser"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/cardView" />
+        app:layout_constraintStart_toEndOf="@+id/cardView"
+        tools:text="@tools:sample/lorem" />
 
     <TextView
         android:id="@+id/VideoUser"
@@ -64,7 +66,8 @@
         android:layout_marginStart="8dp"
         android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/cardView" />
+        app:layout_constraintStart_toEndOf="@+id/cardView"
+        tools:text="@tools:sample/full_names" />
 
     <TextView
         android:id="@+id/VideoDate"
@@ -73,6 +76,7 @@
         android:layout_marginEnd="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/VideoTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/VideoTitle"
+        tools:text="@tools:sample/date/ddmmyy" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
