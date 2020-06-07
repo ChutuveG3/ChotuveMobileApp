@@ -3,16 +3,11 @@ package com.example.chotuvemobileapp.ui.profile
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import android.view.WindowManager
-import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
-import androidx.fragment.app.FragmentManager
+import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.example.chotuvemobileapp.R
 import com.example.chotuvemobileapp.data.users.ProfileInfoDataSource
@@ -21,26 +16,38 @@ import com.example.chotuvemobileapp.helpers.PickRequest
 import com.example.chotuvemobileapp.helpers.Utilities.createDatePicker
 import com.example.chotuvemobileapp.helpers.Utilities.startSelectActivity
 import com.example.chotuvemobileapp.helpers.Utilities.watchText
+import com.example.chotuvemobileapp.viewmodels.ProfileViewModel
 import kotlinx.android.synthetic.main.activity_edit_profile.*
-import kotlinx.android.synthetic.main.activity_sign_up.*
 
 class EditProfileActivity : AppCompatActivity() {
+    private val prefs by lazy {
+        applicationContext.getSharedPreferences(getString(R.string.shared_preferences_file), Context.MODE_PRIVATE)
+    }
+    private val userInfo by lazy {
+        UserForModification(
+            FirstNameEditText.text.toString(),
+            LastNameEditText.text.toString(),
+            EmailEditText.text.toString(),
+            DOBEditText.text.toString()
+        )
+    }
+    private val viewModel by lazy {
+        ProfileViewModel.getInstance(prefs)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
-
-        val prefs = applicationContext.getSharedPreferences(getString(R.string.shared_preferences_file), Context.MODE_PRIVATE)
 
         FirstNameEditText.watchText(SaveProfileButton, this::isDataValid)
         LastNameEditText.watchText(SaveProfileButton, this::isDataValid)
         EmailEditText.watchText(SaveProfileButton, this::isDataValid)
         DOBEditText.watchText(SaveProfileButton, this::isDataValid)
 
-        FirstNameEditText.setText(intent.getStringExtra("firstName"))
-        LastNameEditText.setText(intent.getStringExtra("lastName"))
-        DOBEditText.setText(intent.getStringExtra("dateOfBirth"))
-        EmailEditText.setText(intent.getStringExtra("email"))
+        FirstNameEditText.setText(viewModel.getUserInfo().value!!.first_name)
+        LastNameEditText.setText(viewModel.getUserInfo().value!!.last_name)
+        DOBEditText.setText(viewModel.getUserInfo().value!!.birthdate)
+        EmailEditText.setText(viewModel.getUserInfo().value!!.email)
 
         createDatePicker(DOBEditText, this)
 
@@ -50,36 +57,40 @@ class EditProfileActivity : AppCompatActivity() {
             startSelectActivity(this, "image/*", "Select Pic", PickRequest.ProfilePic)
         }
 
-        BackgroundPic.setOnClickListener {
-            startSelectActivity(this, "image/*", "Select Pic", PickRequest.BackgroundPic)
-        }
-
         SaveProfileButton.setOnClickListener {
             if (isEmailValid()) {
-                EditProfileProgressBar.visibility = View.VISIBLE
-                EditProfileAppbar.alpha = .2F
-                EditProfileScreen.alpha = .2F
-                window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                val userInfo = UserForModification(FirstNameEditText.text.toString(),
-                                                    LastNameEditText.text.toString(),
-                                                    EmailEditText.text.toString(),
-                                                    DOBEditText.text.toString())
+                startLoadingScreen()
                 ProfileInfoDataSource.modifyProfileInfo(prefs, userInfo){
                     when(it){
-                        "Success" -> finish()
+                        "Success" -> {
+                            viewModel.updateUserInfo(userInfo.first_name, userInfo.last_name, userInfo.birthdate, userInfo.email)
+                            finish()
+                        }
                         "EmailInvalid" -> EditProfileEmail.error = getString(R.string.email_taken)
                         "Failure" -> Toast.makeText(applicationContext, getString(R.string.request_failure), Toast.LENGTH_LONG).show()
                         else -> Toast.makeText(applicationContext, getString(R.string.internal_error), Toast.LENGTH_LONG).show()
                     }
-                    EditProfileAppbar.alpha = 1F
-                    EditProfileScreen.alpha = 1F
-                    EditProfileProgressBar.visibility = View.GONE
-                    window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                    stopLoadingScreen()
                 }
-
             }
         }
+    }
 
+    private fun stopLoadingScreen() {
+        EditProfileAppbar.alpha = 1F
+        EditProfileScreen.alpha = 1F
+        EditProfileProgressBar.visibility = View.GONE
+        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+    }
+
+    private fun startLoadingScreen() {
+        EditProfileProgressBar.visibility = View.VISIBLE
+        EditProfileAppbar.alpha = .2F
+        EditProfileScreen.alpha = .2F
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -88,12 +99,6 @@ class EditProfileActivity : AppCompatActivity() {
             if (resultCode == Activity.RESULT_OK){
                 val uri = data!!.data
                 Glide.with(applicationContext).load(uri).centerCrop().into(ProfilePic)
-            }
-        }
-        else if (requestCode == PickRequest.BackgroundPic.value){
-            if (resultCode == Activity.RESULT_OK){
-                val uri = data!!.data
-                Glide.with(applicationContext).load(uri).centerCrop().into(BackgroundPic)
             }
         }
     }

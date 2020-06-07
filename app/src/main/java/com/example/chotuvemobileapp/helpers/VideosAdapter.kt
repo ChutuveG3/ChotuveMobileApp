@@ -33,9 +33,7 @@ class VideosAdapter(private val mVideos: List<VideoItem>) : RecyclerView.Adapter
         return ViewHolder(videoView)
     }
 
-    override fun getItemCount(): Int {
-        return mVideos.size
-    }
+    override fun getItemCount() =  mVideos.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val video = mVideos[position]
@@ -45,7 +43,7 @@ class VideosAdapter(private val mVideos: List<VideoItem>) : RecyclerView.Adapter
             .format(DateTimeFormatter.ofPattern(DATE_FORMAT_SHORT))
         holder.date.text = dateToDisplay
         Glide.with(holder.itemView.context).load(Uri.parse(video.url)).centerCrop().into(holder.videoThumbnail)
-        holder.itemView.setOnClickListener {
+        holder.videoThumbnail.setOnClickListener {
             val intent = Intent(it.context, PlayVideoActivity::class.java)
             intent.putExtra("videoTitle", video.title)
             intent.putExtra("videoAuthor", video.user)
