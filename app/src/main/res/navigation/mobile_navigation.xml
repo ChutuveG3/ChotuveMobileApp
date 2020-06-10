@@ -41,4 +41,9 @@
         android:name="com.example.chotuvemobileapp.ui.home.NotificationsFragment"
         android:label="fragment_notifications"
         tools:layout="@layout/fragment_notifications" />
+    <fragment
+        android:id="@+id/nav_messages"
+        android:name="com.example.chotuvemobileapp.ui.home.MessagesFragment"
+        android:label="fragment_messages"
+        tools:layout="@layout/fragment_messages" />
 </navigation>

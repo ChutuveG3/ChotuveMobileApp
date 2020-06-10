@@ -86,6 +86,10 @@ class HomeActivity : AppCompatActivity() {
                     navController.navigate(R.id.nav_notifications)
                     true
                 }
+                R.id.MenuMessages ->{
+                    navController.navigate(R.id.nav_messages)
+                    true
+                }
                 else -> false
             }
         }
