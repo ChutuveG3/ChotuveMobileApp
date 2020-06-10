@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_gravity="center"
+    android:layoutDirection="rtl"
+    >
+    <item
+        android:id="@+id/MenuMessages"
+        android:icon="@drawable/ic_baseline_forum_36"
+        android:title="@string/menu_message_inbox"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/MenuHome"
+        android:icon="@drawable/ic_baseline_home_36"
+        android:title="@string/menu_home"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/MenuAddVideo"
+        android:icon="@drawable/ic_baseline_add_35"
+        android:title="@string/action_upload"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/MenuInbox"
+        android:icon="@drawable/ic_baseline_mail_36"
+        android:title="@string/menu_notifications"
+        android:visible="true"
+        app:showAsAction="ifRoom" />
+</menu>

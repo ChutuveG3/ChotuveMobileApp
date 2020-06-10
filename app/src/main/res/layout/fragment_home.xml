@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:backgroundTint="@color/colorPrimaryDark"
     tools:context=".ui.home.HomeFragment">
+
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/HomeToolbar"
@@ -16,7 +19,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/ic_baseline_menu_36" />
 
     <SearchView
         android:id="@+id/SearchIcon"
@@ -35,43 +39,20 @@
         app:layout_constraintStart_toStartOf="@+id/HomeToolbar"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
-        app:showAsAction="always|collapseActionView" >
+        app:showAsAction="always|collapseActionView">
 
     </SearchView>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/AddVideo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:backgroundTint="@color/colorPrimaryDark"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:rippleColor="#FFFFFF"
-        app:srcCompat="@drawable/ic_add_white_24dp" />
 
     <ImageView
         android:id="@+id/chotuveLogo"
         android:layout_width="136dp"
         android:layout_height="24dp"
-        android:layout_marginStart="2dp"
+        android:layout_marginStart="54dp"
         android:tint="@android:color/white"
         app:layout_constraintBottom_toBottomOf="@+id/HomeToolbar"
-        app:layout_constraintStart_toEndOf="@+id/OpenDrawer"
+        app:layout_constraintStart_toStartOf="@+id/HomeToolbar"
         app:layout_constraintTop_toTopOf="@+id/HomeToolbar"
         app:srcCompat="@drawable/logo"
-        tools:ignore="ContentDescription" />
-
-    <ImageView
-        android:id="@+id/OpenDrawer"
-        android:layout_width="35dp"
-        android:layout_height="44dp"
-        android:layout_marginStart="8dp"
-        android:src="@drawable/ic_baseline_menu_48"
-        app:layout_constraintBottom_toBottomOf="@+id/HomeToolbar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/HomeToolbar"
         tools:ignore="ContentDescription" />
 
     <androidx.fragment.app.FragmentContainerView
