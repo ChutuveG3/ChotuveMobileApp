@@ -16,6 +16,7 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.example.chotuvemobileapp.HomeActivity
 import com.example.chotuvemobileapp.R
 import com.example.chotuvemobileapp.data.videos.Video
 import com.example.chotuvemobileapp.data.videos.VideoDataSource
@@ -50,9 +51,9 @@ class AddVideoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        AddVideoToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_32dp)
         AddVideoToolbar.setNavigationOnClickListener{
-            findNavController().navigate(R.id.action_addVideoFragment_to_nav_home)
+            val home=  activity as HomeActivity
+            home.openDrawer()
         }
 
         UploadButton.alpha = .5F
@@ -87,7 +88,7 @@ class AddVideoFragment : Fragment() {
                                         requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                                         AddVideoScreen.alpha = 1F
                                         Toast.makeText(context, getString(R.string.video_uploaded_message), Toast.LENGTH_LONG).show()
-                                        findNavController().navigate(R.id.action_addVideoFragment_to_nav_home)
+                                        findNavController().navigate(R.id.nav_home)
                                     }
                                     else -> {
                                         fail()

@@ -3,6 +3,7 @@ package com.example.chotuvemobileapp
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -12,6 +13,7 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_home.*
+import kotlinx.android.synthetic.main.content_home.*
 
 class HomeActivity : AppCompatActivity() {
 
@@ -19,6 +21,10 @@ class HomeActivity : AppCompatActivity() {
     private val preferences by lazy {
         applicationContext.getSharedPreferences(getString(R.string.shared_preferences_file), Context.MODE_PRIVATE)
     }
+    private val navController by lazy {
+        findNavController(R.id.nav_host_fragment)
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,7 +39,6 @@ class HomeActivity : AppCompatActivity() {
 
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
-        val navController = findNavController(R.id.nav_host_fragment)
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
@@ -50,12 +55,38 @@ class HomeActivity : AppCompatActivity() {
                     logout()
                     true
                 }
+                R.id.nav_home -> {
+                    drawerLayout.closeDrawer(GravityCompat.START)
+                    navController.navigate(it.itemId)
+                    navView.menu.findItem(it.itemId).isChecked = true
+                    BottomNavMenu.visibility = View.VISIBLE
+                    true
+                }
                 else -> {
                     drawerLayout.closeDrawer(GravityCompat.START)
                     navController.navigate(it.itemId)
                     navView.menu.findItem(it.itemId).isChecked = true
+                    BottomNavMenu.visibility = View.GONE
                     true
                 }
+            }
+        }
+        BottomNavMenu.selectedItemId = R.id.MenuHome
+        BottomNavMenu.setOnNavigationItemSelectedListener {
+            when(it.itemId){
+                R.id.MenuHome -> {
+                    navController.navigate(R.id.nav_home)
+                    true
+                }
+                R.id.MenuAddVideo ->{
+                    navController.navigate(R.id.nav_add_video)
+                    true
+                }
+                R.id.MenuInbox ->{
+                    navController.navigate(R.id.nav_notifications)
+                    true
+                }
+                else -> false
             }
         }
 
@@ -76,8 +107,14 @@ class HomeActivity : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        if (drawer_layout.isDrawerOpen(GravityCompat.START)) drawer_layout.closeDrawer(GravityCompat.START)
-        else super.onBackPressed()
+        when {
+            drawer_layout.isDrawerOpen(GravityCompat.START) -> drawer_layout.closeDrawer(GravityCompat.START)
+            BottomNavMenu.selectedItemId == R.id.MenuHome -> finish()
+            else -> {
+                navController.navigate(R.id.nav_home)
+                BottomNavMenu.selectedItemId = R.id.MenuHome
+            }
+        }
     }
 
     fun openDrawer(){

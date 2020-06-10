@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
 import com.example.chotuvemobileapp.HomeActivity
 import com.example.chotuvemobileapp.R
 import com.example.chotuvemobileapp.ui.profile.VideoListFragment
@@ -23,19 +22,14 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        AddVideo.setOnClickListener{
-            findNavController().navigate(R.id.action_nav_home_to_addVideoFragment)
-        }
         SearchIcon.setOnSearchClickListener {
             chotuveLogo.visibility = View.GONE
-            OpenDrawer.visibility = View.GONE
         }
         SearchIcon.setOnCloseListener {
             chotuveLogo.visibility = View.VISIBLE
-            OpenDrawer.visibility = View.VISIBLE
             return@setOnCloseListener false
         }
-        OpenDrawer.setOnClickListener {
+        HomeToolbar.setNavigationOnClickListener {
             val home=  activity as HomeActivity
             home.openDrawer()
         }
