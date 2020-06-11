@@ -26,8 +26,8 @@ interface IAppServerApiService {
         @Field("password") password: String
     ): Call<ResponseBody>
 
-    @GET("users/me")
-    fun getOwnProfile(): Call<ResponseBody>
+    @GET("users/{user}")
+    fun getOwnProfile(@Path("user") user: String): Call<ResponseBody>
 
     @PUT("users/me")
     fun modifyProfile(@Body userInfo: UserForModification): Call<ResponseBody>

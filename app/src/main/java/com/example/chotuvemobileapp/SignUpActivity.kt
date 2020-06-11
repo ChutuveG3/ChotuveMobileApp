@@ -1,5 +1,6 @@
 package com.example.chotuvemobileapp
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -10,10 +11,15 @@ import com.example.chotuvemobileapp.data.users.LoginDataSource
 import com.example.chotuvemobileapp.data.users.User
 import com.example.chotuvemobileapp.helpers.Utilities.createDatePicker
 import com.example.chotuvemobileapp.helpers.Utilities.watchText
+import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_sign_up.*
 import java.time.LocalDate
 
 class SignUpActivity : AppCompatActivity() {
+
+    private val preferences by lazy {
+        applicationContext.getSharedPreferences(getString(R.string.shared_preferences_file), Context.MODE_PRIVATE)
+    }
 
     private val registerInfo by lazy {
         User(
@@ -53,7 +59,12 @@ class SignUpActivity : AppCompatActivity() {
                 LoginDataSource.addUser(registerInfo){
                     when (it) {
                         "Failure" -> Toast.makeText(applicationContext, getString(R.string.request_failure), Toast.LENGTH_LONG).show()
-                        "Success" -> goToLogin(registerInfo)
+                        "Success" -> {
+                            preferences.edit()
+                                .putString("username", RegUsernameText.text.toString())
+                                .apply()
+                            goToLogin(registerInfo)
+                        }
                         "user_name_already_exists" -> RegUsername.error = getString(R.string.user_taken)
                         "user_email_already_exists" -> RegEmail.error = getString(R.string.email_taken)
                         else -> Toast.makeText( applicationContext, getString(R.string.internal_error), Toast.LENGTH_LONG).show()

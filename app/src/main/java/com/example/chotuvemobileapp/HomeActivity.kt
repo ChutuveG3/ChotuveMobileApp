@@ -97,7 +97,8 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun logout() {
-        preferences.edit().remove("token")
+        preferences.edit()
+            .remove("token")
             .remove("username")
             .remove("email")
             .remove("password")
