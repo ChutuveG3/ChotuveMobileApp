@@ -55,7 +55,7 @@ class LoginActivity : AppCompatActivity() {
             Context.MODE_PRIVATE
         ).edit()
         preferences.putString("token", it)
-        preferences.putString("email", LogInUsername.text.toString())
+        preferences.putString("username", LogInUsername.text.toString())
         preferences.putString("password", LoginPassword.text.toString())
         preferences.apply()
         startActivity(Intent(this, HomeActivity::class.java))

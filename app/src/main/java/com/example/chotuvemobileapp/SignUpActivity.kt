@@ -16,11 +16,6 @@ import kotlinx.android.synthetic.main.activity_sign_up.*
 import java.time.LocalDate
 
 class SignUpActivity : AppCompatActivity() {
-
-    private val preferences by lazy {
-        applicationContext.getSharedPreferences(getString(R.string.shared_preferences_file), Context.MODE_PRIVATE)
-    }
-
     private val registerInfo by lazy {
         User(
             RegNameText.text.toString(),
@@ -60,9 +55,6 @@ class SignUpActivity : AppCompatActivity() {
                     when (it) {
                         "Failure" -> Toast.makeText(applicationContext, getString(R.string.request_failure), Toast.LENGTH_LONG).show()
                         "Success" -> {
-                            preferences.edit()
-                                .putString("username", RegUsernameText.text.toString())
-                                .apply()
                             goToLogin(registerInfo)
                         }
                         "user_name_already_exists" -> RegUsername.error = getString(R.string.user_taken)

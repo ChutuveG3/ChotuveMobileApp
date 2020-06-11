@@ -100,7 +100,6 @@ class HomeActivity : AppCompatActivity() {
         preferences.edit()
             .remove("token")
             .remove("username")
-            .remove("email")
             .remove("password")
             .apply()
         startActivity(Intent(this, HomeActivity::class.java))

@@ -11,11 +11,11 @@ import retrofit2.Response
 
 object LoginDataSource {
 
-    fun login(email: String, password: String, myCallback: (String) -> Unit){
+    fun login(username: String, password: String, myCallback: (String) -> Unit){
 
         val retrofit = buildClient()
 
-        retrofit.loginUser(email, password).enqueue(object : Callback<ResponseBody> {
+        retrofit.loginUser(username, password).enqueue(object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 myCallback.invoke("Failure")
             }
