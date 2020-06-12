@@ -84,9 +84,8 @@ class LoginActivity : AppCompatActivity() {
             PasswordInput.error = getString(R.string.invalid_pass)
             valid = false
         }
-        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(LogInUsername.text.toString()).matches() ||
-            LogInUsername.length() < 5){
-            UsernameInput.error = getString(R.string.invalid_email)
+        if (LogInUsername.length() > 30){
+            UsernameInput.error = getString(R.string.invalid_username)
             valid = false
         }
         return valid

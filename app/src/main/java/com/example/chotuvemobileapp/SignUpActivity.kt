@@ -103,6 +103,10 @@ class SignUpActivity : AppCompatActivity() {
             RegDate.error = getString(R.string.invalid_date)
             valid = false
         }
+        if (RegUsernameText.length() > 30) {
+            RegEmail.error = getString(R.string.invalid_username)
+            valid = false
+        }
         return valid
     }
     private fun isDataCorrect(): Boolean {

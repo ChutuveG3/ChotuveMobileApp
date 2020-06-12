@@ -32,6 +32,7 @@ import java.time.format.DateTimeFormatter
 class AddVideoFragment : Fragment() {
     private var uri = null as Uri?
     private var fileSize = null as String?
+    private var fileName = null as String?
     private val mStorageRef by lazy {
         FirebaseStorage.getInstance().reference
     }
@@ -68,8 +69,7 @@ class AddVideoFragment : Fragment() {
                 requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 UploadVideoProgressBar.visibility = View.VISIBLE
 
-                val fileName = getFileName(uri!!)
-                val storageReference : StorageReference = mStorageRef.child(fileName)
+                val storageReference : StorageReference = mStorageRef.child(fileName!!)
                 storageReference.putFile(uri!!)
                     .addOnSuccessListener {   // Get a URL to the uploaded content
                         storageReference.downloadUrl.addOnSuccessListener { uri ->
@@ -78,7 +78,7 @@ class AddVideoFragment : Fragment() {
                                 if (publicRadioButton.isChecked) "public" else "private",
                                 uri.toString(),
                                 nowDateTimeStr(),
-                                fileName,
+                                fileName!!,
                                 fileSize!!
                             )
                             VideoDataSource.addVideo(videoToSend, prefs){
@@ -125,11 +125,12 @@ class AddVideoFragment : Fragment() {
                 UploadButton.alpha = 1F
                 uri = data!!.data
 
-                fileSize = context?.let { getFileSize(it, uri) }
+                fileSize = context?.let { getFileSize(it, uri!!) }
+                fileName = getFileName(uri!!)
 
                 Glide.with(requireContext()).load(uri).centerCrop().into(SelectFileButton)
 
-                VideoTitleInputText.setText(getFileName(uri!!), TextView.BufferType.EDITABLE)
+                VideoTitleInputText.setText(fileName!!, TextView.BufferType.EDITABLE)
             }
         }
     }
