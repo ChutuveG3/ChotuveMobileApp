@@ -1,8 +1,6 @@
 package com.example.chotuvemobileapp.data.users
 
-import android.content.Context
 import android.content.SharedPreferences
-import com.example.chotuvemobileapp.R
 import com.example.chotuvemobileapp.data.utilities.HttpUtilities.buildAuthenticatedClient
 import com.google.gson.Gson
 import okhttp3.ResponseBody
@@ -16,7 +14,7 @@ object ProfileInfoDataSource {
         val retrofit = buildAuthenticatedClient(preferences)
         val user: String? = preferences.getString("username", "")
 
-        retrofit.getOwnProfile(user!!).enqueue(object : Callback<ResponseBody> {
+        retrofit.getProfile(user!!).enqueue(object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 myCallback.invoke(null)
             }

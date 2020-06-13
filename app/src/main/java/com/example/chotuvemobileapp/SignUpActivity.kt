@@ -54,9 +54,7 @@ class SignUpActivity : AppCompatActivity() {
                 LoginDataSource.addUser(registerInfo){
                     when (it) {
                         "Failure" -> Toast.makeText(applicationContext, getString(R.string.request_failure), Toast.LENGTH_LONG).show()
-                        "Success" -> {
-                            goToLogin(registerInfo)
-                        }
+                        "Success" -> goToLogin(registerInfo)
                         "user_name_already_exists" -> RegUsername.error = getString(R.string.user_taken)
                         "user_email_already_exists" -> RegEmail.error = getString(R.string.email_taken)
                         else -> Toast.makeText( applicationContext, getString(R.string.internal_error), Toast.LENGTH_LONG).show()

@@ -32,7 +32,7 @@ interface IAppServerApiService {
     ): Call<ResponseBody>
 
     @GET("users/{user}")
-    fun getOwnProfile(@Path("user") user: String): Call<ResponseBody>
+    fun getProfile(@Path("user") user: String): Call<ResponseBody>
 
     @PUT("users/me")
     fun modifyProfile(@Body userInfo: UserForModification): Call<ResponseBody>
