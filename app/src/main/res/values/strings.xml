@@ -26,7 +26,6 @@
     <string name="prompt_reenterpw">Re enter password</string>
     <string name="prompt_dob">Date of Birth</string>
     <string name="upload_video">Upload Video</string>
-    <string name="title_activity_home">HomeActivity</string>
     <string name="nav_header_desc">Navigation header</string>
 
     <string name="menu_home">Home</string>
@@ -41,7 +40,6 @@
     <string name="video_uploaded_message">Your video has been successfully uploaded!</string>
     <string name="failed_login">Incorrect username or password</string>
     <string name="shared_preferences_file">CHOTUVE_PREFERENCES</string>
-    <string name="successful_signup">Welcome to chotuve</string>
     <string name="profile_details">Details</string>
     <string name="edit">Edit</string>
     <string name="save">Save</string>
@@ -55,13 +53,8 @@
 
     <string name="menu_message_inbox">Inbox</string>
     <string name="menu_notifications">Notifications</string>
-    <string name="add_video">Upload</string>
 
-    <string name="title_activity_play_video">PlayVideoActivity</string>
-    <string name="add_friend_button">Add Friend</string>
-    <string name="dummy_content">DUMMY\nCONTENT</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="invalid_email">Invalid email</string>
 
 </resources>
