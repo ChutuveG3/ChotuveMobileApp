@@ -1,5 +1,6 @@
 package com.example.chotuvemobileapp
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
@@ -10,11 +11,11 @@ import com.example.chotuvemobileapp.data.users.LoginDataSource
 import com.example.chotuvemobileapp.data.users.User
 import com.example.chotuvemobileapp.helpers.Utilities.createDatePicker
 import com.example.chotuvemobileapp.helpers.Utilities.watchText
+import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_sign_up.*
 import java.time.LocalDate
 
 class SignUpActivity : AppCompatActivity() {
-
     private val registerInfo by lazy {
         User(
             RegNameText.text.toString(),
@@ -98,6 +99,10 @@ class SignUpActivity : AppCompatActivity() {
         }
         if (LocalDate.parse(RegDateText.text.toString()) >= LocalDate.now()){
             RegDate.error = getString(R.string.invalid_date)
+            valid = false
+        }
+        if (RegUsernameText.length() > 30) {
+            RegEmail.error = getString(R.string.invalid_username)
             valid = false
         }
         return valid

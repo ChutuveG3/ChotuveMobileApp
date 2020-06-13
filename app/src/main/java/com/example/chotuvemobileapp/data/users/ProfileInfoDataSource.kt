@@ -12,8 +12,9 @@ object ProfileInfoDataSource {
     fun getProfileInfo(preferences: SharedPreferences, myCallback: (UserInfo?) -> Unit){
 
         val retrofit = buildAuthenticatedClient(preferences)
+        val user: String? = preferences.getString("username", "")
 
-        retrofit.getOwnProfile().enqueue(object : Callback<ResponseBody> {
+        retrofit.getProfile(user!!).enqueue(object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 myCallback.invoke(null)
             }
@@ -34,6 +35,9 @@ object ProfileInfoDataSource {
     fun modifyProfileInfo(preferences: SharedPreferences, userInfo: UserForModification, myCallback: (String) -> Unit){
 
         val retrofit = buildAuthenticatedClient(preferences)
+        // refactor
+//        val user = preferences.getString("username", "")
+//        retrofit.modifyProfile(user, userInfo).enqueue(object : Callback<ResponseBody> {
 
         retrofit.modifyProfile(userInfo).enqueue(object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {

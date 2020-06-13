@@ -20,10 +20,10 @@ class TokenAuthenticator(private val preferences: SharedPreferences) : Authentic
     }
 
     private fun getUpdatedToken(): String?{
-        val email = preferences.getString("email", "")!!
+        val username = preferences.getString("username", "")!!
         val pass = preferences.getString("password", "")!!
         val retrofit = buildClient()
-        val response = retrofit.loginUser(email, pass).execute()
+        val response = retrofit.loginUser(username, pass).execute()
         if (response.isSuccessful){
             val resp = Gson().fromJson(response.body()!!.string(), LoginResponse::class.java)
             return resp.token

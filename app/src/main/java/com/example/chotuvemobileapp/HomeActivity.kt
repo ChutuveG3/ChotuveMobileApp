@@ -57,7 +57,7 @@ class HomeActivity : AppCompatActivity() {
                 }
                 R.id.nav_home -> {
                     drawerLayout.closeDrawer(GravityCompat.START)
-                    navController.navigate(it.itemId)
+                    navController.navigate(getCurrentBottomMenuOption())
                     navView.menu.findItem(it.itemId).isChecked = true
                     BottomNavMenu.visibility = View.VISIBLE
                     true
@@ -97,9 +97,9 @@ class HomeActivity : AppCompatActivity() {
     }
 
     private fun logout() {
-        preferences.edit().remove("token")
+        preferences.edit()
+            .remove("token")
             .remove("username")
-            .remove("email")
             .remove("password")
             .apply()
         startActivity(Intent(this, HomeActivity::class.java))
@@ -113,11 +113,25 @@ class HomeActivity : AppCompatActivity() {
     override fun onBackPressed() {
         when {
             drawer_layout.isDrawerOpen(GravityCompat.START) -> drawer_layout.closeDrawer(GravityCompat.START)
-            BottomNavMenu.selectedItemId == R.id.MenuHome -> finish()
+            navController.currentDestination!!.id == R.id.nav_home -> finish()
+            navController.currentDestination!!.id == R.id.nav_fullsize_image -> navController.navigate(R.id.nav_profile)
+            navController.currentDestination!!.id == R.id.nav_profile || navController.currentDestination!!.id == R.id.nav_slideshow -> {
+                navController.navigate(getCurrentBottomMenuOption())
+                BottomNavMenu.visibility = View.VISIBLE
+            }
             else -> {
                 navController.navigate(R.id.nav_home)
                 BottomNavMenu.selectedItemId = R.id.MenuHome
             }
+        }
+    }
+
+    private fun getCurrentBottomMenuOption() : Int{
+        return when (BottomNavMenu.selectedItemId){
+            R.id.MenuMessages -> R.id.nav_messages
+            R.id.MenuInbox -> R.id.nav_notifications
+            R.id.MenuAddVideo -> R.id.nav_add_video
+            else -> R.id.nav_home
         }
     }
 

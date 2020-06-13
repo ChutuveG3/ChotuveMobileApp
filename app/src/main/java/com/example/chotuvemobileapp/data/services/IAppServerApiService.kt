@@ -19,22 +19,41 @@ interface IAppServerApiService {
         @Body video: Video
     ): Call<ResponseBody>
 
+//    refactor
+//    @POST("users/{user}/videos")
+//    fun uploadVideo(@Path("user") user: String,
+//                    @Body video: Video): Call<ResponseBody>
+
     @FormUrlEncoded
     @POST("users/sessions")
     fun loginUser(
-        @Field("email") email: String,
+        @Field("username") username: String,
         @Field("password") password: String
     ): Call<ResponseBody>
 
-    @GET("users/me")
-    fun getOwnProfile(): Call<ResponseBody>
+    @GET("users/{user}")
+    fun getProfile(@Path("user") user: String): Call<ResponseBody>
 
     @PUT("users/me")
     fun modifyProfile(@Body userInfo: UserForModification): Call<ResponseBody>
 
+    //  refactor
+//    @PUT("users/{user}")
+//    fun modifyProfile(@Path("user") user: String,
+//                      @Body userInfo: UserForModification): Call<ResponseBody>
+
+
+
     @GET("videos")
     fun getAllVideos(@Query("page") pageNumber: Int,
                      @Query("limit") pageSize: Int): Call<ResponseBody>
+
+//  refactor
+    //    @GET("users/{user}/home")
+//    fun getMyVideos(@Path("user") user: String,
+//                    @Query("page") pageNumber: Int,
+//                    @Query("limit") pageSize: Int): Call<ResponseBody>
+
 
     @GET("videos/me")
     fun getMyVideos(@Query("page") pageNumber: Int, @Query("limit") pageSize: Int): Call<ResponseBody>
@@ -43,4 +62,11 @@ interface IAppServerApiService {
     fun getVideosFrom(@Path("user") user: String,
                       @Query("page") pageNumber: Int,
                       @Query("limit") pageSize: Int) : Call<ResponseBody>
+
+//    refactor getMyVideos y getVideosFrom se reemplazan por este:
+//    @GET("users/{user}/videos")
+//    fun getMyVideos(@Path("user") user: String,
+//                    @Query("page") pageNumber: Int,
+//                    @Query("limit") pageSize: Int): Call<ResponseBody>
+
 }

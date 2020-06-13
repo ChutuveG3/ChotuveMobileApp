@@ -18,7 +18,7 @@
         tools:layout="@layout/fragment_profile" >
         <action
             android:id="@+id/action_nav_gallery_to_fullSizeImageFragment"
-            app:destination="@id/fullSizeImageFragment" />
+            app:destination="@id/nav_fullsize_image" />
     </fragment>
 
     <fragment
@@ -32,7 +32,7 @@
         android:label="fragment_add_video"
         tools:layout="@layout/fragment_add_video" />
     <fragment
-        android:id="@+id/fullSizeImageFragment"
+        android:id="@+id/nav_fullsize_image"
         android:name="com.example.chotuvemobileapp.ui.profile.FullSizeImageFragment"
         android:label="fragment_full_size_image"
         tools:layout="@layout/fragment_full_size_image" />
