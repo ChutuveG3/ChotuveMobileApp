@@ -43,7 +43,7 @@ class HomeActivity : AppCompatActivity() {
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_home, R.id.nav_profile, R.id.nav_slideshow
+                R.id.nav_home, R.id.nav_profile, R.id.nav_friends
             ), drawerLayout
         )
 
@@ -115,7 +115,7 @@ class HomeActivity : AppCompatActivity() {
             drawer_layout.isDrawerOpen(GravityCompat.START) -> drawer_layout.closeDrawer(GravityCompat.START)
             navController.currentDestination!!.id == R.id.nav_home -> finish()
             navController.currentDestination!!.id == R.id.nav_fullsize_image -> navController.navigate(R.id.nav_profile)
-            navController.currentDestination!!.id == R.id.nav_profile || navController.currentDestination!!.id == R.id.nav_slideshow -> {
+            navController.currentDestination!!.id == R.id.nav_profile || navController.currentDestination!!.id == R.id.nav_friends -> {
                 navController.navigate(getCurrentBottomMenuOption())
                 BottomNavMenu.visibility = View.VISIBLE
             }

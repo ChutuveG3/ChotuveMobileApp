@@ -52,4 +52,50 @@ object ProfileInfoDataSource {
             }
         })
     }
+
+    fun getFriends(preferences: SharedPreferences, user: String, myCallback: (ArrayList<String>) -> Unit){
+
+        val fail = ArrayList<String>()
+        val retrofit = buildAuthenticatedClient(preferences)
+
+        retrofit.getFriends(user).enqueue(object : Callback<ResponseBody> {
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                myCallback.invoke(fail)
+            }
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>){
+                when {
+                    response.isSuccessful -> {
+                        val resp = Gson().fromJson(response.body()!!.string(), Friends::class.java)
+                        myCallback.invoke(resp.friends)
+                    }
+                    else -> {
+                        myCallback.invoke(fail)
+                    }
+                }
+            }
+        })
+    }
+
+    fun getPendingFriends(preferences: SharedPreferences, user: String, myCallback: (ArrayList<String>) -> Unit){
+
+        val fail = ArrayList<String>()
+        val retrofit = buildAuthenticatedClient(preferences)
+
+        retrofit.getPendingFriends(user).enqueue(object : Callback<ResponseBody> {
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                myCallback.invoke(fail)
+            }
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>){
+                when {
+                    response.isSuccessful -> {
+                        val resp = Gson().fromJson(response.body()!!.string(), PendingFriends::class.java)
+                        myCallback.invoke(resp.friend_requests)
+                    }
+                    else -> {
+                        myCallback.invoke(fail)
+                    }
+                }
+            }
+        })
+    }
 }
