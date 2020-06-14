@@ -30,7 +30,6 @@
 
     <string name="menu_home">Home</string>
     <string name="menu_profile">Profile</string>
-    <string name="menu_gallery">Gallery</string>
     <string name="menu_slideshow">Slideshow</string>
     <string name="menu_logout">Log out</string>
 
@@ -40,7 +39,11 @@
     <string name="video_uploaded_message">Your video has been successfully uploaded!</string>
     <string name="failed_login">Incorrect username or password</string>
     <string name="shared_preferences_file">CHOTUVE_PREFERENCES</string>
+
     <string name="profile_details">Details</string>
+    <string name="profile_friends">Friends</string>
+    <string name="friends_pending">Pending</string>
+
     <string name="edit">Edit</string>
     <string name="save">Save</string>
     <string name="video_description">Description</string>
@@ -56,5 +59,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="invalid_email">Invalid email</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

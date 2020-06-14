@@ -68,5 +68,9 @@ interface IAppServerApiService {
 //    fun getMyVideos(@Path("user") user: String,
 //                    @Query("page") pageNumber: Int,
 //                    @Query("limit") pageSize: Int): Call<ResponseBody>
+    @GET("users/{user}/friends")
+    fun getFriends(@Path("user") user: String) : Call<ResponseBody>
 
+    @GET("users/{user}/friends/pending")
+    fun getPendingFriends(@Path("user") user: String) : Call<ResponseBody>
 }
