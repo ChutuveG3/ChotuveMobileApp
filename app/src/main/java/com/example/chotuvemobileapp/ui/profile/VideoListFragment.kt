@@ -19,7 +19,7 @@ class VideoListFragment : Fragment() {
     private var user: String? = null
     private var currentPage = 1
     private var loadedAllVideos = false
-    private val pageSize = 10
+    private val pageSize = 20
     private val progressBar by lazy { VideoListProgressBar }
     private val recyclerView by lazy { VideoListRecyclerView }
     private val prefs by lazy {
@@ -48,8 +48,8 @@ class VideoListFragment : Fragment() {
         recyclerView.alpha = 0.2F
 
         VideoDataSource.getVideosFrom(prefs, currentPage, pageSize, user){
-            videos = it
-            recyclerView.adapter = VideosAdapter(videos)
+            videos.addAll(it)
+            recyclerView.adapter!!.notifyItemRangeInserted(recyclerView.adapter!!.itemCount, it.count())
             progressBar.visibility = View.GONE
             recyclerView.alpha = 1F
         }

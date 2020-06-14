@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.chotuvemobileapp.HomeActivity
@@ -35,8 +34,7 @@ class FriendsFragment : Fragment() {
             home.openDrawer()
         }
         FriendsToolbar.title = prefs.getString("username", "")
-        FriendsToolbar.setTitleTextColor(getColor(requireContext(), R.color.white))
-        FriendsViewPager.adapter = ScreenSlidePagerAdapter(this)
+        FriendsViewPager.adapter = FriendsPagerAdapter(this)
         TabLayoutMediator(FriendsTabLayout, FriendsViewPager) {tab, position ->
             when (position){
                 0 -> tab.text = getString(R.string.profile_friends)
@@ -45,7 +43,7 @@ class FriendsFragment : Fragment() {
         }.attach()
     }
 
-    private inner class ScreenSlidePagerAdapter(fa: Fragment) : FragmentStateAdapter(fa) {
+    private inner class FriendsPagerAdapter(fa: Fragment) : FragmentStateAdapter(fa) {
         override fun getItemCount(): Int = 2
         override fun createFragment(position: Int): Fragment {
             return when(position){

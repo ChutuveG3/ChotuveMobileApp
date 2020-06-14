@@ -57,16 +57,16 @@ class HomeActivity : AppCompatActivity() {
                 }
                 R.id.nav_home -> {
                     drawerLayout.closeDrawer(GravityCompat.START)
+                    BottomNavMenu.visibility = View.VISIBLE
                     navController.navigate(getCurrentBottomMenuOption())
                     navView.menu.findItem(it.itemId).isChecked = true
-                    BottomNavMenu.visibility = View.VISIBLE
                     true
                 }
                 else -> {
+                    BottomNavMenu.visibility = View.GONE
                     drawerLayout.closeDrawer(GravityCompat.START)
                     navController.navigate(it.itemId)
                     navView.menu.findItem(it.itemId).isChecked = true
-                    BottomNavMenu.visibility = View.GONE
                     true
                 }
             }

@@ -19,7 +19,7 @@
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/FriendsViewPager"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -35,5 +35,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:navigationIcon="@drawable/ic_baseline_menu_36" />
+        app:navigationIcon="@drawable/ic_baseline_menu_36"
+        app:titleTextColor="@color/white" />
 </androidx.constraintlayout.widget.ConstraintLayout>

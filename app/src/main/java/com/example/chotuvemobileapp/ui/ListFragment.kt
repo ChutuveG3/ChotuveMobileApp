@@ -43,13 +43,13 @@ class ListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         showLoadingScreen()
         val variableToObserve = if (type == "friends") friendsViewModel.friends else friendsViewModel.pendingFriends
-        variableToObserve.observe(viewLifecycleOwner, Observer {
-            users = it
-            ListRecyclerView.adapter = FriendsAdapter(users)
-            quitLoadingScreen()
-        })
         ListRecyclerView.adapter = FriendsAdapter(users)
         ListRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        variableToObserve.observe(viewLifecycleOwner, Observer {
+            users.addAll(it)
+            ListRecyclerView.adapter!!.notifyItemRangeInserted(0, it.count())
+            quitLoadingScreen()
+        })
     }
 
     private fun showLoadingScreen() {
