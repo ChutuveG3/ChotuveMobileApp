@@ -22,6 +22,7 @@ import com.example.chotuvemobileapp.data.videos.Video
 import com.example.chotuvemobileapp.data.videos.VideoDataSource
 import com.example.chotuvemobileapp.helpers.PickRequest
 import com.example.chotuvemobileapp.helpers.Utilities.DATE_FORMAT_LONG
+import com.example.chotuvemobileapp.helpers.Utilities.getFileName
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.fragment_add_video.*
@@ -126,37 +127,13 @@ class AddVideoFragment : Fragment() {
                 uri = data!!.data
 
                 fileSize = context?.let { getFileSize(it, uri!!) }
-                fileName = getFileName(uri!!)
+                fileName = getFileName(uri!!, requireActivity().contentResolver)
 
                 Glide.with(requireContext()).load(uri).centerCrop().into(SelectFileButton)
 
                 VideoTitleInputText.setText(fileName!!, TextView.BufferType.EDITABLE)
             }
         }
-    }
-
-    @SuppressLint("Recycle")
-    private fun getFileName(uri: Uri) : String {
-        var result = null as String?
-        if (uri.scheme.equals("content")) {
-            val cursor = requireActivity().contentResolver.query(uri, null, null, null, null)
-            try {
-                if (cursor != null && cursor.moveToFirst()) {
-                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
-                }
-            } finally {
-                cursor!!.close()
-            }
-        }
-
-        if (result == null) {
-            result = uri.path
-            val cut = result!!.lastIndexOf('/')
-            if (cut != -1) {
-                result = result.substring(cut + 1)
-            }
-        }
-        return result
     }
 
     private  fun fail(){

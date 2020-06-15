@@ -34,13 +34,9 @@ interface IAppServerApiService {
     @GET("users/{user}")
     fun getProfile(@Path("user") user: String): Call<ResponseBody>
 
-    @PUT("users/me")
-    fun modifyProfile(@Body userInfo: UserForModification): Call<ResponseBody>
-
-    //  refactor
-//    @PUT("users/{user}")
-//    fun modifyProfile(@Path("user") user: String,
-//                      @Body userInfo: UserForModification): Call<ResponseBody>
+    @PUT("users/{user}")
+    fun modifyProfile(@Path("user") user: String,
+                      @Body userInfo: UserForModification): Call<ResponseBody>
 
 
 

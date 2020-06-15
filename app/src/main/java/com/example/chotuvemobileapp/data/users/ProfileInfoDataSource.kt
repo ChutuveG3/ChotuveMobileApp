@@ -34,11 +34,10 @@ object ProfileInfoDataSource {
     fun modifyProfileInfo(preferences: SharedPreferences, userInfo: UserForModification, myCallback: (String) -> Unit){
 
         val retrofit = buildAuthenticatedClient(preferences)
-        // refactor
-//        val user = preferences.getString("username", "")
-//        retrofit.modifyProfile(user, userInfo).enqueue(object : Callback<ResponseBody> {
 
-        retrofit.modifyProfile(userInfo).enqueue(object : Callback<ResponseBody> {
+        val user = preferences.getString("username", "")!!
+
+        retrofit.modifyProfile(user, userInfo).enqueue(object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 myCallback.invoke("Failure")
             }

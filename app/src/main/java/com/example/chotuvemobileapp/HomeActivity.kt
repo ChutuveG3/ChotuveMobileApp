@@ -108,6 +108,7 @@ class HomeActivity : AppCompatActivity() {
             .remove("username")
             .remove("password")
             .apply()
+        finish()
         startActivity(Intent(this, HomeActivity::class.java))
     }
 
@@ -120,7 +121,6 @@ class HomeActivity : AppCompatActivity() {
         when {
             drawer_layout.isDrawerOpen(GravityCompat.START) -> drawer_layout.closeDrawer(GravityCompat.START)
             navController.currentDestination!!.id == R.id.nav_home -> finish()
-            navController.currentDestination!!.id == R.id.nav_fullsize_image -> super.onBackPressed()
             navController.currentDestination!!.id == R.id.nav_profile || navController.currentDestination!!.id == R.id.nav_friends -> {
                 navController.navigate(getCurrentBottomMenuOption())
                 BottomNavMenu.visibility = View.VISIBLE

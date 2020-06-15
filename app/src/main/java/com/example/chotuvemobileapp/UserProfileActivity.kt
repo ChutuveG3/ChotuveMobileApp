@@ -1,6 +1,8 @@
 package com.example.chotuvemobileapp
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -9,6 +11,9 @@ import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.bumptech.glide.Glide
+import com.example.chotuvemobileapp.helpers.Utilities
+import com.example.chotuvemobileapp.ui.profile.FullSizeImageActivity
 import com.example.chotuvemobileapp.ui.profile.ProfileDetailsFragment
 import com.example.chotuvemobileapp.ui.profile.VideoListFragment
 import com.example.chotuvemobileapp.viewmodels.UserProfileViewModel
@@ -45,7 +50,13 @@ class UserProfileActivity : AppCompatActivity() {
                         else -> tab.text = getString(R.string.videos)
                     }
                 }.attach()
+                if (it.profile_img_url != null) Glide.with(this).load(Uri.parse(it.profile_img_url)).centerCrop().into(ProfilePic)
                 quitLoadingScreen()
+                ProfilePic.setOnClickListener {_ ->
+                    val intent = Intent(applicationContext, FullSizeImageActivity::class.java)
+                    intent.putExtra(Utilities.PIC_URL, it.profile_img_url)
+                    startActivity(intent)
+                }
             }
         })
         AddFriendButton.setImageDrawable(getDrawable(R.drawable.ic_account_plus))
@@ -55,7 +66,7 @@ class UserProfileActivity : AppCompatActivity() {
         viewModel.pendingFriends.observe(this, Observer {
             if (it.contains(username)) AddFriendButton.setImageDrawable(getDrawable(R.drawable.ic_account_clock))
         })
-        if (username == prefs.getString("username", "")!!) AddFriendButton.visibility = View.GONE
+        if (username == prefs.getString(Utilities.USERNAME, "")!!) AddFriendButton.visibility = View.GONE
         openDrawer.setOnClickListener {
             super.onBackPressed()
         }
@@ -70,8 +81,7 @@ class UserProfileActivity : AppCompatActivity() {
                     viewModel.userInfo.value!!.last_name,
                     viewModel.userInfo.value!!.email,
                     viewModel.userInfo.value!!.birthdate,
-                    username, false
-                )
+                    username)
                 else -> VideoListFragment.newInstance(username)
             }
         }
