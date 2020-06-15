@@ -1,6 +1,5 @@
 package com.example.chotuvemobileapp.ui.profile
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -26,7 +25,6 @@ class ProfileDetailsFragment : Fragment() {
             email = it.getString("email", "")
             birthDate = it.getString("birthDate", "")
             username = it.getString("username", "")
-            ownProfile = it.getBoolean("own")
         }
     }
 
@@ -45,18 +43,11 @@ class ProfileDetailsFragment : Fragment() {
         LastNameText.text = lastName
         EmailText.text = email
         DOBText.text = birthDate
-        GoToEditProfileButton.visibility = View.GONE
-        if (ownProfile) {
-            GoToEditProfileButton.visibility = View.VISIBLE
-            GoToEditProfileButton.setOnClickListener {
-                startActivity(Intent(context, EditProfileActivity::class.java))
-            }
-        }
     }
 
     companion object {
         @JvmStatic
-        fun newInstance(firstName: String, lastName: String, email: String, birthDate: String, username: String, own: Boolean) =
+        fun newInstance(firstName: String, lastName: String, email: String, birthDate: String, username: String) =
             ProfileDetailsFragment().apply {
                 arguments = Bundle().apply {
                     putString("firstName", firstName)
@@ -64,7 +55,6 @@ class ProfileDetailsFragment : Fragment() {
                     putString("email", email)
                     putString("birthDate", birthDate)
                     putString("username", username)
-                    putBoolean("own", own)
                 }
             }
     }

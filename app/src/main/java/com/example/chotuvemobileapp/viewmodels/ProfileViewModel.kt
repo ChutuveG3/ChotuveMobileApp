@@ -7,8 +7,9 @@ import androidx.lifecycle.ViewModel
 import com.example.chotuvemobileapp.data.users.ProfileInfoDataSource
 import com.example.chotuvemobileapp.data.users.UserInfo
 
-class ProfileViewModel(private val prefs: SharedPreferences) : ViewModel() {
+class ProfileViewModel : ViewModel() {
 
+    private lateinit var prefs: SharedPreferences
     val userInfo by lazy {
         val liveData = MutableLiveData<UserInfo>()
         ProfileInfoDataSource.getProfileInfo(prefs, prefs.getString("username", "")!!){
@@ -16,19 +17,13 @@ class ProfileViewModel(private val prefs: SharedPreferences) : ViewModel() {
         }
         return@lazy liveData
     }
-
-    fun getUserInfo(): LiveData<UserInfo> = userInfo
-    fun updateUserInfo(firstName: String, lastName: String, dateOfBirth: String, email: String){
-        val oldUser = userInfo.value
-        val newUser = UserInfo(oldUser!!.user_name, firstName, lastName, email, dateOfBirth)
-        userInfo.postValue(newUser)
+    fun setPrefs(preferences: SharedPreferences){
+        prefs = preferences
     }
 
-    companion object{
-        private lateinit var instance: ProfileViewModel
-        fun getInstance(prefs: SharedPreferences) : ProfileViewModel{
-            instance = if (::instance.isInitialized) instance else ProfileViewModel(prefs)
-            return instance
-        }
+    fun updateUserInfo(firstName: String, lastName: String, dateOfBirth: String, email: String, pic_url: String?){
+        val oldUser = userInfo.value
+        val newUser = UserInfo(oldUser!!.user_name, firstName, lastName, email, dateOfBirth, pic_url)
+        userInfo.postValue(newUser)
     }
 }
