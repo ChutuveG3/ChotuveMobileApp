@@ -55,6 +55,7 @@ class UserProfileActivity : AppCompatActivity() {
         viewModel.pendingFriends.observe(this, Observer {
             if (it.contains(username)) AddFriendButton.setImageDrawable(getDrawable(R.drawable.ic_account_clock))
         })
+        if (username == prefs.getString("username", "")!!) AddFriendButton.visibility = View.GONE
         openDrawer.setOnClickListener {
             super.onBackPressed()
         }
