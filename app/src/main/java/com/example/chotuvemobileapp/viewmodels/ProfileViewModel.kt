@@ -11,7 +11,7 @@ class ProfileViewModel(private val prefs: SharedPreferences) : ViewModel() {
 
     val userInfo by lazy {
         val liveData = MutableLiveData<UserInfo>()
-        ProfileInfoDataSource.getProfileInfo(prefs){
+        ProfileInfoDataSource.getProfileInfo(prefs, prefs.getString("username", "")!!){
             liveData.value = it
         }
         return@lazy liveData

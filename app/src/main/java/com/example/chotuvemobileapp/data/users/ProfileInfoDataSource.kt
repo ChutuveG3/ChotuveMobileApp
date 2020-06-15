@@ -9,12 +9,11 @@ import retrofit2.Callback
 import retrofit2.Response
 
 object ProfileInfoDataSource {
-    fun getProfileInfo(preferences: SharedPreferences, myCallback: (UserInfo?) -> Unit){
+    fun getProfileInfo(preferences: SharedPreferences, user: String, myCallback: (UserInfo?) -> Unit){
 
         val retrofit = buildAuthenticatedClient(preferences)
-        val user: String? = preferences.getString("username", "")
 
-        retrofit.getProfile(user!!).enqueue(object : Callback<ResponseBody> {
+        retrofit.getProfile(user).enqueue(object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 myCallback.invoke(null)
             }

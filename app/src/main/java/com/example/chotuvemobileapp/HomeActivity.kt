@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -48,6 +49,11 @@ class HomeActivity : AppCompatActivity() {
         )
 
         navView.setupWithNavController(navController)
+
+        navView
+            .getHeaderView(0)
+            .findViewById<TextView>(R.id.DrawerUsername).text  = preferences.getString("username", "")
+
 
         navView.setNavigationItemSelectedListener {
             when (it.itemId) {
@@ -114,7 +120,7 @@ class HomeActivity : AppCompatActivity() {
         when {
             drawer_layout.isDrawerOpen(GravityCompat.START) -> drawer_layout.closeDrawer(GravityCompat.START)
             navController.currentDestination!!.id == R.id.nav_home -> finish()
-            navController.currentDestination!!.id == R.id.nav_fullsize_image -> navController.navigate(R.id.nav_profile)
+            navController.currentDestination!!.id == R.id.nav_fullsize_image -> super.onBackPressed()
             navController.currentDestination!!.id == R.id.nav_profile || navController.currentDestination!!.id == R.id.nav_friends -> {
                 navController.navigate(getCurrentBottomMenuOption())
                 BottomNavMenu.visibility = View.VISIBLE

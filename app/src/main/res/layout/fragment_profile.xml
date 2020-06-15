@@ -46,23 +46,19 @@
                     android:src="@drawable/ic_baseline_menu_48"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_baseline_menu_36"
                     tools:ignore="ContentDescription" />
 
-                <ImageButton
-                    android:id="@+id/addFriendButton"
+                <ImageView
+                    android:id="@+id/AddFriendButton"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/rounded_button_background"
-                    android:paddingStart="4dp"
-                    android:paddingTop="4dp"
-                    android:paddingEnd="4dp"
-                    android:paddingBottom="4dp"
                     android:foreground="?attr/selectableItemBackground"
                     app:layout_constraintBottom_toBottomOf="@+id/UsernameTextView"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/BorderWrapper"
                     app:layout_constraintTop_toTopOf="@+id/NameTextView"
-                    app:srcCompat="@drawable/ic_baseline_person_add_35"
+                    tools:srcCompat="@drawable/ic_account_plus"
                     tools:ignore="ContentDescription" />
 
                 <androidx.cardview.widget.CardView
@@ -144,6 +140,7 @@
             android:id="@+id/ProfileTabLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            app:tabIndicatorHeight="4dp"
             app:tabTextColor="#FFFFFF" />
 
     </com.google.android.material.appbar.AppBarLayout>

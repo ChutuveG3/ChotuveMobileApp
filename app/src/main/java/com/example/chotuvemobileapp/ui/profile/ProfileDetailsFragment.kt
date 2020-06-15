@@ -1,24 +1,33 @@
 package com.example.chotuvemobileapp.ui.profile
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import androidx.fragment.app.Fragment
 import com.example.chotuvemobileapp.R
-import com.example.chotuvemobileapp.viewmodels.ProfileViewModel
 import kotlinx.android.synthetic.main.profile_view_fragment.*
 
 class ProfileDetailsFragment : Fragment() {
 
-    private val prefs by lazy {
-        requireActivity().applicationContext.getSharedPreferences(getString(R.string.shared_preferences_file), Context.MODE_PRIVATE)
-    }
-    private val viewModel by lazy {
-        ProfileViewModel.getInstance(prefs)
+    private var firstName: String = ""
+    private var lastName: String = ""
+    var email: String = ""
+    private var birthDate: String = ""
+    private var username = ""
+    private var ownProfile = false
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            firstName = it.getString("firstName", "")
+            lastName = it.getString("lastName", "")
+            email = it.getString("email", "")
+            birthDate = it.getString("birthDate", "")
+            username = it.getString("username", "")
+            ownProfile = it.getBoolean("own")
+        }
     }
 
     override fun onCreateView(
@@ -32,13 +41,31 @@ class ProfileDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        FirstNameText.text = viewModel.getUserInfo().value!!.first_name
-        LastNameText.text = viewModel.getUserInfo().value!!.last_name
-        EmailText.text = viewModel.getUserInfo().value!!.email
-        DOBText.text = viewModel.getUserInfo().value!!.birthdate
-
-        GoToEditProfileButton.setOnClickListener{
-            startActivity(Intent(context, EditProfileActivity::class.java))
+        FirstNameText.text = firstName
+        LastNameText.text = lastName
+        EmailText.text = email
+        DOBText.text = birthDate
+        GoToEditProfileButton.visibility = View.GONE
+        if (ownProfile) {
+            GoToEditProfileButton.visibility = View.VISIBLE
+            GoToEditProfileButton.setOnClickListener {
+                startActivity(Intent(context, EditProfileActivity::class.java))
+            }
         }
+    }
+
+    companion object {
+        @JvmStatic
+        fun newInstance(firstName: String, lastName: String, email: String, birthDate: String, username: String, own: Boolean) =
+            ProfileDetailsFragment().apply {
+                arguments = Bundle().apply {
+                    putString("firstName", firstName)
+                    putString("lastName", lastName)
+                    putString("email", email)
+                    putString("birthDate", birthDate)
+                    putString("username", username)
+                    putBoolean("own", own)
+                }
+            }
     }
 }

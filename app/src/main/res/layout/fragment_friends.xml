@@ -14,6 +14,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/FriendsToolbar"
         app:tabBackground="@color/colorPrimaryDark"
+        app:tabIndicatorHeight="4dp"
         app:tabTextColor="@color/white" />
 
     <androidx.viewpager2.widget.ViewPager2
