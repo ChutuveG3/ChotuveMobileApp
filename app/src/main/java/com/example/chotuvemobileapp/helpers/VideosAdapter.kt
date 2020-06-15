@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.chotuvemobileapp.PlayVideoActivity
 import com.example.chotuvemobileapp.R
+import com.example.chotuvemobileapp.UserProfileActivity
 import com.example.chotuvemobileapp.entities.VideoItem
 import com.example.chotuvemobileapp.helpers.Utilities.DATE_FORMAT_LONG
 import com.example.chotuvemobileapp.helpers.Utilities.DATE_FORMAT_SHORT
@@ -20,7 +21,6 @@ import java.time.format.DateTimeFormatter
 class VideosAdapter(private val mVideos: List<VideoItem>) : RecyclerView.Adapter<VideosAdapter.ViewHolder>() {
     inner class ViewHolder(listItemView: View) : RecyclerView.ViewHolder(listItemView){
         val videoThumbnail: ImageView = itemView.findViewById(R.id.VideoThumbnail)
-        val userPic: ImageView = itemView.findViewById(R.id.OwnersProfilePic)
         val title: TextView = itemView.findViewById(R.id.VideoTitle)
         val user: TextView = itemView.findViewById(R.id.VideoUser)
         val date: TextView = itemView.findViewById(R.id.VideoDate)
@@ -51,6 +51,11 @@ class VideosAdapter(private val mVideos: List<VideoItem>) : RecyclerView.Adapter
             intent.putExtra("comments", position)
             intent.putExtra("description", video.description)
             intent.putExtra("url", video.url)
+            it.context.startActivity(intent)
+        }
+        holder.user.setOnClickListener {
+            val intent = Intent(it.context, UserProfileActivity::class.java)
+            intent.putExtra("user", video.user)
             it.context.startActivity(intent)
         }
     }

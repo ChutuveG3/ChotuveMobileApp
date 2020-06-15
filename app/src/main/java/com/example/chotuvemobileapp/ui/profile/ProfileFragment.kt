@@ -35,6 +35,7 @@ class ProfileFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         showLoadingScreen()
+        AddFriendButton.visibility = View.GONE
         viewModel.userInfo.observe(viewLifecycleOwner, Observer {
             val nameToDisplay = "${it.first_name} ${it.last_name}"
             NameTextView.text = nameToDisplay
@@ -61,7 +62,13 @@ class ProfileFragment : Fragment() {
         override fun getItemCount(): Int = 2
         override fun createFragment(position: Int): Fragment {
             return when(position){
-                0 -> ProfileDetailsFragment()
+                0 -> ProfileDetailsFragment.newInstance(
+                    viewModel.userInfo.value!!.first_name,
+                    viewModel.userInfo.value!!.last_name,
+                    viewModel.userInfo.value!!.email,
+                    viewModel.userInfo.value!!.birthdate,
+                    viewModel.userInfo.value!!.user_name,
+                    true)
                 else -> VideoListFragment.newInstance("Me")
             }
         }
