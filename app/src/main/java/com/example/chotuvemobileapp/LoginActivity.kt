@@ -3,13 +3,16 @@ package com.example.chotuvemobileapp
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.chotuvemobileapp.data.users.LoginDataSource
 import com.example.chotuvemobileapp.helpers.Utilities.watchText
+import com.google.firebase.iid.FirebaseInstanceId
 import kotlinx.android.synthetic.main.activity_login.*
+
 
 class LoginActivity : AppCompatActivity() {
 
@@ -28,8 +31,13 @@ class LoginActivity : AppCompatActivity() {
         LogInUsername.watchText(SignInButton, this::isDataCorrect)
         LoginPassword.watchText(SignInButton, this::isDataCorrect)
 
-        SignInButton.setOnClickListener {
+        FirebaseInstanceId.getInstance().instanceId
+            .addOnSuccessListener(this@LoginActivity) { instanceIdResult ->
+                val newToken = instanceIdResult.token
+                Log.i("FIREBASE_TOKEN", newToken)
+            }
 
+        SignInButton.setOnClickListener {
             if(isDataValid()) {
                 LoginScreen.alpha = .2F
                 window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
@@ -38,7 +46,7 @@ class LoginActivity : AppCompatActivity() {
                 LoginDataSource.login(LogInUsername.text.toString(), LoginPassword.text.toString()) {
                     when (it) {
                         "Failure" -> Toast.makeText(applicationContext, getString(R.string.internal_error), Toast.LENGTH_LONG).show()
-                        "InvalidParams" -> showInvalidEmail()
+                        "InvalidParams" -> showInvalidUsername()
                         else -> saveDataAndStartHome(it)
                     }
                     LoginScreen.alpha = 1F
@@ -62,7 +70,7 @@ class LoginActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun showInvalidEmail() {
+    private fun showInvalidUsername() {
         UsernameInput.error = getString(R.string.failed_login)
         PasswordInput.error = getString(R.string.failed_login)
         PasswordInput.getChildAt(1).visibility = View.GONE
@@ -91,5 +99,3 @@ class LoginActivity : AppCompatActivity() {
         return valid
     }
 }
-
-
