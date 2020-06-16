@@ -69,4 +69,11 @@ interface IAppServerApiService {
 
     @GET("users/{user}/friends/pending")
     fun getPendingFriends(@Path("user") user: String) : Call<ResponseBody>
+
+    @POST("users/{orig}/friends/{dest}")
+    fun sendFriendRequest(@Path("orig") sender: String, @Path("dest") destination: String) : Call<ResponseBody>
+    @POST("users/{orig}/friends/{dest}/accept")
+    fun acceptFriendRequest(@Path("orig") sender: String, @Path("dest") destination: String) : Call<ResponseBody>
+    @POST("users/{orig}/friends/{dest}/reject")
+    fun declineFriendRequest(@Path("orig") sender: String, @Path("dest") destination: String) : Call<ResponseBody>
 }

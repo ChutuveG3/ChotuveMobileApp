@@ -1,7 +1,6 @@
 package com.example.chotuvemobileapp.viewmodels
 
 import android.content.SharedPreferences
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.chotuvemobileapp.data.users.ProfileInfoDataSource

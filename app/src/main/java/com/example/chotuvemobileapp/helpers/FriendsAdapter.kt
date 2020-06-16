@@ -1,15 +1,26 @@
 package com.example.chotuvemobileapp.helpers
 
+import android.content.Intent
+import android.content.SharedPreferences
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chotuvemobileapp.R
+import com.example.chotuvemobileapp.UserProfileActivity
+import com.example.chotuvemobileapp.data.users.ProfileInfoDataSource
+import com.example.chotuvemobileapp.ui.friends.FriendsViewModel
 
-class FriendsAdapter(private val friends: List<String>) : RecyclerView.Adapter<FriendsAdapter.ViewHolder>() {
+class FriendsAdapter(private val friends: List<String>,
+                     private val preferences: SharedPreferences,
+                     private val viewModel: FriendsViewModel,
+                     private val pending: Boolean = false) : RecyclerView.Adapter<FriendsAdapter.ViewHolder>() {
     inner class ViewHolder(listItemView: View) : RecyclerView.ViewHolder(listItemView){
         val friendUser: TextView = itemView.findViewById(R.id.Username)
+        val acceptRequest: ImageView = itemView.findViewById(R.id.AcceptRequest)
+        val declineRequest : ImageView = itemView.findViewById(R.id.DeclineRequest)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -26,5 +37,30 @@ class FriendsAdapter(private val friends: List<String>) : RecyclerView.Adapter<F
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val friend = friends[position]
         holder.friendUser.text = friend
+        holder.friendUser.setOnClickListener {
+            val intent = Intent(it.context, UserProfileActivity::class.java)
+            intent.putExtra("user", friend)
+            it.context.startActivity(intent)
+        }
+        if (pending){
+            holder.acceptRequest.setOnClickListener {
+                ProfileInfoDataSource.respondRequest(preferences, friend, true){
+                    if (it == "Success"){
+                        viewModel.addFriend(friend)
+                    }
+                }
+            }
+            holder.declineRequest.setOnClickListener {
+                ProfileInfoDataSource.respondRequest(preferences, friend, false){
+                    if (it == "Success"){
+                        viewModel.removePendingFriend(friend)
+                    }
+                }
+            }
+        }
+        else{
+            holder.acceptRequest.visibility = View.GONE
+            holder.declineRequest.visibility = View.GONE
+        }
     }
 }

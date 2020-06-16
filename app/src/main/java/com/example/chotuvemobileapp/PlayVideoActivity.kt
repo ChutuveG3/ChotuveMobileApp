@@ -1,8 +1,8 @@
 package com.example.chotuvemobileapp
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.ActivityInfo
-import android.graphics.Color
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
@@ -36,6 +36,11 @@ class PlayVideoActivity : AppCompatActivity() {
 
         VideoTitle.text = intent.getStringExtra("videoTitle")
         VideoAuthor.text = intent.getStringExtra("videoAuthor")
+        VideoAuthor.setOnClickListener {
+            val intent = Intent(this, UserProfileActivity::class.java)
+            intent.putExtra("user", intent.getStringExtra("videoAuthor"))
+            startActivity(intent)
+        }
         VideoProgressBar.visibility = View.VISIBLE
 
         backgroundColor = getColor(R.color.white)

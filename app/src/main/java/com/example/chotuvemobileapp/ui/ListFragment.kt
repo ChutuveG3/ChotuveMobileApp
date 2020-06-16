@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.chotuvemobileapp.R
 import com.example.chotuvemobileapp.helpers.FriendsAdapter
@@ -16,18 +17,18 @@ import kotlinx.android.synthetic.main.fragment_list.*
 class ListFragment : Fragment() {
 
     private var users = ArrayList<String>()
-    private lateinit var type: String
     private val prefs by lazy {
         requireActivity().applicationContext.getSharedPreferences(getString(R.string.shared_preferences_file), Context.MODE_PRIVATE)
     }
     private val friendsViewModel by lazy {
-        FriendsViewModel.getInstance(prefs)
+        ViewModelProvider(requireActivity()).get(FriendsViewModel::class.java)
     }
+    private var pending: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            type = it.getString("type")!!
+            pending = it.getBoolean("type")
         }
     }
 
@@ -41,9 +42,10 @@ class ListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        friendsViewModel.setPrefs(prefs)
         showLoadingScreen()
-        val variableToObserve = if (type == "friends") friendsViewModel.friends else friendsViewModel.pendingFriends
-        ListRecyclerView.adapter = FriendsAdapter(users)
+        val variableToObserve = if (pending) friendsViewModel.pendingFriends else friendsViewModel.friends
+        ListRecyclerView.adapter = FriendsAdapter(users, prefs, friendsViewModel, pending)
         ListRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         variableToObserve.observe(viewLifecycleOwner, Observer {
             users.addAll(it)
@@ -65,10 +67,10 @@ class ListFragment : Fragment() {
     }
     companion object {
         @JvmStatic
-        fun newInstance(type: String) =
+        fun newInstance(pending: Boolean) =
             ListFragment().apply {
                 arguments = Bundle().apply {
-                    putString("type", type)
+                    putBoolean("type", pending)
                 }
             }
     }

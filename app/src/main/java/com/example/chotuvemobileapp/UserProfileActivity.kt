@@ -6,12 +6,14 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.bumptech.glide.Glide
+import com.example.chotuvemobileapp.data.users.ProfileInfoDataSource
 import com.example.chotuvemobileapp.helpers.Utilities
 import com.example.chotuvemobileapp.ui.profile.FullSizeImageActivity
 import com.example.chotuvemobileapp.ui.profile.ProfileDetailsFragment
@@ -61,14 +63,28 @@ class UserProfileActivity : AppCompatActivity() {
         })
         AddFriendButton.setImageDrawable(getDrawable(R.drawable.ic_account_plus))
         viewModel.friends.observe(this, Observer {
-            if (it.contains(username)) AddFriendButton.setImageDrawable(getDrawable(R.drawable.ic_account_check))
+            if (it.contains(username)) {
+                AddFriendButton.setImageDrawable(getDrawable(R.drawable.ic_account_check))
+                AddFriendButton.setOnClickListener(null)
+            }
         })
         viewModel.pendingFriends.observe(this, Observer {
-            if (it.contains(username)) AddFriendButton.setImageDrawable(getDrawable(R.drawable.ic_account_clock))
+            if (it.contains(username)) {
+                AddFriendButton.setImageDrawable(getDrawable(R.drawable.ic_account_clock))
+                AddFriendButton.setOnClickListener(null)
+            }
         })
         if (username == prefs.getString(Utilities.USERNAME, "")!!) AddFriendButton.visibility = View.GONE
         openDrawer.setOnClickListener {
             super.onBackPressed()
+        }
+        AddFriendButton.setOnClickListener {
+            showLoadingScreen()
+            ProfileInfoDataSource.addFriend(prefs, username){
+                if (it == "Success") Toast.makeText(applicationContext, "Request sent to $username!",Toast.LENGTH_LONG).show()
+                else Toast.makeText(applicationContext, getString(R.string.internal_error),Toast.LENGTH_LONG).show()
+                quitLoadingScreen()
+            }
         }
     }
 
