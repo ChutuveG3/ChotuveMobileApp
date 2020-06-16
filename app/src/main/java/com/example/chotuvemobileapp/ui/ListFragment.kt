@@ -48,8 +48,8 @@ class ListFragment : Fragment() {
         ListRecyclerView.adapter = FriendsAdapter(users, prefs, friendsViewModel, pending)
         ListRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         variableToObserve.observe(viewLifecycleOwner, Observer {
-            users.addAll(it)
-            ListRecyclerView.adapter!!.notifyItemRangeInserted(0, it.count())
+            users = it
+            ListRecyclerView.adapter = FriendsAdapter(users, prefs, friendsViewModel, pending)
             quitLoadingScreen()
         })
     }

@@ -7,13 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chotuvemobileapp.R
 import com.example.chotuvemobileapp.UserProfileActivity
 import com.example.chotuvemobileapp.data.users.ProfileInfoDataSource
 import com.example.chotuvemobileapp.ui.friends.FriendsViewModel
 
-class FriendsAdapter(private val friends: List<String>,
+class FriendsAdapter(private val friends: ArrayList<String>,
                      private val preferences: SharedPreferences,
                      private val viewModel: FriendsViewModel,
                      private val pending: Boolean = false) : RecyclerView.Adapter<FriendsAdapter.ViewHolder>() {
@@ -44,16 +45,23 @@ class FriendsAdapter(private val friends: List<String>,
         }
         if (pending){
             holder.acceptRequest.setOnClickListener {
+                holder.itemView.alpha = .2F
                 ProfileInfoDataSource.respondRequest(preferences, friend, true){
                     if (it == "Success"){
                         viewModel.addFriend(friend)
+                        holder.itemView.visibility = View.GONE
+                        holder.itemView.alpha = 1F
+                        Toast.makeText(holder.itemView.context, "$friend is now your friend!", Toast.LENGTH_LONG).show()
                     }
                 }
             }
             holder.declineRequest.setOnClickListener {
+                holder.itemView.alpha = .2F
                 ProfileInfoDataSource.respondRequest(preferences, friend, false){
                     if (it == "Success"){
                         viewModel.removePendingFriend(friend)
+                        holder.itemView.visibility = View.GONE
+                        holder.itemView.alpha = 1F
                     }
                 }
             }
