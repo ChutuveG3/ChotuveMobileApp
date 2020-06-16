@@ -1,14 +1,13 @@
 package com.example.chotuvemobileapp.ui.friends
 
 import android.content.SharedPreferences
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.chotuvemobileapp.data.users.ProfileInfoDataSource
-import com.example.chotuvemobileapp.viewmodels.ProfileViewModel
 
-class FriendsViewModel(private val prefs: SharedPreferences) : ViewModel() {
+class FriendsViewModel : ViewModel() {
 
+    private lateinit var prefs: SharedPreferences
     val friends by lazy {
         val liveData = MutableLiveData<ArrayList<String>>()
         ProfileInfoDataSource.getFriends(prefs, prefs.getString("username", "")!!){
@@ -25,11 +24,20 @@ class FriendsViewModel(private val prefs: SharedPreferences) : ViewModel() {
         return@lazy liveData
     }
 
-    companion object{
-        private lateinit var instance: FriendsViewModel
-        fun getInstance(prefs: SharedPreferences) : FriendsViewModel {
-            instance = if (::instance.isInitialized) instance else FriendsViewModel(prefs)
-            return instance
-        }
+    fun removePendingFriend(friend: String){
+        val oldPendingFriends = pendingFriends.value
+        oldPendingFriends!!.remove(friend)
+        pendingFriends.postValue(oldPendingFriends)
+    }
+
+    fun addFriend(friend: String){
+        val oldFriends = friends.value
+        oldFriends!!.add(friend)
+        removePendingFriend(friend)
+        friends.postValue(oldFriends)
+    }
+
+    fun setPrefs(preferences: SharedPreferences){
+        prefs = preferences
     }
 }

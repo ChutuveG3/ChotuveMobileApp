@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rotate xmlns:android="http://schemas.android.com/apk/res/android"
+    android:drawable="@drawable/ic_baseline_cross_36"
+    android:fromDegrees="45"
+    android:toDegrees="45"
+    android:visible="true"/>

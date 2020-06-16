@@ -2,6 +2,7 @@ package com.example.chotuvemobileapp.data.users
 
 import android.content.SharedPreferences
 import com.example.chotuvemobileapp.data.utilities.HttpUtilities.buildAuthenticatedClient
+import com.example.chotuvemobileapp.helpers.Utilities
 import com.google.gson.Gson
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -92,6 +93,40 @@ object ProfileInfoDataSource {
                     else -> {
                         myCallback.invoke(fail)
                     }
+                }
+            }
+        })
+    }
+
+    fun respondRequest(preferences: SharedPreferences, friend: String, accept: Boolean, myCallback: (String) -> Unit){
+        val retrofit = buildAuthenticatedClient(preferences)
+        val user = preferences.getString(Utilities.USERNAME, "")!!
+        val request = if (accept) retrofit.acceptFriendRequest(user, friend)
+                                         else retrofit.declineFriendRequest(user, friend)
+        request.enqueue(object : Callback<ResponseBody> {
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                myCallback.invoke("Failure")
+            }
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>){
+                when {
+                    response.isSuccessful -> myCallback.invoke("Success")
+                    else -> myCallback.invoke("Failure")
+                }
+            }
+        })
+    }
+
+    fun addFriend(preferences: SharedPreferences, friend: String, myCallback: (String) -> Unit){
+        val retrofit = buildAuthenticatedClient(preferences)
+        val user = preferences.getString(Utilities.USERNAME, "")!!
+        retrofit.sendFriendRequest(user, friend).enqueue(object : Callback<ResponseBody> {
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                myCallback.invoke("Failure")
+            }
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>){
+                when {
+                    response.isSuccessful -> myCallback.invoke("Success")
+                    else -> myCallback.invoke("Failure")
                 }
             }
         })
