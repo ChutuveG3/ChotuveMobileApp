@@ -31,28 +31,36 @@ class LoginActivity : AppCompatActivity() {
         LogInUsername.watchText(SignInButton, this::isDataCorrect)
         LoginPassword.watchText(SignInButton, this::isDataCorrect)
 
-        FirebaseInstanceId.getInstance().instanceId
-            .addOnSuccessListener(this@LoginActivity) { instanceIdResult ->
-                val newToken = instanceIdResult.token
-                Log.i("FIREBASE_TOKEN", newToken)
-            }
-
         SignInButton.setOnClickListener {
             if(isDataValid()) {
                 LoginScreen.alpha = .2F
-                window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager
+                    .LayoutParams.FLAG_NOT_TOUCHABLE)
                 LoginProgressBar.visibility = View.VISIBLE
 
-                LoginDataSource.login(LogInUsername.text.toString(), LoginPassword.text.toString()) {
-                    when (it) {
-                        "Failure" -> Toast.makeText(applicationContext, getString(R.string.internal_error), Toast.LENGTH_LONG).show()
-                        "InvalidParams" -> showInvalidUsername()
-                        else -> saveDataAndStartHome(it)
+                FirebaseInstanceId.getInstance().instanceId
+                    .addOnSuccessListener(this@LoginActivity) { instanceIdResult ->
+                        val newToken = instanceIdResult.token
+                        Log.d("FIREBASE_TOKEN", newToken)
+
+                        val username = LogInUsername.text.toString()
+                        val pass = LoginPassword.text.toString()
+                        LoginDataSource.tokenLogin(username, pass, newToken) {
+                            when (it) {
+                                "Failure" -> Toast.makeText(applicationContext, getString(R.string.internal_error),
+                                    Toast.LENGTH_LONG).show()
+                                "InvalidParams" -> showInvalidUsername()
+                                else -> saveDataAndStartHome(it)
+                            }
                     }
                     LoginScreen.alpha = 1F
                     window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                     LoginProgressBar.visibility = View.GONE
-                }
+                }.addOnFailureListener { Exception ->
+                        Log.d("FIREBASE_ERROR", Exception.toString())
+                        Toast.makeText(applicationContext, R.string.internal_error, Toast.LENGTH_LONG)
+                            .show()
+                    }
             }
         }
     }

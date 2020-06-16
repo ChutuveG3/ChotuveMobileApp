@@ -51,6 +51,25 @@ object LoginDataSource {
             }
         })
     }
+
+    fun tokenLogin(username: String, password: String, token: String, myCallback: (String) -> Unit){
+
+        val retrofit = buildClient()
+
+        retrofit.tokenLoginUser(username, password, token).enqueue(object : Callback<ResponseBody> {
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                myCallback.invoke("Failure")
+            }
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>){
+                when {
+                    response.isSuccessful -> {
+                        myCallback.invoke("Success")
+                    }
+                    else -> myCallback.invoke("InvalidParams")
+                }
+            }
+        })
+    }
 }
 
 

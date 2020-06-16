@@ -31,6 +31,14 @@ interface IAppServerApiService {
         @Field("password") password: String
     ): Call<ResponseBody>
 
+    @FormUrlEncoded
+    @POST("users/sessions")
+    fun tokenLoginUser(
+        @Field("username") username: String,
+        @Field("password") password: String,
+        @Field("firebase_token") firebase_token: String
+    ): Call<ResponseBody>
+
     @GET("users/{user}")
     fun getProfile(@Path("user") user: String): Call<ResponseBody>
 

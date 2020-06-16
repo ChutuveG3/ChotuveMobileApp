@@ -8,9 +8,8 @@ import kotlinx.android.synthetic.main.activity_login.*
 
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
-    override fun onNewToken(s: String) {
-        super.onNewToken(s)
-        Log.i("NEW_FIREBASE_TOKEN", s)
+    override fun onNewToken(token: String) {
+        Log.i("NEW_FIREBASE_TOKEN", token)
     }
 
     override fun onMessageReceived(p0: RemoteMessage) {
