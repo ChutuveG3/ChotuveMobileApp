@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -12,6 +13,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
+import com.example.chotuvemobileapp.data.users.LogoutDataSource
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.content_home.*
@@ -55,24 +57,31 @@ class HomeActivity : AppCompatActivity() {
             .findViewById<TextView>(R.id.DrawerUsername).text  = preferences.getString("username", "")
 
 
-        navView.setNavigationItemSelectedListener {
-            when (it.itemId) {
+        navView.setNavigationItemSelectedListener {item ->
+            when (item.itemId) {
                 R.id.nav_logout -> {
-                    logout()
+                    val username = preferences.getString("username", "")
+                    LogoutDataSource.logout(username!!) { response_id ->
+                        when (response_id) {
+                            "Success" -> logout()
+                            else -> Toast.makeText(applicationContext, getString(R.string.internal_error),
+                                Toast.LENGTH_LONG).show()
+                        }
+                    }
                     true
                 }
                 R.id.nav_home -> {
                     drawerLayout.closeDrawer(GravityCompat.START)
                     BottomNavMenu.visibility = View.VISIBLE
                     navController.navigate(getCurrentBottomMenuOption())
-                    navView.menu.findItem(it.itemId).isChecked = true
+                    navView.menu.findItem(item.itemId).isChecked = true
                     true
                 }
                 else -> {
                     BottomNavMenu.visibility = View.GONE
                     drawerLayout.closeDrawer(GravityCompat.START)
-                    navController.navigate(it.itemId)
-                    navView.menu.findItem(it.itemId).isChecked = true
+                    navController.navigate(item.itemId)
+                    navView.menu.findItem(item.itemId).isChecked = true
                     true
                 }
             }
