@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -45,19 +46,30 @@ class FriendsFragment : Fragment() {
             TabLayoutMediator(FriendsTabLayout, FriendsViewPager) {tab, position ->
                 when (position){
                     0 -> tab.text = getString(R.string.profile_friends)
-                    else -> tab.text = getString(R.string.friends_pending)
+                    1 -> tab.text = getString(R.string.friends_pending)
+                    else -> tab.icon = requireActivity().getDrawable(R.drawable.ic_baseline_person_add_36)
                 }
             }.attach()
+            setTabWidthAsWrapContent()
         })
     }
 
     private inner class FriendsPagerAdapter(fa: Fragment) : FragmentStateAdapter(fa) {
-        override fun getItemCount(): Int = 2
+        override fun getItemCount(): Int = 3
         override fun createFragment(position: Int): Fragment {
             return when(position){
                 0 -> ListFragment.newInstance(false)
-                else -> ListFragment.newInstance(true)
+                1 -> ListFragment.newInstance(true)
+                else -> SearchFriendsFragment()
             }
         }
+    }
+
+    private fun setTabWidthAsWrapContent() {
+        val layout = (FriendsTabLayout.getChildAt(0) as LinearLayout).getChildAt(2) as LinearLayout
+        val layoutParams = layout.layoutParams as LinearLayout.LayoutParams
+        layoutParams.weight = 0f
+        layoutParams.width = LinearLayout.LayoutParams.WRAP_CONTENT
+        layout.layoutParams = layoutParams
     }
 }

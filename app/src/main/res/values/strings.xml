@@ -45,10 +45,12 @@
     <string name="friends_pending">Pending</string>
 
     <string name="edit">Edit</string>
+    <string name="add_friend">Add</string>
     <string name="save">Save</string>
     <string name="video_description">Description</string>
     <string name="video_comments">Comments</string>
     <string name="videos">Videos</string>
+    <string name="user_not_found">Sorry… We couldn\'t find anyone</string>
     <string name="empty_list_text">Looks like there\'s nothing to see here…</string>
 
     <string name="name">First Name</string>
@@ -56,6 +58,7 @@
 
     <string name="menu_message_inbox">Inbox</string>
     <string name="menu_notifications">Notifications</string>
+    <string name="menu_search">Search</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="invalid_email">Invalid email</string>
