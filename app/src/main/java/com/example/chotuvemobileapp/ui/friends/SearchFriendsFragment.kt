@@ -1,5 +1,6 @@
 package com.example.chotuvemobileapp.ui.friends
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.*
@@ -28,16 +29,24 @@ class SearchFriendsFragment : Fragment() {
         return inflater.inflate(R.layout.search_friends_fragment, container, false)
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         NotFoundText.visibility = View.GONE
+        SearchFriendsRecyclerView.visibility = View.VISIBLE
+        val username = prefs.getString("username", null)
+        SearchFriendsExplainText.text = "Search by username, $username it's yours"
+
         SearchFriendSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {
                 SearchFriendSearchView.clearFocus()
                 if (!query.isNullOrEmpty()){
                     ProfileInfoDataSource.getProfileInfo(prefs, query){
                         when(it){
-                            null -> NotFoundText.visibility = View.VISIBLE
+                            null -> {
+                                SearchFriendsRecyclerView.visibility = View.INVISIBLE
+                                NotFoundText.visibility = View.VISIBLE
+                            }
                             else -> {
                                 val users = ArrayList<String>()
                                 users.add(it.user_name)

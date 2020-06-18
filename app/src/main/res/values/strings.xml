@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Chotuve</string>
-
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in_short">Sign in</string>
@@ -12,12 +11,10 @@
     <string name="input_title">Title</string>
     <string name="input_description">Description</string>
     <string name="action_upload">Upload</string>
-
     <string name="invalid_date">You\'re from the future!</string>
     <string name="password_mismatch">Passwords don\'t match</string>
     <string name="invalid_username">Invalid username</string>
     <string name="invalid_pass">Password must be at least 6 characters long</string>
-
     <string name="action_sign_up">Sign Up</string>
     <string name="text_new_sign_up">New to Chotuve?</string>
     <string name="prompt_username">Username</string>
@@ -27,23 +24,19 @@
     <string name="prompt_dob">Date of Birth</string>
     <string name="upload_video">Upload Video</string>
     <string name="nav_header_desc">Navigation header</string>
-
     <string name="menu_home">Home</string>
     <string name="menu_profile">Profile</string>
     <string name="menu_slideshow">Slideshow</string>
     <string name="menu_logout">Log out</string>
-
     <string name="previewText">Preview:</string>
     <string name="visibility_public">Public</string>
     <string name="visibility_private">Private</string>
     <string name="video_uploaded_message">Your video has been successfully uploaded!</string>
     <string name="failed_login">Incorrect username or password</string>
     <string name="shared_preferences_file">CHOTUVE_PREFERENCES</string>
-
     <string name="profile_details">Details</string>
     <string name="profile_friends">Friends</string>
     <string name="friends_pending">Pending</string>
-
     <string name="edit">Edit</string>
     <string name="add_friend">Add</string>
     <string name="save">Save</string>
@@ -52,17 +45,13 @@
     <string name="videos">Videos</string>
     <string name="user_not_found">Sorry… We couldn\'t find anyone</string>
     <string name="empty_list_text">Looks like there\'s nothing to see here…</string>
-
     <string name="name">First Name</string>
     <string name="last_name">Last Name</string>
-
     <string name="menu_message_inbox">Inbox</string>
     <string name="menu_notifications">Notifications</string>
     <string name="menu_search">Search</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="invalid_email">Invalid email</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
+    <string name="find_your_friend_in_chotuve">Find your friends in Chotuve</string>
+    <string name="friend_title">Find your friends in Chotuve</string>
+    <string name="friend_explain_text">TextView</string>
 </resources>

@@ -33,13 +33,12 @@ class LoginActivity : AppCompatActivity() {
 
         SignInButton.setOnClickListener {
             if(isDataValid()) {
-                LoginScreen.alpha = .2F
-                window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager
-                    .LayoutParams.FLAG_NOT_TOUCHABLE)
-                LoginProgressBar.visibility = View.VISIBLE
-
                 FirebaseInstanceId.getInstance().instanceId
                     .addOnSuccessListener(this@LoginActivity) { instanceIdResult ->
+                        LoginScreen.alpha = .2F
+                        window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager
+                            .LayoutParams.FLAG_NOT_TOUCHABLE)
+                        LoginProgressBar.visibility = View.VISIBLE
                         val newToken = instanceIdResult.token
                         Log.d("FIREBASE_TOKEN", newToken)
 
@@ -50,17 +49,20 @@ class LoginActivity : AppCompatActivity() {
                                 "Failure" -> Toast.makeText(applicationContext, getString(R.string.internal_error),
                                     Toast.LENGTH_LONG).show()
                                 "InvalidParams" -> showInvalidUsername()
-                                else -> saveDataAndStartHome(it)
+                                else -> {
+                                    saveDataAndStartHome(it)
+                                    LoginScreen.alpha = 1F
+                                    window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                                    LoginProgressBar.visibility = View.GONE
+                                }
                             }
                     }
-                    LoginScreen.alpha = 1F
-                    window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                    LoginProgressBar.visibility = View.GONE
                 }.addOnFailureListener { Exception ->
                         Log.d("FIREBASE_ERROR", Exception.toString())
                         Toast.makeText(applicationContext, R.string.internal_error, Toast.LENGTH_LONG)
                             .show()
                     }
+
             }
         }
     }
