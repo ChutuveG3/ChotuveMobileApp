@@ -33,7 +33,6 @@ class SearchFriendsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         NotFoundText.visibility = View.GONE
-        SearchFriendsRecyclerView.visibility = View.VISIBLE
         val username = prefs.getString("username", null)
         SearchFriendsExplainText.text = "Search by username, $username it's yours"
 
@@ -53,6 +52,7 @@ class SearchFriendsFragment : Fragment() {
                                 SearchFriendsRecyclerView.adapter = SearchedUsersAdapter(users, prefs, viewModel)
                                 SearchFriendsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
                                 NotFoundText.visibility = View.GONE
+                                SearchFriendsRecyclerView.visibility = View.VISIBLE
                             }
                         }
                     }
