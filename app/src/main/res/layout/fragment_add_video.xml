@@ -184,7 +184,7 @@
             <Button
                 android:id="@+id/UploadButton"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_height="50dp"
                 android:layout_gravity="center"
                 android:layout_marginStart="48dp"
                 android:layout_marginTop="16dp"

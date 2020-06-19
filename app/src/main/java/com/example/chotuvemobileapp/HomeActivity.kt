@@ -61,7 +61,7 @@ class HomeActivity : AppCompatActivity() {
             when (item.itemId) {
                 R.id.nav_logout -> {
                     val username = preferences.getString("username", "")
-                    LogoutDataSource.logout(username!!) { response_id ->
+                    LogoutDataSource.logout(preferences, username!!) { response_id ->
                         when (response_id) {
                             "Success" -> logout()
                             else -> Toast.makeText(applicationContext, getString(R.string.internal_error),

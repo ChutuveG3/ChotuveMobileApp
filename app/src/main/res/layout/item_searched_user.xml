@@ -17,44 +17,31 @@
         tools:ignore="ContentDescription" />
 
     <TextView
-        android:id="@+id/Username"
+        android:id="@+id/UsernameSearch"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/AcceptRequest"
+        app:layout_constraintEnd_toStartOf="@+id/AddFriend"
         app:layout_constraintStart_toEndOf="@+id/imageView4"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="@tools:sample/cities" />
 
-    <ImageView
-        android:id="@+id/DeclineRequest"
-        android:layout_width="31dp"
-        android:layout_height="34dp"
-        android:layout_marginTop="4dp"
+    <Button
+        android:id="@+id/AddFriend"
+        android:layout_width="75dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="4dp"
+        android:layout_marginBottom="8dp"
+        android:backgroundTint="@color/colorPrimaryDark"
+        android:text="@string/add_friend"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_decline_36"
-        tools:ignore="ContentDescription" />
-
-    <ImageView
-        android:id="@+id/AcceptRequest"
-        android:layout_width="34dp"
-        android:layout_height="31dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="4dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/DeclineRequest"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_baseline_check_circle_36"
-        tools:ignore="ContentDescription" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,13 +5,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.chotuvemobileapp.data.users.LoginDataSource
 import com.example.chotuvemobileapp.data.users.User
 import com.example.chotuvemobileapp.helpers.Utilities.createDatePicker
 import com.example.chotuvemobileapp.helpers.Utilities.watchText
-import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_sign_up.*
 import java.time.LocalDate
 
@@ -47,10 +47,7 @@ class SignUpActivity : AppCompatActivity() {
 
         SignUpButton.setOnClickListener{
             if (isDataValid()) {
-                SignupScreen.alpha = .2F
-                window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                SignupProgressBar.visibility = View.VISIBLE
-
+                showLoadingScreen()
                 LoginDataSource.addUser(registerInfo){
                     when (it) {
                         "Failure" -> Toast.makeText(applicationContext, getString(R.string.request_failure), Toast.LENGTH_LONG).show()
@@ -59,12 +56,27 @@ class SignUpActivity : AppCompatActivity() {
                         "user_email_already_exists" -> RegEmail.error = getString(R.string.email_taken)
                         else -> Toast.makeText( applicationContext, getString(R.string.internal_error), Toast.LENGTH_LONG).show()
                     }
-                    SignupScreen.alpha = 1F
-                    window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                    SignupProgressBar.visibility = View.GONE
+                    clearLoadingScreen()
                 }
             }
         }
+    }
+
+    private fun clearLoadingScreen() {
+        SignupScreen.alpha = 1F
+        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        SignupProgressBar.visibility = View.GONE
+    }
+
+    private fun showLoadingScreen() {
+        val inputManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputManager.hideSoftInputFromWindow(currentFocus!!.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+        SignupScreen.alpha = .2F
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+        )
+        SignupProgressBar.visibility = View.VISIBLE
     }
 
     private fun goToLogin(registerInfo: User) {
