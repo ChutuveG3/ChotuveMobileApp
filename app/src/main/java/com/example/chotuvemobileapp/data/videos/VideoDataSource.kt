@@ -14,9 +14,6 @@ object VideoDataSource {
     fun addVideo(video: Video, preferences: SharedPreferences, myCallback: (String) -> Unit){
 
         val retrofit = buildAuthenticatedClient(preferences)
-        // refactor
-//        val user = preferences.getString("username", "")
-//        retrofit.uploadVideo(user, video).enqueue(object : retrofit2.Callback<ResponseBody>
 
         retrofit.uploadVideo(video).enqueue(object : retrofit2.Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
@@ -33,13 +30,11 @@ object VideoDataSource {
 
     fun getVideosFrom(preferences: SharedPreferences, pageNumber: Int, pageSize: Int, user: String? = null, myCallback: (ArrayList<VideoItem>) -> Unit){
 
-        val retrofit = buildAuthenticatedClient(preferences = preferences)
+        val retrofit = buildAuthenticatedClient(preferences)
+        val username = preferences.getString("username", "")!!
         val method = when (user) {
-            null -> retrofit.getAllVideos(pageNumber, pageSize)
-            "Me" -> retrofit.getMyVideos(pageNumber, pageSize)
-            else -> retrofit.getVideosFrom(user, pageNumber, pageSize)
-            // refactor
-            // retrofit.getVideosFrom(user, pageNumber, pageSize)
+            null -> retrofit.getHomeVideos(username, pageNumber, pageSize)
+            else -> retrofit.getVideos(user, pageNumber, pageSize)
         }
         val fail = ArrayList<VideoItem>()
         method.enqueue(object : retrofit2.Callback<ResponseBody> {

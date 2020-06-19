@@ -14,15 +14,9 @@ interface IAppServerApiService {
         @Body user: User
     ): Call<ResponseBody>
 
-    @POST("videos")
-    fun uploadVideo(
-        @Body video: Video
-    ): Call<ResponseBody>
-
 //    refactor
-//    @POST("users/{user}/videos")
-//    fun uploadVideo(@Path("user") user: String,
-//                    @Body video: Video): Call<ResponseBody>
+    @POST("/videos")
+    fun uploadVideo(@Body video: Video): Call<ResponseBody>
 
     @FormUrlEncoded
     @POST("users/sessions")
@@ -39,11 +33,8 @@ interface IAppServerApiService {
         @Field("firebase_token") firebase_token: String
     ): Call<ResponseBody>
 
-    @FormUrlEncoded
-    @DELETE("users/sessions")
-    fun logoutUser(
-        @Field("username") username: String
-    ): Call<ResponseBody>
+    @DELETE("users/{user}/sessions")
+    fun logoutUser(@Path("user") user: String): Call<ResponseBody>
     
     @GET("users/{user}")
     fun getProfile(@Path("user") user: String): Call<ResponseBody>
@@ -52,32 +43,15 @@ interface IAppServerApiService {
     fun modifyProfile(@Path("user") user: String,
                       @Body userInfo: UserForModification): Call<ResponseBody>
 
+    @GET("users/{user}/home")
+    fun getHomeVideos(@Path("user") user: String,
+                    @Query("page") pageNumber: Int,
+                    @Query("limit") pageSize: Int): Call<ResponseBody>
 
-
-    @GET("videos")
-    fun getAllVideos(@Query("page") pageNumber: Int,
-                     @Query("limit") pageSize: Int): Call<ResponseBody>
-
-//  refactor
-    //    @GET("users/{user}/home")
-//    fun getMyVideos(@Path("user") user: String,
-//                    @Query("page") pageNumber: Int,
-//                    @Query("limit") pageSize: Int): Call<ResponseBody>
-
-
-    @GET("videos/me")
-    fun getMyVideos(@Query("page") pageNumber: Int, @Query("limit") pageSize: Int): Call<ResponseBody>
-
-    @GET("videos/{user}")
-    fun getVideosFrom(@Path("user") user: String,
-                      @Query("page") pageNumber: Int,
-                      @Query("limit") pageSize: Int) : Call<ResponseBody>
-
-//    refactor getMyVideos y getVideosFrom se reemplazan por este:
-//    @GET("users/{user}/videos")
-//    fun getMyVideos(@Path("user") user: String,
-//                    @Query("page") pageNumber: Int,
-//                    @Query("limit") pageSize: Int): Call<ResponseBody>
+    @GET("users/{user}/videos")
+    fun getVideos(@Path("user") user: String,
+                    @Query("page") pageNumber: Int,
+                    @Query("limit") pageSize: Int): Call<ResponseBody>
     @GET("users/{user}/friends")
     fun getFriends(@Path("user") user: String) : Call<ResponseBody>
 

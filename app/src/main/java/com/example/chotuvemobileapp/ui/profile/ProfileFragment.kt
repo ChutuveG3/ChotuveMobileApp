@@ -97,7 +97,7 @@ class ProfileFragment : Fragment() {
                     viewModel.userInfo.value!!.email,
                     viewModel.userInfo.value!!.birthdate,
                     viewModel.userInfo.value!!.user_name)
-                else -> VideoListFragment.newInstance("Me")
+                else -> VideoListFragment.newInstance(viewModel.userInfo.value!!.user_name)
             }
         }
     }

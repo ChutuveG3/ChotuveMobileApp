@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.chotuvemobileapp.data.users.LoginDataSource
@@ -33,12 +34,9 @@ class LoginActivity : AppCompatActivity() {
 
         SignInButton.setOnClickListener {
             if(isDataValid()) {
+                showLoadingScreen()
                 FirebaseInstanceId.getInstance().instanceId
                     .addOnSuccessListener(this@LoginActivity) { instanceIdResult ->
-                        LoginScreen.alpha = .2F
-                        window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager
-                            .LayoutParams.FLAG_NOT_TOUCHABLE)
-                        LoginProgressBar.visibility = View.VISIBLE
                         val newToken = instanceIdResult.token
                         Log.d("FIREBASE_TOKEN", newToken)
 
@@ -65,6 +63,17 @@ class LoginActivity : AppCompatActivity() {
 
             }
         }
+    }
+
+    private fun showLoadingScreen() {
+        val inputManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputManager.hideSoftInputFromWindow(currentFocus!!.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+        LoginScreen.alpha = .2F
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager
+                .LayoutParams.FLAG_NOT_TOUCHABLE
+        )
+        LoginProgressBar.visibility = View.VISIBLE
     }
 
     private fun saveDataAndStartHome(it: String) {

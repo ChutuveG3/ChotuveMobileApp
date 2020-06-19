@@ -51,7 +51,7 @@
     <string name="menu_notifications">Notifications</string>
     <string name="menu_search">Search</string>
     <string name="invalid_email">Invalid email</string>
-    <string name="find_your_friend_in_chotuve">Find your friends in Chotuve</string>
-    <string name="friend_title">Find your friends in Chotuve</string>
+    <string name="find_your_friend_in_chotuve">Find your friends on Chotuve</string>
+    <string name="friend_title">Find your friends on Chotuve</string>
     <string name="friend_explain_text">TextView</string>
 </resources>

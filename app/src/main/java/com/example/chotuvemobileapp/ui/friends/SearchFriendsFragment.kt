@@ -34,7 +34,11 @@ class SearchFriendsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         NotFoundText.visibility = View.GONE
         val username = prefs.getString("username", null)
-        SearchFriendsExplainText.text = "Search by username, $username it's yours"
+        SearchFriendsExplainText.text = "Search by username, yours is $username"
+
+        SearchFriendsToolbar.setOnClickListener {
+            SearchFriendSearchView.isIconified = false
+        }
 
         SearchFriendSearchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener{
             override fun onQueryTextSubmit(query: String?): Boolean {

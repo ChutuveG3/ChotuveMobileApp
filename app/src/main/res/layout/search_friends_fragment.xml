@@ -62,6 +62,7 @@
         android:layoutDirection="rtl"
         android:queryBackground="@android:color/transparent"
         android:queryHint="@string/prompt_username"
+        android:searchHintIcon="@null"
         android:searchIcon="@drawable/ic_baseline_search_24"
         android:theme="@style/AppTheme.NoActionBar.Light.TextWhite"
         android:visibility="visible"

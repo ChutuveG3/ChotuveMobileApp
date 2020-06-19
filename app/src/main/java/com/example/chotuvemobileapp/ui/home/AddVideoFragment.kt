@@ -93,6 +93,7 @@ class AddVideoFragment : Fragment() {
                                     }
                                     else -> {
                                         fail()
+                                        Toast.makeText(context, getString(R.string.internal_error), Toast.LENGTH_LONG).show()
                                     }
                                 }
                             }
