@@ -38,7 +38,7 @@ class LoginActivity : AppCompatActivity() {
                 FirebaseInstanceId.getInstance().instanceId
                     .addOnSuccessListener(this@LoginActivity) { instanceIdResult ->
                         val newToken = instanceIdResult.token
-                        Log.d("FIREBASE_TOKEN", newToken)
+                        Log.d(FIREBASE_TAG, newToken)
 
                         val username = LogInUsername.text.toString()
                         val pass = LoginPassword.text.toString()
@@ -47,16 +47,12 @@ class LoginActivity : AppCompatActivity() {
                                 "Failure" -> Toast.makeText(applicationContext, getString(R.string.internal_error),
                                     Toast.LENGTH_LONG).show()
                                 "InvalidParams" -> showInvalidUsername()
-                                else -> {
-                                    saveDataAndStartHome(it)
-                                    LoginScreen.alpha = 1F
-                                    window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                                    LoginProgressBar.visibility = View.GONE
-                                }
+                                else -> saveDataAndStartHome(it)
                             }
+                            quitLoadingScreen()
                     }
                 }.addOnFailureListener { Exception ->
-                        Log.d("FIREBASE_ERROR", Exception.toString())
+                        Log.d(FIREBASE_TAG, Exception.toString())
                         Toast.makeText(applicationContext, R.string.internal_error, Toast.LENGTH_LONG)
                             .show()
                     }
@@ -76,12 +72,18 @@ class LoginActivity : AppCompatActivity() {
         LoginProgressBar.visibility = View.VISIBLE
     }
 
-    private fun saveDataAndStartHome(it: String) {
+    private fun quitLoadingScreen() {
+        LoginScreen.alpha = 1F
+        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        LoginProgressBar.visibility = View.GONE
+    }
+
+    private fun saveDataAndStartHome(token: String) {
         val preferences = applicationContext.getSharedPreferences(
             getString(R.string.shared_preferences_file),
             Context.MODE_PRIVATE
         ).edit()
-        preferences.putString("token", it)
+        preferences.putString("token", token)
         preferences.putString("username", LogInUsername.text.toString())
         preferences.putString("password", LoginPassword.text.toString())
         preferences.apply()
@@ -107,14 +109,20 @@ class LoginActivity : AppCompatActivity() {
         UsernameInput.error = null
         PasswordInput.error = null
 
-        if (LoginPassword.text.toString().length < 6){
+        if (LoginPassword.text.toString().length < PASSWORD_MIN_LENGTH){
             PasswordInput.error = getString(R.string.invalid_pass)
             valid = false
         }
-        if (LogInUsername.length() > 30){
+        if (LogInUsername.length() > USERNAME_MAX_LENGTH){
             UsernameInput.error = getString(R.string.invalid_username)
             valid = false
         }
         return valid
+    }
+
+    companion object {
+        private const val USERNAME_MAX_LENGTH = 30
+        private const val PASSWORD_MIN_LENGTH = 6
+        private const val FIREBASE_TAG = "FIREBASE"
     }
 }
