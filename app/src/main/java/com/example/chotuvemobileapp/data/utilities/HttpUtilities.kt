@@ -46,4 +46,17 @@ object HttpUtilities {
             .addConverterFactory(GsonConverterFactory.create())
             .client(client.addInterceptor(body).build()).build().create(IAppServerApiService::class.java)
     }
+
+    fun buildFirebaseTokenClient(url: String = BuildConfig.BASE_URL, token: String): IAppServerApiService{
+        val client = makeBasicClient()
+        val interceptor = Interceptor{
+            val original = it.request()
+            val request = original.newBuilder().addHeader("firebase_token", token).build()
+            return@Interceptor it.proceed(request)
+        }
+        val body = HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.HEADERS)
+        return Retrofit.Builder().baseUrl(url)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(client.addInterceptor(body).addInterceptor(interceptor).build()).build().create(IAppServerApiService::class.java)
+    }
 }

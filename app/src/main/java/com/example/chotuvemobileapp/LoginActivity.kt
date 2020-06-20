@@ -67,7 +67,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun showLoadingScreen() {
         val inputManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputManager.hideSoftInputFromWindow(currentFocus!!.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+        inputManager.hideSoftInputFromWindow(currentFocus?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
         LoginScreen.alpha = .2F
         window.setFlags(
             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager
