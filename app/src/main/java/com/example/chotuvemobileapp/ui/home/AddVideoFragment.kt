@@ -25,8 +25,11 @@ import com.example.chotuvemobileapp.data.videos.Video
 import com.example.chotuvemobileapp.data.videos.VideoDataSource
 import com.example.chotuvemobileapp.helpers.PickRequest
 import com.example.chotuvemobileapp.helpers.Utilities.DATE_FORMAT_LONG
+import com.example.chotuvemobileapp.helpers.Utilities.REQUEST_GALLERY_PERMISSION
 import com.example.chotuvemobileapp.helpers.Utilities.REQUEST_LOCATION_PERMISSION
 import com.example.chotuvemobileapp.helpers.Utilities.getFileName
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
@@ -52,6 +55,13 @@ class AddVideoFragment : Fragment() {
         LocationServices.getFusedLocationProviderClient(requireActivity())
     }
 
+    private val locationRequest by lazy {
+        LocationRequest.create()
+            .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+            .setInterval(1000)
+            .setFastestInterval(800)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -63,8 +73,13 @@ class AddVideoFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION), REQUEST_LOCATION_PERMISSION)
+        }
+        else {
+            locationEnabled = true
+            LocationServices.getFusedLocationProviderClient(requireContext()).requestLocationUpdates(locationRequest, LocationCallback(), null)
         }
         AddVideoToolbar.setNavigationOnClickListener{
             val home=  activity as HomeActivity
@@ -113,10 +128,18 @@ class AddVideoFragment : Fragment() {
         }
 
         SelectFileButton.setOnClickListener {
-            val intent = Intent(Intent.ACTION_PICK).apply {
-                type = "video/*"
+            if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_GALLERY_PERMISSION)
             }
-            startActivityForResult(Intent.createChooser(intent, "Select Video"), PickRequest.Video.value)
+            else {
+                val intent = Intent(Intent.ACTION_PICK).apply {
+                    type = "video/*"
+                }
+                startActivityForResult(
+                    Intent.createChooser(intent, "Select Video"),
+                    PickRequest.Video.value
+                )
+            }
         }
     }
 
@@ -202,13 +225,30 @@ class AddVideoFragment : Fragment() {
         return current.format(formatter)
     }
 
+    @SuppressLint("MissingPermission")
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        if (requestCode == REQUEST_LOCATION_PERMISSION){
-            if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) locationEnabled = true
+        when(requestCode){
+            REQUEST_LOCATION_PERMISSION -> {
+                if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    locationEnabled = true
+                    LocationServices.getFusedLocationProviderClient(requireContext()).requestLocationUpdates(locationRequest, LocationCallback(), null)
+                }
+            }
+            REQUEST_GALLERY_PERMISSION -> {
+                if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    val intent = Intent(Intent.ACTION_PICK).apply {
+                        type = "video/*"
+                    }
+                    startActivityForResult(
+                        Intent.createChooser(intent, "Select Video"),
+                        PickRequest.Video.value
+                    )
+                }
+            }
         }
     }
 }

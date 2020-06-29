@@ -28,6 +28,7 @@ object Utilities {
     const val USERNAME = "username"
     const val PIC_URL = "pic_url"
     const val REQUEST_LOCATION_PERMISSION = 34
+    const val REQUEST_GALLERY_PERMISSION = 35
 
     fun createDatePicker(field: EditText, context: Context){
         val calendar = Calendar.getInstance()

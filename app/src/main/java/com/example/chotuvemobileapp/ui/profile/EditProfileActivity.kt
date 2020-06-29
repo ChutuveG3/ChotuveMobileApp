@@ -1,20 +1,24 @@
 package com.example.chotuvemobileapp.ui.profile
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import com.bumptech.glide.Glide
 import com.example.chotuvemobileapp.R
 import com.example.chotuvemobileapp.data.users.ProfileInfoDataSource
 import com.example.chotuvemobileapp.data.users.UserForModification
 import com.example.chotuvemobileapp.helpers.PickRequest
 import com.example.chotuvemobileapp.helpers.Utilities
+import com.example.chotuvemobileapp.helpers.Utilities.REQUEST_GALLERY_PERMISSION
 import com.example.chotuvemobileapp.helpers.Utilities.createDatePicker
 import com.example.chotuvemobileapp.helpers.Utilities.getFileName
 import com.example.chotuvemobileapp.helpers.Utilities.startSelectActivity
@@ -81,7 +85,12 @@ class EditProfileActivity : AppCompatActivity() {
         EditProfileProgressBar.visibility = View.GONE
 
         ProfilePic.setOnClickListener {
-            startSelectActivity(this, "image/*", "Select Pic", PickRequest.ProfilePic)
+            if (ActivityCompat.checkSelfPermission(applicationContext, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                    REQUEST_GALLERY_PERMISSION
+                )
+            }
+            else startSelectActivity(this, "image/*", "Select Pic", PickRequest.ProfilePic)
         }
 
         SaveProfileButton.setOnClickListener {
@@ -185,5 +194,17 @@ class EditProfileActivity : AppCompatActivity() {
         if(DOBEditText.text!!.isBlank()) valid = false
 
         return valid
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == REQUEST_GALLERY_PERMISSION){
+            if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startSelectActivity(this, "image/*", "Select Pic", PickRequest.ProfilePic)
+            }
+        }
     }
 }
