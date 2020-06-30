@@ -16,5 +16,7 @@ data class Video(
     @SerializedName("file_name")
     val fileName: String,
     @SerializedName("file_size")
-    val fileSize: String
+    val fileSize: String,
+    val latitude: Double?,
+    val longitude: Double?
 )

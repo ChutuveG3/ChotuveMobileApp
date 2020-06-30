@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.chotuvemobileapp.HomeActivity
 import com.example.chotuvemobileapp.R
+import com.example.chotuvemobileapp.data.users.FriendsInfo
 import com.example.chotuvemobileapp.ui.ListFragment
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.fragment_friends.*
@@ -22,7 +23,7 @@ class FriendsFragment : Fragment() {
         requireActivity().applicationContext.getSharedPreferences(getString(R.string.shared_preferences_file), Context.MODE_PRIVATE)
     }
     private val viewModel by lazy {
-        ViewModelProvider(requireActivity()).get(FriendsViewModel::class.java)
+        ViewModelProvider(this).get(FriendsViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -40,6 +41,9 @@ class FriendsFragment : Fragment() {
             home.openDrawer()
         }
         viewModel.setPrefs(prefs)
+        FriendsInfo.needsUpdate.observe(viewLifecycleOwner, Observer {
+            if (it) viewModel.updateFriends()
+        })
         FriendsToolbar.title = prefs.getString("username", "")
         FriendsViewPager.adapter = FriendsPagerAdapter(this)
         viewModel.friends.observe(viewLifecycleOwner, Observer {

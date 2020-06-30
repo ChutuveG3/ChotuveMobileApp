@@ -23,9 +23,6 @@ object LogoutDataSource {
                         myCallback.invoke("Success")
                     }
                     else -> {
-                        val error = Gson().fromJson(response.errorBody()!!.string(),
-                            AuthErrorResponse::class.java)
-                        Log.d("LOGOUT_ERROR", error.message.toString())
                         myCallback.invoke("Error")
                     }
                 }

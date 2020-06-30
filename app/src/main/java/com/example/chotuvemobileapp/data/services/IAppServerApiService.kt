@@ -1,5 +1,7 @@
 package com.example.chotuvemobileapp.data.services
 
+import com.example.chotuvemobileapp.data.requests.LoginRequest
+import com.example.chotuvemobileapp.data.requests.TokenLoginRequest
 import com.example.chotuvemobileapp.data.users.User
 import com.example.chotuvemobileapp.data.users.UserForModification
 import com.example.chotuvemobileapp.data.videos.Video
@@ -18,19 +20,14 @@ interface IAppServerApiService {
     @POST("/videos")
     fun uploadVideo(@Body video: Video): Call<ResponseBody>
 
-    @FormUrlEncoded
     @POST("users/sessions")
     fun loginUser(
-        @Field("username") username: String,
-        @Field("password") password: String
+        @Body request: LoginRequest
     ): Call<ResponseBody>
     
-    @FormUrlEncoded
     @POST("users/sessions")
     fun tokenLoginUser(
-        @Field("username") username: String,
-        @Field("password") password: String,
-        @Field("firebase_token") firebase_token: String
+        @Body request: TokenLoginRequest
     ): Call<ResponseBody>
 
     @DELETE("users/{user}/sessions")
@@ -69,4 +66,7 @@ interface IAppServerApiService {
     @POST("users/{orig}/friends/{dest}/reject")
     fun declineFriendRequest(@Path("orig") sender: String,
                              @Path("dest") destination: String) : Call<ResponseBody>
+
+    @GET("users/{user}/potential_friends")
+    fun searchFriends(@Path("user") sender: String, @Query("username") queryString: String) : Call<ResponseBody>
 }

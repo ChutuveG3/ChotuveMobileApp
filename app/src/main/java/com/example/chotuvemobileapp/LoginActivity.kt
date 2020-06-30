@@ -63,7 +63,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun showLoadingScreen() {
         val inputManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputManager.hideSoftInputFromWindow(currentFocus!!.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+        inputManager.hideSoftInputFromWindow(currentFocus?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
         LoginScreen.alpha = .2F
         window.setFlags(
             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager
@@ -92,6 +92,9 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun showInvalidUsername() {
+        LoginScreen.alpha = 1F
+        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        LoginProgressBar.visibility = View.GONE
         UsernameInput.error = getString(R.string.failed_login)
         PasswordInput.error = getString(R.string.failed_login)
         PasswordInput.getChildAt(1).visibility = View.GONE

@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.chotuvemobileapp.R
 import com.example.chotuvemobileapp.data.users.ProfileInfoDataSource
 import com.example.chotuvemobileapp.helpers.SearchedUsersAdapter
+import com.google.android.gms.common.util.CollectionUtils.isEmpty
 import kotlinx.android.synthetic.main.search_friends_fragment.*
 
 class SearchFriendsFragment : Fragment() {
@@ -44,16 +45,14 @@ class SearchFriendsFragment : Fragment() {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 SearchFriendSearchView.clearFocus()
                 if (!query.isNullOrEmpty()){
-                    ProfileInfoDataSource.getProfileInfo(prefs, query){
-                        when(it){
-                            null -> {
+                    ProfileInfoDataSource.getSimilarUsers(prefs, query){
+                        when{
+                            it == null || it.count() == 0 -> {
                                 SearchFriendsRecyclerView.visibility = View.INVISIBLE
                                 NotFoundText.visibility = View.VISIBLE
                             }
                             else -> {
-                                val users = ArrayList<String>()
-                                users.add(it.user_name)
-                                SearchFriendsRecyclerView.adapter = SearchedUsersAdapter(users, prefs, viewModel)
+                                SearchFriendsRecyclerView.adapter = SearchedUsersAdapter(it, prefs, viewModel)
                                 SearchFriendsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
                                 NotFoundText.visibility = View.GONE
                                 SearchFriendsRecyclerView.visibility = View.VISIBLE

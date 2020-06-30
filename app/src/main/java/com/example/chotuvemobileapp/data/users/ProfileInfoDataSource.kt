@@ -1,6 +1,7 @@
 package com.example.chotuvemobileapp.data.users
 
 import android.content.SharedPreferences
+import com.example.chotuvemobileapp.data.response.PotentialFriendsResponse
 import com.example.chotuvemobileapp.data.utilities.HttpUtilities.buildAuthenticatedClient
 import com.example.chotuvemobileapp.helpers.Utilities
 import com.google.gson.Gson
@@ -127,6 +128,25 @@ object ProfileInfoDataSource {
                 when {
                     response.isSuccessful -> myCallback.invoke("Success")
                     else -> myCallback.invoke("Failure")
+                }
+            }
+        })
+    }
+
+    fun getSimilarUsers(preferences: SharedPreferences, query: String, myCallback: (ArrayList<String>?) -> Unit){
+        val retrofit = buildAuthenticatedClient(preferences)
+        val user = preferences.getString(Utilities.USERNAME, "")!!
+        retrofit.searchFriends(user, query).enqueue(object : Callback<ResponseBody>{
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                myCallback.invoke(null)
+            }
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>){
+                when {
+                    response.isSuccessful -> {
+                        val resp = Gson().fromJson(response.body()!!.string(), PotentialFriendsResponse::class.java)
+                        myCallback.invoke(resp.potentialFriends)
+                    }
+                    else -> myCallback.invoke(null)
                 }
             }
         })

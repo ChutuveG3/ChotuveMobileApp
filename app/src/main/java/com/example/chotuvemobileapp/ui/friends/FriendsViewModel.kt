@@ -3,6 +3,7 @@ package com.example.chotuvemobileapp.ui.friends
 import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.chotuvemobileapp.data.users.FriendsInfo
 import com.example.chotuvemobileapp.data.users.ProfileInfoDataSource
 
 class FriendsViewModel : ViewModel() {
@@ -22,6 +23,17 @@ class FriendsViewModel : ViewModel() {
             liveData.value = it
         }
         return@lazy liveData
+    }
+
+    fun updateFriends(){
+        ProfileInfoDataSource.getFriends(prefs, prefs.getString("username", "")!!){
+            friends.postValue(it)
+        }
+        ProfileInfoDataSource.getPendingFriends(prefs, prefs.getString("username", "")!!){
+            pendingFriends.postValue(it)
+        }
+
+        FriendsInfo.needsUpdate.postValue(false)
     }
 
     fun removePendingFriend(friend: String){

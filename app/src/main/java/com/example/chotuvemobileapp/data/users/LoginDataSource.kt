@@ -1,5 +1,7 @@
 package com.example.chotuvemobileapp.data.users
 
+import com.example.chotuvemobileapp.data.requests.LoginRequest
+import com.example.chotuvemobileapp.data.requests.TokenLoginRequest
 import com.example.chotuvemobileapp.data.response.AuthErrorResponse
 import com.example.chotuvemobileapp.data.response.LoginResponse
 import com.example.chotuvemobileapp.data.utilities.HttpUtilities.buildClient
@@ -14,8 +16,9 @@ object LoginDataSource {
     fun login(username: String, password: String, myCallback: (String) -> Unit){
 
         val retrofit = buildClient()
+        val request = LoginRequest(username, password)
 
-        retrofit.loginUser(username, password).enqueue(object : Callback<ResponseBody> {
+        retrofit.loginUser(request).enqueue(object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 myCallback.invoke("Failure")
             }
@@ -56,7 +59,9 @@ object LoginDataSource {
 
         val retrofit = buildClient()
 
-        retrofit.tokenLoginUser(username, password, token).enqueue(object : Callback<ResponseBody> {
+        val request = TokenLoginRequest(username, password, token)
+
+        retrofit.tokenLoginUser(request).enqueue(object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 myCallback.invoke("Failure")
             }

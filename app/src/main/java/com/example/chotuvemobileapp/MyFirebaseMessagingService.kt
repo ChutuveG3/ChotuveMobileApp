@@ -2,17 +2,19 @@ package com.example.chotuvemobileapp
 
 import android.content.Context
 import android.util.Log
-import android.widget.Toast
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import com.example.chotuvemobileapp.data.users.LoginDataSource
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import kotlinx.android.synthetic.main.activity_login.*
 
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
     private val prefs by lazy {
         getSharedPreferences(getString(R.string.shared_preferences_file), Context.MODE_PRIVATE)
     }
+
+    private var notificationId = 0
 
     override fun onNewToken(token: String) {
         Log.d("NEW_FIREBASE_TOKEN", token)
@@ -27,8 +29,21 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         }
     }
 
-    override fun onMessageReceived(p0: RemoteMessage) {
-        super.onMessageReceived(p0)
+    override fun onMessageReceived(message: RemoteMessage) {
+
+        super.onMessageReceived(message)
+        val notiBuilder = NotificationCompat.Builder(this, getString(R.string.default_notification_channel_id))
+            .setContentTitle(message.notification?.title)
+            .setContentText(message.notification?.body)
+            .setSmallIcon(R.drawable.ic_stat_ic_notification)
+            .setChannelId(getString(R.string.default_notification_channel_id))
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+
+        with(NotificationManagerCompat.from(this)){
+            notify(notificationId, notiBuilder.build())
+        }
+
+        notificationId += 1
     }
 }
 

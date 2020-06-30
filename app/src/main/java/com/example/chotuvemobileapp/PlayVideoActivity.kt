@@ -37,9 +37,10 @@ class PlayVideoActivity : AppCompatActivity() {
         VideoTitle.text = intent.getStringExtra("videoTitle")
         VideoAuthor.text = intent.getStringExtra("videoAuthor")
         VideoAuthor.setOnClickListener {
-            val intent = Intent(this, UserProfileActivity::class.java)
-            intent.putExtra("user", intent.getStringExtra("videoAuthor"))
-            startActivity(intent)
+            startProfileActivity()
+        }
+        VideoAuthorPic.setOnClickListener {
+            startProfileActivity()
         }
         VideoProgressBar.visibility = View.VISIBLE
 
@@ -97,6 +98,12 @@ class PlayVideoActivity : AppCompatActivity() {
         }
         Handler().postDelayed({FullscreenToggle.visibility = View.GONE}, delayTime)
 
+    }
+
+    private fun startProfileActivity() {
+        val profileIntent = Intent(this, UserProfileActivity::class.java)
+        profileIntent.putExtra("user", intent.getStringExtra("videoAuthor"))
+        startActivity(profileIntent)
     }
 
     private fun setLayout(height: Int){
