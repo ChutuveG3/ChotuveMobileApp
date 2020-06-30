@@ -22,7 +22,7 @@ class ProfileViewModel : ViewModel() {
 
     fun updateUserInfo(firstName: String, lastName: String, dateOfBirth: String, email: String, pic_url: String?){
         val oldUser = userInfo.value
-        val newUser = UserInfo(oldUser!!.user_name, firstName, lastName, email, dateOfBirth, pic_url)
+        val newUser = UserInfo(oldUser!!.user_name, firstName, lastName, email, dateOfBirth, pic_url, oldUser.friendship)
         userInfo.postValue(newUser)
     }
 }

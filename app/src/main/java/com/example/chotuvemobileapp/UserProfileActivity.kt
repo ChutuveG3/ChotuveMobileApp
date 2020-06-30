@@ -43,6 +43,26 @@ class UserProfileActivity : AppCompatActivity() {
         viewModel.userInfo.observe(this, Observer {
             if (it != null){
                 val nameToDisplay = "${it.first_name} ${it.last_name}"
+                val drawable = when(it.friendship){
+                    "yes"-> getDrawable(R.drawable.ic_account_check)
+                    "pending" -> getDrawable(R.drawable.ic_account_clock)
+                    else -> getDrawable(R.drawable.ic_account_plus)
+                }
+                AddFriendButton.setImageDrawable(drawable)
+                AddFriendButton.setOnClickListener {_ ->
+                    if (it.friendship == "no") {
+                        showLoadingScreen()
+                        ProfileInfoDataSource.addFriend(prefs, username) {str ->
+                            if (str == "Success") {
+                                Toast.makeText(applicationContext,"Request sent to $username!", Toast.LENGTH_LONG).show()
+                                AddFriendButton.setImageDrawable(getDrawable(R.drawable.ic_account_clock))
+                            }
+                            else Toast.makeText(applicationContext, getString(R.string.internal_error), Toast.LENGTH_LONG).show()
+                            quitLoadingScreen()
+                        }
+                    }
+                }
+
                 NameTextView.text = nameToDisplay
                 UsernameTextView.text = it.user_name
                 ProfileViewPager.adapter = ScreenSlidePagerAdapter(this)
@@ -61,30 +81,10 @@ class UserProfileActivity : AppCompatActivity() {
                 }
             }
         })
-        AddFriendButton.setImageDrawable(getDrawable(R.drawable.ic_account_plus))
-        viewModel.friends.observe(this, Observer {
-            if (it.contains(username)) {
-                AddFriendButton.setImageDrawable(getDrawable(R.drawable.ic_account_check))
-                AddFriendButton.setOnClickListener(null)
-            }
-        })
-        viewModel.pendingFriends.observe(this, Observer {
-            if (it.contains(username)) {
-                AddFriendButton.setImageDrawable(getDrawable(R.drawable.ic_account_clock))
-                AddFriendButton.setOnClickListener(null)
-            }
-        })
+
         if (username == prefs.getString(Utilities.USERNAME, "")!!) AddFriendButton.visibility = View.GONE
         openDrawer.setOnClickListener {
             super.onBackPressed()
-        }
-        AddFriendButton.setOnClickListener {
-            showLoadingScreen()
-            ProfileInfoDataSource.addFriend(prefs, username){
-                if (it == "Success") Toast.makeText(applicationContext, "Request sent to $username!",Toast.LENGTH_LONG).show()
-                else Toast.makeText(applicationContext, getString(R.string.internal_error),Toast.LENGTH_LONG).show()
-                quitLoadingScreen()
-            }
         }
     }
 

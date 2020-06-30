@@ -66,4 +66,7 @@ interface IAppServerApiService {
     @POST("users/{orig}/friends/{dest}/reject")
     fun declineFriendRequest(@Path("orig") sender: String,
                              @Path("dest") destination: String) : Call<ResponseBody>
+
+    @GET("users/{user}/potential_friends")
+    fun searchFriends(@Path("user") sender: String, @Query("username") queryString: String) : Call<ResponseBody>
 }
