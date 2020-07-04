@@ -115,9 +115,4 @@ class ProfileFragment : Fragment() {
         ProfilePic.isClickable = false
         ProfileProgressBar.visibility = View.VISIBLE
     }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        viewModelStore.clear()
-    }
 }

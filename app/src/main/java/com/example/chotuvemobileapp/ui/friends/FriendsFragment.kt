@@ -62,8 +62,8 @@ class FriendsFragment : Fragment() {
         override fun getItemCount(): Int = 3
         override fun createFragment(position: Int): Fragment {
             return when(position){
-                0 -> ListFragment.newInstance(false)
-                1 -> ListFragment.newInstance(true)
+                0 -> ListFragment.newInstance(false, getString(R.string.friends_not_found))
+                1 -> ListFragment.newInstance(true, getString(R.string.pending_friends_not_found))
                 else -> SearchFriendsFragment()
             }
         }

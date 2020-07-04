@@ -1,6 +1,5 @@
 package com.example.chotuvemobileapp.ui.friends
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.*
@@ -11,7 +10,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.chotuvemobileapp.R
 import com.example.chotuvemobileapp.data.users.ProfileInfoDataSource
 import com.example.chotuvemobileapp.helpers.SearchedUsersAdapter
-import com.google.android.gms.common.util.CollectionUtils.isEmpty
 import kotlinx.android.synthetic.main.search_friends_fragment.*
 
 class SearchFriendsFragment : Fragment() {
@@ -30,12 +28,13 @@ class SearchFriendsFragment : Fragment() {
         return inflater.inflate(R.layout.search_friends_fragment, container, false)
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         NotFoundText.visibility = View.GONE
+        SadFaceImage.visibility = View.GONE
         val username = prefs.getString("username", null)
-        SearchFriendsExplainText.text = "Search by username, yours is $username"
+        val textToShow = "Search by username, yours is $username"
+        SearchFriendsExplainText.text = textToShow
 
         SearchFriendsToolbar.setOnClickListener {
             SearchFriendSearchView.isIconified = false
@@ -49,6 +48,7 @@ class SearchFriendsFragment : Fragment() {
                         when{
                             it == null || it.count() == 0 -> {
                                 SearchFriendsRecyclerView.visibility = View.INVISIBLE
+                                SadFaceImage.visibility = View.VISIBLE
                                 NotFoundText.visibility = View.VISIBLE
                             }
                             else -> {
@@ -64,6 +64,8 @@ class SearchFriendsFragment : Fragment() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
+                NotFoundText.visibility = View.GONE
+                SadFaceImage.visibility = View.GONE
                 return true
             }
 

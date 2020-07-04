@@ -11,8 +11,8 @@ class PlayVideoViewModel : ViewModel() {
     var liked = false
     var disliked = false
 
-    var likes = 32525;
-    var dislikes = 2;
+    var likes = 32525
+    var dislikes = 2
 
     var descriptionExpanded = false
 

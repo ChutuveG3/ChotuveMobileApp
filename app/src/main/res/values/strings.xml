@@ -56,4 +56,6 @@
     <string name="friend_explain_text">TextView</string>
     <string name="default_notification_channel_id">All</string>
     <string name="add_comment">Add a comment</string>
+    <string name="friends_not_found">Here you\'ll find all your friends. Try adding new ones!</string>
+    <string name="pending_friends_not_found">You have no new requests</string>
 </resources>

@@ -118,9 +118,10 @@
                         android:id="@+id/VideoAuthorPic"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:background="@color/ic_launcher_background"
+                        android:tint="#EDE7F6"
                         app:srcCompat="@drawable/ic_person_black_24dp"
-                        tools:ignore="ContentDescription"
-                        tools:srcCompat="@tools:sample/avatars" />
+                        tools:ignore="ContentDescription" />
                 </androidx.cardview.widget.CardView>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -168,6 +169,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
+                android:background="@color/transparent"
                 app:layout_constraintEnd_toEndOf="@+id/DislikeCount"
                 app:layout_constraintStart_toStartOf="@+id/DislikeCount"
                 app:layout_constraintTop_toBottomOf="@+id/VideoHeader"
