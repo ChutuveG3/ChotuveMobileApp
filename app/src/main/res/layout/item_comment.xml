@@ -35,7 +35,8 @@
         android:textColor="#1C1C1C"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/cardView2"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@tools:sample/full_names" />
 
     <TextView
         android:id="@+id/CommentBody"
@@ -47,7 +48,8 @@
         android:fontFamily="sans-serif-condensed"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/cardView2"
-        app:layout_constraintTop_toBottomOf="@+id/CommentAuthor" />
+        app:layout_constraintTop_toBottomOf="@+id/CommentAuthor"
+        tools:text="@tools:sample/lorem/random" />
 
     <TextView
         android:id="@+id/CommentDate"
@@ -61,6 +63,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/cardView2"
-        app:layout_constraintTop_toBottomOf="@+id/CommentBody" />
+        app:layout_constraintTop_toBottomOf="@+id/CommentBody"
+        tools:text="@tools:sample/date/ddmmyy" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

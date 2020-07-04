@@ -1,12 +1,10 @@
 package com.example.chotuvemobileapp.ui.profile
 
-import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import androidx.fragment.app.Fragment
 import com.example.chotuvemobileapp.R
 import kotlinx.android.synthetic.main.profile_view_fragment.*
 
@@ -17,6 +15,7 @@ class ProfileDetailsFragment : Fragment() {
     var email: String = ""
     private var birthDate: String = ""
     private var username = ""
+    private var ownProfile = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,6 +27,7 @@ class ProfileDetailsFragment : Fragment() {
             username = it.getString("username", "")
         }
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -43,16 +43,8 @@ class ProfileDetailsFragment : Fragment() {
         LastNameText.text = lastName
         EmailText.text = email
         DOBText.text = birthDate
-
-        GoToEditProfileButton.setOnClickListener{
-            val intent = Intent(context, EditProfileActivity::class.java)
-            intent.putExtra("firstName", firstName)
-            intent.putExtra("lastName", lastName)
-            intent.putExtra("dateOfBirth", birthDate)
-            intent.putExtra("email", email)
-            startActivity(intent)
-        }
     }
+
     companion object {
         @JvmStatic
         fun newInstance(firstName: String, lastName: String, email: String, birthDate: String, username: String) =
@@ -66,5 +58,4 @@ class ProfileDetailsFragment : Fragment() {
                 }
             }
     }
-
 }

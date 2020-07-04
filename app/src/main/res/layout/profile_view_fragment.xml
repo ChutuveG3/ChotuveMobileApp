@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -24,7 +25,8 @@
         android:textColor="@color/colorPrimaryDark"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_first_name" />
+        app:layout_constraintTop_toBottomOf="@+id/text_first_name"
+        tools:text="@tools:sample/first_names" />
 
     <TextView
         android:id="@+id/text_last_name"
@@ -48,7 +50,8 @@
         android:textColor="@color/colorPrimaryDark"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_last_name" />
+        app:layout_constraintTop_toBottomOf="@+id/text_last_name"
+        tools:text="@tools:sample/last_names" />
 
     <TextView
         android:id="@+id/text_profile_email"
@@ -70,7 +73,8 @@
         android:textColor="@color/colorPrimaryDark"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_profile_email" />
+        app:layout_constraintTop_toBottomOf="@+id/text_profile_email"
+        tools:text="@tools:sample/full_names" />
 
     <TextView
         android:id="@+id/text_date_of_birth"
@@ -92,19 +96,7 @@
         android:textColor="@color/colorPrimaryDark"
         android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_date_of_birth" />
+        app:layout_constraintTop_toBottomOf="@+id/text_date_of_birth"
+        tools:text="@tools:sample/date/ddmmyy" />
 
-    <Button
-        android:id="@+id/GoToEditProfileButton"
-        android:layout_width="0dp"
-        android:layout_height="60dp"
-        android:layout_marginStart="84dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="84dp"
-        android:backgroundTint="@color/colorPrimaryDark"
-        android:text="@string/edit"
-        android:textColor="#FFFFFF"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/DOBText" />
 </androidx.constraintlayout.widget.ConstraintLayout>

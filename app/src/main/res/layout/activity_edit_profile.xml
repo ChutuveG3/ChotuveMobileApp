@@ -17,67 +17,69 @@
         <com.google.android.material.appbar.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:contentScrim="?attr/colorPrimary"
-            app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed"
 
+            app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed"
             app:toolbarId="@+id/toolbar">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
 
-                <LinearLayout
-                    android:id="@+id/linearLayout"
-                    android:layout_width="0dp"
-                    android:layout_height="200dp"
-                    android:layout_marginBottom="50dp"
-                    android:background="@color/colorPrimaryDark"
-                    android:orientation="vertical"
-                    app:layout_constraintBottom_toBottomOf="@id/ProfilePicBorder"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.0">
-
-                </LinearLayout>
-
-                <ImageView
-                    android:id="@+id/BackgroundPic"
-                    android:layout_width="0dp"
-                    android:layout_height="180dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:background="#FFFFFF"
-                    android:src="@drawable/ic_photo_size_select_actual_grey_78dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/outerBorder"
+                    android:layout_width="240dp"
+                    android:layout_height="240dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginBottom="16dp"
+                    android:background="@drawable/rounded_background_big"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/linearLayout"
-                    tools:ignore="ContentDescription" />
+                    app:layout_constraintTop_toTopOf="parent">
 
-                <LinearLayout
-                    android:id="@+id/ProfilePicBorder"
-                    android:layout_width="147dp"
-                    android:layout_height="147dp"
-                    android:layout_marginStart="12dp"
-                    android:layout_marginTop="100dp"
-                    android:background="#2B018A"
-                    android:orientation="vertical"
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/BorderWrapper"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="#2B018A"
+                    app:cardCornerRadius="110dp"
+                    app:cardElevation="0dp"
+                    app:layout_constraintBottom_toBottomOf="@id/outerBorder"
+                    app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/linearLayout" />
+                    app:layout_constraintTop_toTopOf="@id/outerBorder">
 
-                <ImageView
-                    android:id="@+id/ProfilePic"
-                    android:layout_width="133dp"
-                    android:layout_height="133dp"
-                    android:background="#DCDCDC"
-                    android:src="@drawable/ic_person_black_24dp"
-                    app:layout_constraintBottom_toBottomOf="@id/ProfilePicBorder"
-                    app:layout_constraintLeft_toLeftOf="@id/ProfilePicBorder"
-                    app:layout_constraintRight_toRightOf="@id/ProfilePicBorder"
-                    app:layout_constraintTop_toTopOf="@id/ProfilePicBorder"
-                    tools:ignore="ContentDescription" />
+                    <LinearLayout
+                        android:id="@+id/ProfilePicBorder"
+                        android:layout_width="220dp"
+                        android:layout_height="220dp"
+                        android:background="#2B018A"
+                        android:orientation="vertical" />
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/ProfilePicWrapper"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:cardBackgroundColor="@android:color/transparent"
+                    app:cardCornerRadius="100dp"
+                    app:cardElevation="0dp"
+                    app:layout_constraintBottom_toBottomOf="@id/BorderWrapper"
+                    app:layout_constraintEnd_toEndOf="@+id/BorderWrapper"
+                    app:layout_constraintStart_toStartOf="@+id/BorderWrapper"
+                    app:layout_constraintTop_toTopOf="@+id/BorderWrapper">
+
+                    <ImageView
+                        android:id="@+id/ProfilePic"
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        android:background="#DCDCDC"
+                        android:src="@drawable/ic_person_black_24dp"
+                        tools:ignore="ContentDescription"
+                        tools:srcCompat="@tools:sample/avatars" />
+                </androidx.cardview.widget.CardView>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -101,7 +103,7 @@
             <Button
                 android:id="@+id/SaveProfileButton"
                 android:layout_width="0dp"
-                android:layout_height="60dp"
+                android:layout_height="46dp"
                 android:layout_marginStart="84dp"
                 android:layout_marginTop="32dp"
                 android:layout_marginEnd="84dp"

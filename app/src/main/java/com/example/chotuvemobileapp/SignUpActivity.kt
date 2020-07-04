@@ -1,14 +1,11 @@
 package com.example.chotuvemobileapp
 
-import android.app.DatePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import android.view.WindowManager
-import android.widget.EditText
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.chotuvemobileapp.data.users.LoginDataSource
@@ -16,11 +13,19 @@ import com.example.chotuvemobileapp.data.users.User
 import com.example.chotuvemobileapp.helpers.Utilities.createDatePicker
 import com.example.chotuvemobileapp.helpers.Utilities.watchText
 import kotlinx.android.synthetic.main.activity_sign_up.*
-import java.text.DecimalFormat
 import java.time.LocalDate
-import java.util.*
 
 class SignUpActivity : AppCompatActivity() {
+    private val registerInfo by lazy {
+        User(
+            RegNameText.text.toString(),
+            RegLastNameText.text.toString(),
+            RegEmailText.text.toString(),
+            RegPwFirstText.text.toString(),
+            RegUsernameText.text.toString(),
+            RegDateText.text.toString()
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,53 +47,47 @@ class SignUpActivity : AppCompatActivity() {
 
         SignUpButton.setOnClickListener{
             if (isDataValid()) {
-                SignupScreen.alpha = .2F
-                window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                SignupProgressBar.visibility = View.VISIBLE
-
-                val registerInfo = User(
-                    RegNameText.text.toString(),
-                    RegLastNameText.text.toString(),
-                    RegEmailText.text.toString(),
-                    RegPwFirstText.text.toString(),
-                    RegUsernameText.text.toString(),
-                    RegDateText.text.toString()
-                )
-
-                LoginDataSource.addUser(registerInfo)  {
+                showLoadingScreen()
+                LoginDataSource.addUser(registerInfo){
                     when (it) {
-                        "Failure" -> {
-                            Toast.makeText(applicationContext, getString(R.string.request_failure),
-                                Toast.LENGTH_LONG).show()
-                        }
-                        "Success" -> {
-                            // Persist username
-                            val preferences = applicationContext
-                                .getSharedPreferences(getString(R.string.shared_preferences_file),
-                                                                Context.MODE_PRIVATE)
-                                .edit()
-                            preferences.putString("username", registerInfo.user_name)
-                            preferences.apply()
-                            // Go to Login
-                            startActivity(Intent(this, LoginActivity::class.java))
-                            val nameToShow = registerInfo.first_name
-                            Toast.makeText(applicationContext,"Welcome, $nameToShow! \nNow please sign in",
-                                Toast.LENGTH_LONG).show()
-                            finish()
-                        }
+                        "Failure" -> Toast.makeText(applicationContext, getString(R.string.request_failure), Toast.LENGTH_LONG).show()
+                        "Success" -> goToLogin(registerInfo)
                         "user_name_already_exists" -> RegUsername.error = getString(R.string.user_taken)
                         "user_email_already_exists" -> RegEmail.error = getString(R.string.email_taken)
                         else -> Toast.makeText( applicationContext, getString(R.string.internal_error), Toast.LENGTH_LONG).show()
                     }
-                    SignupScreen.alpha = 1F
-                    window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                    SignupProgressBar.visibility = View.GONE
+                    clearLoadingScreen()
                 }
-
             }
         }
     }
 
+    private fun clearLoadingScreen() {
+        SignupScreen.alpha = 1F
+        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        SignupProgressBar.visibility = View.GONE
+    }
+
+    private fun showLoadingScreen() {
+        val inputManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputManager.hideSoftInputFromWindow(currentFocus!!.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+        SignupScreen.alpha = .2F
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+        )
+        SignupProgressBar.visibility = View.VISIBLE
+    }
+
+    private fun goToLogin(registerInfo: User) {
+        startActivity(Intent(this, LoginActivity::class.java))
+        val nameToShow = registerInfo.first_name
+        Toast.makeText(
+            applicationContext, "Welcome, $nameToShow! \nNow please sign in",
+            Toast.LENGTH_LONG
+        ).show()
+        finish()
+    }
     private fun isDataValid(): Boolean{
         var valid = true
 
@@ -114,9 +113,13 @@ class SignUpActivity : AppCompatActivity() {
             RegDate.error = getString(R.string.invalid_date)
             valid = false
         }
+        if (RegUsernameText.length() > 30) {
+            RegEmail.error = getString(R.string.invalid_username)
+            valid = false
+        }
         return valid
     }
-    fun isDataCorrect(): Boolean {
+    private fun isDataCorrect(): Boolean {
         var correct = true
 
         val name = RegNameText.text.toString()

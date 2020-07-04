@@ -1,6 +1,7 @@
 package com.example.chotuvemobileapp.data.utilities
 
 import android.content.SharedPreferences
+import com.example.chotuvemobileapp.data.requests.LoginRequest
 import com.example.chotuvemobileapp.data.response.LoginResponse
 import com.example.chotuvemobileapp.data.utilities.HttpUtilities.buildClient
 import com.google.gson.Gson
@@ -20,10 +21,10 @@ class TokenAuthenticator(private val preferences: SharedPreferences) : Authentic
     }
 
     private fun getUpdatedToken(): String?{
-        val email = preferences.getString("email", "")!!
-        val pass = preferences.getString("password", "")!!
+
+        val request = LoginRequest(preferences.getString("username", "")!!, preferences.getString("password", "")!!)
         val retrofit = buildClient()
-        val response = retrofit.loginUser(email, pass).execute()
+        val response = retrofit.loginUser(request).execute()
         if (response.isSuccessful){
             val resp = Gson().fromJson(response.body()!!.string(), LoginResponse::class.java)
             return resp.token

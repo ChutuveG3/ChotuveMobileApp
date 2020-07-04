@@ -1,99 +1,177 @@
 package com.example.chotuvemobileapp.ui.profile
 
+import android.Manifest
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import android.view.WindowManager
-import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
-import androidx.fragment.app.FragmentManager
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import com.bumptech.glide.Glide
 import com.example.chotuvemobileapp.R
 import com.example.chotuvemobileapp.data.users.ProfileInfoDataSource
 import com.example.chotuvemobileapp.data.users.UserForModification
 import com.example.chotuvemobileapp.helpers.PickRequest
+import com.example.chotuvemobileapp.helpers.Utilities
+import com.example.chotuvemobileapp.helpers.Utilities.REQUEST_GALLERY_PERMISSION
 import com.example.chotuvemobileapp.helpers.Utilities.createDatePicker
+import com.example.chotuvemobileapp.helpers.Utilities.getFileName
 import com.example.chotuvemobileapp.helpers.Utilities.startSelectActivity
 import com.example.chotuvemobileapp.helpers.Utilities.watchText
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.activity_edit_profile.*
-import kotlinx.android.synthetic.main.activity_sign_up.*
 
 class EditProfileActivity : AppCompatActivity() {
+
+    private var uri: Uri? = null
+    private lateinit var picUrl : String
+    private var fileName: String? = null
+    private val prefs by lazy {
+        applicationContext.getSharedPreferences(getString(R.string.shared_preferences_file), Context.MODE_PRIVATE)
+    }
+    private val mStorageRef by lazy {
+        FirebaseStorage.getInstance().reference
+    }
+    private val userInfo by lazy {
+        UserForModification(
+            FirstNameEditText.text.toString(),
+            LastNameEditText.text.toString(),
+            EmailEditText.text.toString(),
+            DOBEditText.text.toString(),
+            picUrl
+        )
+    }
+    private val firstName by lazy{
+        intent.getStringExtra(Utilities.FIRST_NAME)
+    }
+    private val lastName by lazy{
+        intent.getStringExtra(Utilities.LAST_NAME)
+    }
+    private val email by lazy{
+        intent.getStringExtra(Utilities.EMAIL)
+    }
+    private val birthDate by lazy{
+        intent.getStringExtra(Utilities.BIRTH_DATE)
+    }
+    private val profilePicUrl by lazy{
+        intent.getStringExtra(Utilities.PIC_URL)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_profile)
-
-        val prefs = applicationContext.getSharedPreferences(getString(R.string.shared_preferences_file), Context.MODE_PRIVATE)
 
         FirstNameEditText.watchText(SaveProfileButton, this::isDataValid)
         LastNameEditText.watchText(SaveProfileButton, this::isDataValid)
         EmailEditText.watchText(SaveProfileButton, this::isDataValid)
         DOBEditText.watchText(SaveProfileButton, this::isDataValid)
 
-        FirstNameEditText.setText(intent.getStringExtra("firstName"))
-        LastNameEditText.setText(intent.getStringExtra("lastName"))
-        DOBEditText.setText(intent.getStringExtra("dateOfBirth"))
-        EmailEditText.setText(intent.getStringExtra("email"))
+        FirstNameEditText.setText(firstName)
+        LastNameEditText.setText(lastName)
+        DOBEditText.setText(birthDate)
+        EmailEditText.setText(email)
+        if (profilePicUrl != null){
+            Glide.with(this).load(Uri.parse(profilePicUrl)).centerCrop().into(ProfilePic)
+        }
 
         createDatePicker(DOBEditText, this)
 
         EditProfileProgressBar.visibility = View.GONE
 
         ProfilePic.setOnClickListener {
-            startSelectActivity(this, "image/*", "Select Pic", PickRequest.ProfilePic)
-        }
-
-        BackgroundPic.setOnClickListener {
-            startSelectActivity(this, "image/*", "Select Pic", PickRequest.BackgroundPic)
+            if (ActivityCompat.checkSelfPermission(applicationContext, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                    REQUEST_GALLERY_PERMISSION
+                )
+            }
+            else startSelectActivity(this, "image/*", "Select Pic", PickRequest.ProfilePic)
         }
 
         SaveProfileButton.setOnClickListener {
             if (isEmailValid()) {
-                EditProfileProgressBar.visibility = View.VISIBLE
-                EditProfileAppbar.alpha = .2F
-                EditProfileScreen.alpha = .2F
-                window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                val userInfo = UserForModification(FirstNameEditText.text.toString(),
-                                                    LastNameEditText.text.toString(),
-                                                    EmailEditText.text.toString(),
-                                                    DOBEditText.text.toString())
-                ProfileInfoDataSource.modifyProfileInfo(prefs, userInfo){
-                    when(it){
-                        "Success" -> finish()
-                        "EmailInvalid" -> EditProfileEmail.error = getString(R.string.email_taken)
-                        "Failure" -> Toast.makeText(applicationContext, getString(R.string.request_failure), Toast.LENGTH_LONG).show()
-                        else -> Toast.makeText(applicationContext, getString(R.string.internal_error), Toast.LENGTH_LONG).show()
+                startLoadingScreen()
+                try {
+                    val storageReference: StorageReference = mStorageRef.child(fileName!!)
+                    storageReference.putFile(uri!!).addOnSuccessListener {
+                        storageReference.downloadUrl.addOnSuccessListener { url ->
+                            picUrl = url.toString()
+                            ProfileInfoDataSource.modifyProfileInfo(prefs, userInfo) {
+                                when (it) {
+                                    "Success" -> {
+                                        val dataToReturn = Intent()
+                                        dataToReturn.putExtra(Utilities.FIRST_NAME, userInfo.first_name)
+                                        dataToReturn.putExtra(Utilities.LAST_NAME, userInfo.last_name)
+                                        dataToReturn.putExtra(Utilities.BIRTH_DATE, userInfo.birthdate)
+                                        dataToReturn.putExtra(Utilities.EMAIL, userInfo.email)
+                                        dataToReturn.putExtra(Utilities.PIC_URL, userInfo.profile_img_url)
+                                        setResult(Activity.RESULT_OK, dataToReturn)
+                                        finish()
+                                    }
+                                    "EmailInvalid" -> EditProfileEmail.error = getString(R.string.email_taken)
+                                    "Failure" -> Toast.makeText(applicationContext,
+                                        getString(R.string.request_failure),
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                    else -> Toast.makeText(applicationContext,
+                                        getString(R.string.internal_error),
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                                stopLoadingScreen()
+                            }
+                        }.addOnFailureListener {
+                            fail()
+                        }
+                    }.addOnFailureListener {
+                        fail()
                     }
-                    EditProfileAppbar.alpha = 1F
-                    EditProfileScreen.alpha = 1F
-                    EditProfileProgressBar.visibility = View.GONE
-                    window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 }
-
+                catch (e: Exception){
+                    fail()
+                }
             }
         }
+    }
 
+    private fun fail(){
+        stopLoadingScreen()
+        Toast.makeText(
+            applicationContext,
+            getString(R.string.internal_error),
+            Toast.LENGTH_LONG
+        ).show()
+    }
+
+    private fun stopLoadingScreen() {
+        EditProfileAppbar.alpha = 1F
+        EditProfileScreen.alpha = 1F
+        EditProfileProgressBar.visibility = View.GONE
+        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+    }
+
+    private fun startLoadingScreen() {
+        EditProfileProgressBar.visibility = View.VISIBLE
+        EditProfileAppbar.alpha = .2F
+        EditProfileScreen.alpha = .2F
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == PickRequest.ProfilePic.value){
             if (resultCode == Activity.RESULT_OK){
-                val uri = data!!.data
+                uri = data!!.data
+                fileName = getFileName(uri!!, contentResolver)
                 Glide.with(applicationContext).load(uri).centerCrop().into(ProfilePic)
-            }
-        }
-        else if (requestCode == PickRequest.BackgroundPic.value){
-            if (resultCode == Activity.RESULT_OK){
-                val uri = data!!.data
-                Glide.with(applicationContext).load(uri).centerCrop().into(BackgroundPic)
             }
         }
     }
@@ -116,5 +194,17 @@ class EditProfileActivity : AppCompatActivity() {
         if(DOBEditText.text!!.isBlank()) valid = false
 
         return valid
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == REQUEST_GALLERY_PERMISSION){
+            if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                startSelectActivity(this, "image/*", "Select Pic", PickRequest.ProfilePic)
+            }
+        }
     }
 }

@@ -5,17 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    tools:context=".ui.profile.FullSizeImageFragment">
+    tools:context=".ui.profile.FullSizeImageActivity">
 
     <ImageView
         android:id="@+id/FullScreenImage"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:src="@drawable/ic_baseline_photo_size_select_actual_24"
+        android:background="#DCDCDC"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_baseline_person_400"
         tools:ignore="ContentDescription" />
 </androidx.constraintlayout.widget.ConstraintLayout>

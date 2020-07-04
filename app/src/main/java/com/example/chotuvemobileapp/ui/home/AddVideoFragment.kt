@@ -1,9 +1,11 @@
 package com.example.chotuvemobileapp.ui.home
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.provider.OpenableColumns
@@ -17,11 +19,18 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
+import com.example.chotuvemobileapp.HomeActivity
 import com.example.chotuvemobileapp.R
 import com.example.chotuvemobileapp.data.videos.Video
 import com.example.chotuvemobileapp.data.videos.VideoDataSource
 import com.example.chotuvemobileapp.helpers.PickRequest
-import com.example.chotuvemobileapp.helpers.Utilities.startSelectActivity
+import com.example.chotuvemobileapp.helpers.Utilities.DATE_FORMAT_LONG
+import com.example.chotuvemobileapp.helpers.Utilities.REQUEST_GALLERY_PERMISSION
+import com.example.chotuvemobileapp.helpers.Utilities.REQUEST_LOCATION_PERMISSION
+import com.example.chotuvemobileapp.helpers.Utilities.getFileName
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationServices
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.fragment_add_video.*
@@ -30,10 +39,28 @@ import java.time.format.DateTimeFormatter
 
 
 class AddVideoFragment : Fragment() {
-    private val DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss"
     private var uri = null as Uri?
     private var fileSize = null as String?
-    private lateinit var mStorageRef : StorageReference
+    private var fileName = null as String?
+    private var locationEnabled = false
+    private val mStorageRef by lazy {
+        FirebaseStorage.getInstance().reference
+    }
+    private val prefs by lazy {
+        requireActivity().applicationContext.getSharedPreferences(getString(R.string.shared_preferences_file),
+        Context.MODE_PRIVATE)
+    }
+
+    private val locationClient by lazy {
+        LocationServices.getFusedLocationProviderClient(requireActivity())
+    }
+
+    private val locationRequest by lazy {
+        LocationRequest.create()
+            .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
+            .setInterval(1000)
+            .setFastestInterval(800)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,17 +72,23 @@ class AddVideoFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mStorageRef = FirebaseStorage.getInstance().reference
 
-        AddVideoToolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_32dp)
+
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(arrayOf(Manifest.permission.ACCESS_COARSE_LOCATION), REQUEST_LOCATION_PERMISSION)
+        }
+        else {
+            locationEnabled = true
+            LocationServices.getFusedLocationProviderClient(requireContext()).requestLocationUpdates(locationRequest, LocationCallback(), null)
+        }
         AddVideoToolbar.setNavigationOnClickListener{
-            findNavController().navigate(R.id.action_addVideoFragment_to_nav_home)
+            val home=  activity as HomeActivity
+            home.openDrawer()
         }
 
         UploadButton.alpha = .5F
         UploadButton.isEnabled = false
         UploadVideoProgressBar.visibility = View.INVISIBLE
-
         // Public visibility by default.
         publicRadioButton.isChecked = true
 
@@ -64,39 +97,22 @@ class AddVideoFragment : Fragment() {
                 AddVideoScreen.alpha = 0.2F
                 requireActivity().window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                 UploadVideoProgressBar.visibility = View.VISIBLE
-                val prefs = requireActivity().applicationContext.getSharedPreferences(getString(R.string.shared_preferences_file),
-                                                                                                        Context.MODE_PRIVATE)
-                val owner = prefs.getString("username", "unknown")
-                val fileName = getFileName(uri!!)
-                val storageReference : StorageReference = mStorageRef.child(fileName)
+
+                val storageReference : StorageReference = mStorageRef.child(fileName!!)
                 storageReference.putFile(uri!!)
                     .addOnSuccessListener {   // Get a URL to the uploaded content
                         storageReference.downloadUrl.addOnSuccessListener { uri ->
-                            val visibility: String = if (publicRadioButton.isChecked) "public"
-                            else "private"
-                            val videoToSend = Video(VideoTitleInputText.text.toString(),
-                                VideoDescriptionInputText.text.toString(),
-                                visibility,
-                                uri.toString(),
-                                nowDateTimeStr(),
-                                fileName,
-                                fileSize!!,
-                                owner!!
-                            )
-                            VideoDataSource.addVideo(videoToSend, prefs){
-                                when(it){
-                                    "Success" ->{
-                                        UploadVideoProgressBar.visibility = View.GONE
-                                        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                                        AddVideoScreen.alpha = 1F
-                                        Toast.makeText(context, getString(R.string.video_uploaded_message), Toast.LENGTH_LONG).show()
-                                        findNavController().navigate(R.id.action_addVideoFragment_to_nav_home)
-                                    }
-                                    else -> {
-                                        fail()
-                                    }
+                            if (locationEnabled) {
+                                locationClient.lastLocation.addOnSuccessListener { loc ->
+                                    val lat = loc?.latitude
+                                    val long = loc?.longitude
+                                    sendVideo(uri, lat, long)
+                                }.addOnFailureListener {
+                                    fail()
+                                    Toast.makeText(context, getString(R.string.internal_error), Toast.LENGTH_LONG).show()
                                 }
                             }
+                            else sendVideo(uri, null, null)
                         }.addOnFailureListener{ Exception ->
                             Toast.makeText(context, Exception.message, Toast.LENGTH_LONG).show()
                             fail()
@@ -112,10 +128,52 @@ class AddVideoFragment : Fragment() {
         }
 
         SelectFileButton.setOnClickListener {
-            val intent = Intent(Intent.ACTION_PICK).apply {
-                type = "video/*"
+            if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_GALLERY_PERMISSION)
             }
-            startActivityForResult(Intent.createChooser(intent, "Select Video"), PickRequest.Video.value)
+            else {
+                val intent = Intent(Intent.ACTION_PICK).apply {
+                    type = "video/*"
+                }
+                startActivityForResult(
+                    Intent.createChooser(intent, "Select Video"),
+                    PickRequest.Video.value
+                )
+            }
+        }
+    }
+
+    private fun sendVideo(uri: Uri, lat: Double?, long: Double?) {
+        val videoToSend = Video(
+            VideoTitleInputText.text.toString(),
+            VideoDescriptionInputText.text.toString(),
+            if (publicRadioButton.isChecked) "public" else "private",
+            uri.toString(),
+            nowDateTimeStr(),
+            fileName!!,
+            fileSize!!,
+            lat,
+            long
+        )
+        VideoDataSource.addVideo(videoToSend, prefs) {
+            when (it) {
+                "Success" -> {
+                    UploadVideoProgressBar.visibility = View.GONE
+                    requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                    AddVideoScreen.alpha = 1F
+                    Toast.makeText(
+                        context,
+                        getString(R.string.video_uploaded_message),
+                        Toast.LENGTH_LONG
+                    ).show()
+                    findNavController().navigate(R.id.nav_home)
+                }
+                else -> {
+                    fail()
+                    Toast.makeText(context, getString(R.string.internal_error), Toast.LENGTH_LONG)
+                        .show()
+                }
+            }
         }
     }
 
@@ -127,37 +185,14 @@ class AddVideoFragment : Fragment() {
                 UploadButton.alpha = 1F
                 uri = data!!.data
 
-                fileSize = context?.let { getFileSize(it, uri) }
+                fileSize = context?.let { getFileSize(it, uri!!) }
+                fileName = getFileName(uri!!, requireActivity().contentResolver)
 
                 Glide.with(requireContext()).load(uri).centerCrop().into(SelectFileButton)
 
-                VideoTitleInputText.setText(getFileName(uri!!), TextView.BufferType.EDITABLE)
+                VideoTitleInputText.setText(fileName!!, TextView.BufferType.EDITABLE)
             }
         }
-    }
-
-    @SuppressLint("Recycle")
-    private fun getFileName(uri: Uri) : String {
-        var result = null as String?
-        if (uri.scheme.equals("content")) {
-            val cursor = requireActivity().contentResolver.query(uri, null, null, null, null)
-            try {
-                if (cursor != null && cursor.moveToFirst()) {
-                    result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
-                }
-            } finally {
-                cursor!!.close()
-            }
-        }
-
-        if (result == null) {
-            result = uri.path
-            val cut = result!!.lastIndexOf('/')
-            if (cut != -1) {
-                result = result.substring(cut + 1)
-            }
-        }
-        return result
     }
 
     private  fun fail(){
@@ -186,7 +221,34 @@ class AddVideoFragment : Fragment() {
 
     private fun nowDateTimeStr() : String {
         val current = LocalDateTime.now()
-        val formatter = DateTimeFormatter.ofPattern(DATE_FORMAT)
+        val formatter = DateTimeFormatter.ofPattern(DATE_FORMAT_LONG)
         return current.format(formatter)
+    }
+
+    @SuppressLint("MissingPermission")
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        when(requestCode){
+            REQUEST_LOCATION_PERMISSION -> {
+                if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    locationEnabled = true
+                    LocationServices.getFusedLocationProviderClient(requireContext()).requestLocationUpdates(locationRequest, LocationCallback(), null)
+                }
+            }
+            REQUEST_GALLERY_PERMISSION -> {
+                if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    val intent = Intent(Intent.ACTION_PICK).apply {
+                        type = "video/*"
+                    }
+                    startActivityForResult(
+                        Intent.createChooser(intent, "Select Video"),
+                        PickRequest.Video.value
+                    )
+                }
+            }
+        }
     }
 }

@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:backgroundTint="@color/colorPrimaryDark"
     tools:context=".ui.home.HomeFragment">
+
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/HomeToolbar"
@@ -16,23 +19,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
-        <ImageView
-            tools:ignore="ContentDescription"
-            android:id="@+id/chotuveLogo"
-            android:layout_width="136dp"
-            android:layout_height="24dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:tint="@android:color/white"
-            app:layout_constraintBottom_toBottomOf="@+id/HomeToolbar"
-            app:layout_constraintEnd_toEndOf="@+id/HomeToolbar"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/HomeToolbar"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/logo" />
-    </androidx.appcompat.widget.Toolbar>
+        app:layout_constraintTop_toTopOf="parent"
+        app:navigationIcon="@drawable/ic_baseline_menu_36" />
 
     <SearchView
         android:id="@+id/SearchIcon"
@@ -51,19 +39,21 @@
         app:layout_constraintStart_toStartOf="@+id/HomeToolbar"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0"
-        app:showAsAction="always|collapseActionView" />
+        app:showAsAction="always|collapseActionView">
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/AddVideo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        app:backgroundTint="@color/colorPrimaryDark"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:rippleColor="#FFFFFF"
-        app:srcCompat="@drawable/ic_add_white_24dp" />
+    </SearchView>
+
+    <ImageView
+        android:id="@+id/chotuveLogo"
+        android:layout_width="136dp"
+        android:layout_height="24dp"
+        android:layout_marginStart="54dp"
+        android:tint="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/HomeToolbar"
+        app:layout_constraintStart_toStartOf="@+id/HomeToolbar"
+        app:layout_constraintTop_toTopOf="@+id/HomeToolbar"
+        app:srcCompat="@drawable/logo"
+        tools:ignore="ContentDescription" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/HomeVideosFragment"
@@ -74,6 +64,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/HomeToolbar"
-        tools:layout="@layout/fragment_profile_videos" />
+        tools:layout="@layout/fragment_profile_videos">
+
+    </androidx.fragment.app.FragmentContainerView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

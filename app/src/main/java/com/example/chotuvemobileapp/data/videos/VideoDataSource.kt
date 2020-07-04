@@ -1,10 +1,10 @@
 package com.example.chotuvemobileapp.data.videos
 
 import android.content.SharedPreferences
+import com.example.chotuvemobileapp.data.response.VideoListResponse
 import com.example.chotuvemobileapp.data.utilities.HttpUtilities.buildAuthenticatedClient
 import com.example.chotuvemobileapp.entities.VideoItem
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Response
@@ -21,12 +21,8 @@ object VideoDataSource {
             }
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>){
                 when {
-                    response.isSuccessful -> {
-                        myCallback.invoke("Success")
-                    }
-                    else -> {
-                        myCallback.invoke("ServerError")
-                    }
+                    response.isSuccessful -> myCallback.invoke("Success")
+                    else ->  myCallback.invoke("ServerError")
                 }
             }
         })
@@ -34,11 +30,11 @@ object VideoDataSource {
 
     fun getVideosFrom(preferences: SharedPreferences, pageNumber: Int, pageSize: Int, user: String? = null, myCallback: (ArrayList<VideoItem>) -> Unit){
 
-        val retrofit = buildAuthenticatedClient(preferences = preferences)
+        val retrofit = buildAuthenticatedClient(preferences)
+        val username = preferences.getString("username", "")!!
         val method = when (user) {
-            null -> retrofit.getAllVideos(pageNumber, pageSize)
-            "Me" -> retrofit.getMyVideos(pageNumber, pageSize)
-            else -> retrofit.getVideosFrom(user, pageNumber, pageSize)
+            null -> retrofit.getHomeVideos(username, pageNumber, pageSize)
+            else -> retrofit.getVideos(user, pageNumber, pageSize)
         }
         val fail = ArrayList<VideoItem>()
         method.enqueue(object : retrofit2.Callback<ResponseBody> {
@@ -48,9 +44,8 @@ object VideoDataSource {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>){
                 when {
                     response.isSuccessful -> {
-                        val types = object : TypeToken<ArrayList<VideoItem>>() {}.type
-                        val videos = Gson().fromJson<ArrayList<VideoItem>>(response.body()!!.string(), types)
-                        myCallback.invoke(videos)
+                        val videos = Gson().fromJson(response.body()!!.string(), VideoListResponse::class.java)
+                        myCallback.invoke(videos.videos)
                     }
                     else -> {
                         myCallback.invoke(fail)

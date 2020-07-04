@@ -1,29 +1,33 @@
 package com.example.chotuvemobileapp.ui.profile
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import androidx.viewpager2.widget.ViewPager2
+import com.bumptech.glide.Glide
+import com.example.chotuvemobileapp.HomeActivity
 import com.example.chotuvemobileapp.R
-import com.example.chotuvemobileapp.data.users.ProfileInfoDataSource
-import com.example.chotuvemobileapp.ui.CommentsFragment
+import com.example.chotuvemobileapp.helpers.Utilities
+import com.example.chotuvemobileapp.viewmodels.ProfileViewModel
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.fragment_profile.*
 
 class ProfileFragment : Fragment() {
 
-    private lateinit var mPager: ViewPager2
-    lateinit var firstName: String
-    lateinit var lastName: String
-    lateinit var email: String
-    lateinit var birthDate: String
-    private lateinit var userName: String
+    private val prefs by lazy {
+        requireActivity().applicationContext.getSharedPreferences(getString(R.string.shared_preferences_file), Context.MODE_PRIVATE)
+    }
+    private val viewModel by lazy {
+        ViewModelProvider(this).get(ProfileViewModel::class.java)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,72 +39,85 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        startFragment()
-        ProfilePic.setOnClickListener {
-            findNavController().navigate(R.id.action_nav_gallery_to_fullSizeImageFragment)
+        showLoadingScreen()
+        viewModel.setPrefs(prefs)
+        viewModel.userInfo.observe(viewLifecycleOwner, Observer {
+            val nameToDisplay = "${it.first_name} ${it.last_name}"
+            NameTextView.text = nameToDisplay
+            UsernameTextView.text = it.user_name
+            ProfileViewPager.adapter = ScreenSlidePagerAdapter(this)
+            TabLayoutMediator(ProfileTabLayout, ProfileViewPager) { tab, position ->
+                when (position) {
+                    0 -> tab.text = getString(R.string.profile_details)
+                    else -> tab.text = getString(R.string.videos)
+                }
+            }.attach()
+            if (it.profile_img_url != null) Glide.with(this).load(Uri.parse(it.profile_img_url)).centerCrop().into(ProfilePic)
+            quitLoadingScreen()
+            ProfilePic.setOnClickListener {_ ->
+                val intent = Intent(requireContext(), FullSizeImageActivity::class.java)
+                intent.putExtra(Utilities.PIC_URL, it.profile_img_url)
+                startActivity(intent)
+            }
+        })
+        openDrawer.setOnClickListener {
+            val home = activity as HomeActivity
+            home.openDrawer()
         }
-        BackgroundPic.setOnClickListener {
-            findNavController().navigate(R.id.action_nav_gallery_to_fullSizeImageFragment)
+        AddFriendButton.setOnClickListener {
+            val intent = Intent(context, EditProfileActivity::class.java)
+            intent.putExtra(Utilities.FIRST_NAME, viewModel.userInfo.value!!.first_name)
+            intent.putExtra(Utilities.LAST_NAME, viewModel.userInfo.value!!.last_name)
+            intent.putExtra(Utilities.EMAIL, viewModel.userInfo.value!!.email)
+            intent.putExtra(Utilities.BIRTH_DATE, viewModel.userInfo.value!!.birthdate)
+            intent.putExtra(Utilities.PIC_URL, viewModel.userInfo.value?.profile_img_url)
+            startActivityForResult(intent, Utilities.REQUEST_CODE_EDIT_PROFILE)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == Utilities.REQUEST_CODE_EDIT_PROFILE && resultCode == Activity.RESULT_OK){
+            viewModel.updateUserInfo(
+                data!!.getStringExtra(Utilities.FIRST_NAME)!!,
+                data.getStringExtra(Utilities.LAST_NAME)!!,
+                data.getStringExtra(Utilities.BIRTH_DATE)!!,
+                data.getStringExtra(Utilities.EMAIL)!!,
+                data.getStringExtra(Utilities.PIC_URL))
         }
     }
 
     private inner class ScreenSlidePagerAdapter(fa: Fragment) : FragmentStateAdapter(fa) {
-        override fun getItemCount(): Int = 3
+        override fun getItemCount(): Int = 2
         override fun createFragment(position: Int): Fragment {
             return when(position){
-                0 -> ProfileDetailsFragment.newInstance(firstName, lastName, email, birthDate, userName)
-                1 -> VideoListFragment.newInstance("Me")
-                else -> CommentsFragment.newInstance(19)
+                0 -> ProfileDetailsFragment.newInstance(
+                    viewModel.userInfo.value!!.first_name,
+                    viewModel.userInfo.value!!.last_name,
+                    viewModel.userInfo.value!!.email,
+                    viewModel.userInfo.value!!.birthdate,
+                    viewModel.userInfo.value!!.user_name)
+                else -> VideoListFragment.newInstance(viewModel.userInfo.value!!.user_name)
             }
         }
     }
 
-    private fun startFragment() {
+    private fun quitLoadingScreen() {
+        ProfileAppbar.alpha = 1F
+        ProfileScrollView.alpha = 1F
+        ProfilePic.isClickable = true
+        ProfileProgressBar.visibility = View.GONE
+    }
+
+    private fun showLoadingScreen() {
         ProfileAppbar.alpha = .2F
         ProfileScrollView.alpha = .2F
-        requireActivity().window.setFlags(
-            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-        )
+        ProfilePic.isClickable = false
         ProfileProgressBar.visibility = View.VISIBLE
-
-        val prefs = requireActivity().applicationContext.getSharedPreferences(getString(R.string.shared_preferences_file), Context.MODE_PRIVATE)
-        mPager = ProfileViewPager
-        ProfileInfoDataSource.getProfileInfo(preferences = prefs) {
-            if (it != null) {
-                firstName = it.first_name
-                lastName = it.last_name
-                userName = it.user_name
-                email = it.email
-                birthDate = it.birthdate
-            } else {
-                firstName = ""
-                lastName = ""
-                userName = ""
-                email = ""
-                birthDate = ""
-            }
-            val nameToDisplay = "$firstName $lastName"
-            NameTextView.text = nameToDisplay
-            UsernameTextView.text = userName
-            val pagerAdapter = ScreenSlidePagerAdapter(this)
-            mPager.adapter = pagerAdapter
-            TabLayoutMediator(ProfileTabLayout, mPager) { tab, position ->
-                when (position) {
-                    0 -> tab.text = getString(R.string.profile_details)
-                    1 -> tab.text = getString(R.string.videos)
-                    else -> tab.text = getString(R.string.video_comments)
-                }
-            }.attach()
-            ProfileAppbar.alpha = 1F
-            ProfileScrollView.alpha = 1F
-            requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-            ProfileProgressBar.visibility = View.GONE
-        }
     }
 
-    override fun onResume() {
-        super.onResume()
-        startFragment()
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModelStore.clear()
     }
 }
