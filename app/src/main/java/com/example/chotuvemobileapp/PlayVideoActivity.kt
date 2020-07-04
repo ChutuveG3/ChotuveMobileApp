@@ -1,8 +1,10 @@
 package com.example.chotuvemobileapp
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
+import android.content.res.ColorStateList
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
@@ -11,10 +13,16 @@ import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.ImageView
 import android.widget.MediaController
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.content.ContextCompat
+import androidx.core.widget.ImageViewCompat
+import androidx.lifecycle.ViewModelProvider
 import com.example.chotuvemobileapp.ui.CommentsFragment
 import com.example.chotuvemobileapp.ui.EmptyListFragment
+import com.example.chotuvemobileapp.viewmodels.PlayVideoViewModel
 import kotlinx.android.synthetic.main.activity_play_video.*
 
 
@@ -25,11 +33,17 @@ class PlayVideoActivity : AppCompatActivity() {
     private var backgroundColor = 0
     private val delayTime: Long = 5000
     private val displayMetrics = DisplayMetrics()
-
+    private val prefs by lazy {
+        getSharedPreferences(getString(R.string.shared_preferences_file), Context.MODE_PRIVATE)
+    }
+    private val viewModel by lazy {
+        ViewModelProvider(this).get(PlayVideoViewModel::class.java)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play_video)
+        viewModel.setPrefs(prefs)
 
         windowManager.defaultDisplay.getMetrics(displayMetrics)
         VideoWrapper.maxHeight = displayMetrics.heightPixels / 2
@@ -41,6 +55,47 @@ class PlayVideoActivity : AppCompatActivity() {
         }
         VideoAuthorPic.setOnClickListener {
             startProfileActivity()
+        }
+        LikeButton.setOnClickListener {
+            if (viewModel.liked) {
+                setLike(liked = false, disliked = false, color = R.color.white, button = LikeButton)
+                viewModel.likes -= 1
+            }
+            else {
+                if (viewModel.disliked) {
+                    setLike(true, disliked = false, color = R.color.white, button = DislikeButton)
+                    viewModel.dislikes -= 1
+                }
+                setLike(liked = true, disliked = false, color = R.color.like, button = LikeButton)
+                viewModel.likes += 1
+            }
+        }
+        DislikeButton.setOnClickListener {
+            if (viewModel.disliked) {
+                setLike(liked = false, disliked = false, color = R.color.white, button = DislikeButton)
+                viewModel.dislikes -= 1
+            }
+            else {
+                if (viewModel.liked) {
+                    setLike(false, disliked = true, color = R.color.white, button = LikeButton)
+                    viewModel.likes -= 1
+                }
+                setLike(liked = false, disliked = true, color = R.color.dislike, button = DislikeButton)
+                viewModel.dislikes += 1
+            }
+        }
+        LikeCount.text = viewModel.likes.toString()
+        DislikeCount.text = viewModel.dislikes.toString()
+
+        DescriptionToggle.setOnClickListener {
+            if (viewModel.descriptionExpanded){
+                viewModel.descriptionExpanded = false
+                toggleDescription(0, 0, 0F)
+            }
+            else{
+                viewModel.descriptionExpanded = true
+                toggleDescription(8, ViewGroup.LayoutParams.WRAP_CONTENT, 180F)
+            }
         }
         VideoProgressBar.visibility = View.VISIBLE
 
@@ -100,6 +155,16 @@ class PlayVideoActivity : AppCompatActivity() {
 
     }
 
+    private fun toggleDescription(margin: Int, height: Int, rotation: Float) {
+        val constraints = ConstraintSet()
+        constraints.clone(ScrollViewLayout)
+        constraints.connect(R.id.VideoDescription, ConstraintSet.TOP, R.id.VideoDescriptionHeader, ConstraintSet.BOTTOM, margin)
+        constraints.connect(R.id.VideoCommentsHeader, ConstraintSet.TOP, R.id.VideoDescription, ConstraintSet.BOTTOM, margin)
+        constraints.applyTo(ScrollViewLayout)
+        VideoDescription.layoutParams.height = height
+        DescriptionToggle.rotationX = rotation
+    }
+
     private fun startProfileActivity() {
         val profileIntent = Intent(this, UserProfileActivity::class.java)
         profileIntent.putExtra("user", intent.getStringExtra("videoAuthor"))
@@ -144,5 +209,11 @@ class PlayVideoActivity : AppCompatActivity() {
     override fun onBackPressed() {
         if (fullscreen) exitFullScreen()
         else super.onBackPressed()
+    }
+
+    private fun setLike(liked: Boolean, disliked: Boolean, color: Int, button: ImageView){
+        viewModel.liked = liked
+        viewModel.disliked = disliked
+        ImageViewCompat.setImageTintList(button, ColorStateList.valueOf(ContextCompat.getColor(applicationContext, color)))
     }
 }

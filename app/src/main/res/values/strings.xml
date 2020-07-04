@@ -55,4 +55,5 @@
     <string name="friend_title">Find your friends on Chotuve</string>
     <string name="friend_explain_text">TextView</string>
     <string name="default_notification_channel_id">All</string>
+    <string name="add_comment">Add a comment</string>
 </resources>

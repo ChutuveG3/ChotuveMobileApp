@@ -61,6 +61,7 @@
         app:layout_constraintTop_toBottomOf="@id/VideoWrapper">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/ScrollViewLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -95,7 +96,7 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="4dp"
                     android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="4dp"
+                    android:layout_marginBottom="8dp"
                     android:textColor="#FFFFFF"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -108,9 +109,8 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="10dp"
                     app:cardCornerRadius="25dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/VideoAuthor"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
@@ -127,14 +127,13 @@
             <TextView
                 android:id="@+id/VideoDescriptionHeader"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="60dp"
                 android:background="#2B018A"
                 android:fontFamily="sans-serif-medium"
                 android:paddingLeft="16dp"
                 android:paddingTop="4dp"
                 android:paddingRight="16dp"
                 android:paddingBottom="4dp"
-                android:text="@string/video_description"
                 android:textAllCaps="true"
                 android:textColor="#FFFFFF"
                 android:textSize="16sp"
@@ -142,11 +141,43 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/VideoHeader" />
 
+            <ImageView
+                android:id="@+id/LikeButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="@+id/LikeCount"
+                app:layout_constraintStart_toStartOf="@+id/LikeCount"
+                app:layout_constraintTop_toBottomOf="@+id/VideoHeader"
+                app:srcCompat="@drawable/ic_baseline_thumb_up_alt_30"
+                tools:ignore="ContentDescription" />
+
+            <ImageView
+                android:id="@+id/DescriptionToggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                app:layout_constraintBottom_toBottomOf="@+id/VideoDescriptionHeader"
+                app:layout_constraintEnd_toEndOf="@+id/VideoDescriptionHeader"
+                app:layout_constraintTop_toBottomOf="@+id/VideoHeader"
+                app:srcCompat="@drawable/ic_baseline_expand_more_24"
+                tools:ignore="ContentDescription" />
+
+            <ImageView
+                android:id="@+id/DislikeButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="@+id/DislikeCount"
+                app:layout_constraintStart_toStartOf="@+id/DislikeCount"
+                app:layout_constraintTop_toBottomOf="@+id/VideoHeader"
+                app:srcCompat="@drawable/ic_baseline_thumb_down_alt_30"
+                tools:ignore="ContentDescription" />
+
             <TextView
                 android:id="@+id/VideoCommentsHeader"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:background="#2B018A"
                 android:fontFamily="sans-serif-medium"
                 android:paddingLeft="16dp"
@@ -165,24 +196,66 @@
             <TextView
                 android:id="@+id/VideoDescription"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/VideoDescriptionHeader"
-                tools:text="@tools:sample/lorem/random[2]" />
+                tools:text="@tools:sample/lorem" />
 
             <androidx.fragment.app.FragmentContainerView
                 android:id="@+id/VideoCommentsFragment"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/VideoCommentsHeader"
+                app:layout_constraintTop_toBottomOf="@+id/AddCommentInput"
                 app:layout_constraintVertical_bias="0.0" />
+
+            <TextView
+                android:id="@+id/LikeCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="8dp"
+                android:textColor="@color/ic_launcher_background"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@+id/VideoDescriptionHeader"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/LikeButton"
+                tools:text="@tools:sample/us_zipcodes" />
+
+            <TextView
+                android:id="@+id/DislikeCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="8dp"
+                android:textColor="@color/ic_launcher_background"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@+id/VideoDescriptionHeader"
+                app:layout_constraintStart_toEndOf="@+id/LikeCount"
+                app:layout_constraintTop_toBottomOf="@+id/DislikeButton"
+                tools:text="@tools:sample/us_zipcodes" />
+
+            <EditText
+                android:id="@+id/AddCommentInput"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:autofillHints=""
+                android:ems="10"
+                android:gravity="start|top"
+                android:hint="@string/add_comment"
+                android:inputType="textMultiLine"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/VideoCommentsHeader" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.core.widget.NestedScrollView>
