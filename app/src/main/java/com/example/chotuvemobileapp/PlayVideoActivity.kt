@@ -73,7 +73,6 @@ class PlayVideoActivity : AppCompatActivity() {
         }
 
         DislikeButton.setOnClickListener {
-            it.startAnimation()
             if (viewModel.disliked) {
                 setLike(liked = false, disliked = false, color = R.color.white, button = DislikeButton)
                 viewModel.dislikes -= 1
