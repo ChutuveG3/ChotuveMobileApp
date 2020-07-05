@@ -13,6 +13,7 @@ import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.animation.AlphaAnimation
 import android.widget.ImageView
 import android.widget.MediaController
 import androidx.appcompat.app.AppCompatActivity
@@ -21,7 +22,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.widget.ImageViewCompat
 import androidx.lifecycle.ViewModelProvider
 import com.example.chotuvemobileapp.ui.CommentsFragment
-import com.example.chotuvemobileapp.ui.EmptyListFragment
+import com.example.chotuvemobileapp.ui.CommentsEmptyListFragment
 import com.example.chotuvemobileapp.viewmodels.PlayVideoViewModel
 import kotlinx.android.synthetic.main.activity_play_video.*
 
@@ -70,7 +71,9 @@ class PlayVideoActivity : AppCompatActivity() {
                 viewModel.likes += 1
             }
         }
+
         DislikeButton.setOnClickListener {
+            it.startAnimation()
             if (viewModel.disliked) {
                 setLike(liked = false, disliked = false, color = R.color.white, button = DislikeButton)
                 viewModel.dislikes -= 1
@@ -80,7 +83,7 @@ class PlayVideoActivity : AppCompatActivity() {
                     setLike(false, disliked = true, color = R.color.white, button = LikeButton)
                     viewModel.likes -= 1
                 }
-                setLike(liked = false, disliked = true, color = R.color.dislike, button = DislikeButton)
+                setLike(liked = false, disliked = true, color = R.color.like, button = DislikeButton)
                 viewModel.dislikes += 1
             }
         }
@@ -107,7 +110,7 @@ class PlayVideoActivity : AppCompatActivity() {
 
         nComments = intent.getIntExtra("comments", 0)
 
-        if (nComments == 0) supportFragmentManager.beginTransaction().replace(R.id.VideoCommentsFragment, EmptyListFragment()).commit()
+        if (nComments == 0) supportFragmentManager.beginTransaction().replace(R.id.VideoCommentsFragment, CommentsEmptyListFragment()).commit()
         else supportFragmentManager.beginTransaction().replace(R.id.VideoCommentsFragment, CommentsFragment.newInstance(nComments)).commit()
 
         val uri = Uri.parse(intent.getStringExtra("url"))
