@@ -1,9 +1,14 @@
-package com.example.chotuvemobileapp.data.videos
+package com.example.chotuvemobileapp.data.repositories
 
 import android.content.SharedPreferences
 import com.example.chotuvemobileapp.data.response.VideoListResponse
 import com.example.chotuvemobileapp.data.utilities.HttpUtilities.buildAuthenticatedClient
+import com.example.chotuvemobileapp.data.videos.Video
 import com.example.chotuvemobileapp.entities.VideoItem
+import com.example.chotuvemobileapp.helpers.Utilities.FAILURE_MESSAGE
+import com.example.chotuvemobileapp.helpers.Utilities.SERVER_ERROR_MESSAGE
+import com.example.chotuvemobileapp.helpers.Utilities.SUCCESS_MESSAGE
+import com.example.chotuvemobileapp.helpers.Utilities.USERNAME
 import com.google.gson.Gson
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -17,12 +22,12 @@ object VideoDataSource {
 
         retrofit.uploadVideo(video).enqueue(object : retrofit2.Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                myCallback.invoke("Failure")
+                myCallback.invoke(FAILURE_MESSAGE)
             }
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>){
                 when {
-                    response.isSuccessful -> myCallback.invoke("Success")
-                    else ->  myCallback.invoke("ServerError")
+                    response.isSuccessful -> myCallback.invoke(SUCCESS_MESSAGE)
+                    else ->  myCallback.invoke(SERVER_ERROR_MESSAGE)
                 }
             }
         })
@@ -31,7 +36,7 @@ object VideoDataSource {
     fun getVideosFrom(preferences: SharedPreferences, pageNumber: Int, pageSize: Int, user: String? = null, myCallback: (ArrayList<VideoItem>) -> Unit){
 
         val retrofit = buildAuthenticatedClient(preferences)
-        val username = preferences.getString("username", "")!!
+        val username = preferences.getString(USERNAME, "")!!
         val method = when (user) {
             null -> retrofit.getHomeVideos(username, pageNumber, pageSize)
             else -> retrofit.getVideos(user, pageNumber, pageSize)

@@ -8,8 +8,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.chotuvemobileapp.R
-import com.example.chotuvemobileapp.data.users.ProfileInfoDataSource
+import com.example.chotuvemobileapp.data.repositories.FriendsDataSource
 import com.example.chotuvemobileapp.helpers.SearchedUsersAdapter
+import com.example.chotuvemobileapp.helpers.Utilities.USERNAME
+import com.example.chotuvemobileapp.viewmodels.FriendsViewModel
 import kotlinx.android.synthetic.main.search_friends_fragment.*
 
 class SearchFriendsFragment : Fragment() {
@@ -32,7 +34,7 @@ class SearchFriendsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         NotFoundText.visibility = View.GONE
         SadFaceImage.visibility = View.GONE
-        val username = prefs.getString("username", null)
+        val username = prefs.getString(USERNAME, null)
         val textToShow = "Search by username, yours is $username"
         SearchFriendsExplainText.text = textToShow
 
@@ -44,7 +46,7 @@ class SearchFriendsFragment : Fragment() {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 SearchFriendSearchView.clearFocus()
                 if (!query.isNullOrEmpty()){
-                    ProfileInfoDataSource.getSimilarUsers(prefs, query){
+                    FriendsDataSource.getSimilarUsers(prefs, query){
                         when{
                             it == null || it.count() == 0 -> {
                                 SearchFriendsRecyclerView.visibility = View.INVISIBLE

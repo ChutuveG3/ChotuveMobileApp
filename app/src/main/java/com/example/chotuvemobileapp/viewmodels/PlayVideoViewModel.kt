@@ -4,7 +4,6 @@ import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.chotuvemobileapp.entities.CommentItem
-import kotlin.random.Random
 
 class PlayVideoViewModel : ViewModel() {
     private lateinit var prefs: SharedPreferences

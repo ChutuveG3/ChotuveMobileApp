@@ -15,6 +15,7 @@ import com.example.chotuvemobileapp.UserProfileActivity
 import com.example.chotuvemobileapp.entities.VideoItem
 import com.example.chotuvemobileapp.helpers.Utilities.DATE_FORMAT_LONG
 import com.example.chotuvemobileapp.helpers.Utilities.DATE_FORMAT_SHORT
+import com.example.chotuvemobileapp.helpers.Utilities.USERNAME
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -54,7 +55,7 @@ class VideosAdapter(private val mVideos: List<VideoItem>) : RecyclerView.Adapter
         }
         holder.user.setOnClickListener {
             val intent = Intent(it.context, UserProfileActivity::class.java)
-            intent.putExtra("user", video.user)
+            intent.putExtra(USERNAME, video.user)
             it.context.startActivity(intent)
         }
     }

@@ -18,6 +18,10 @@ import java.util.*
 
 object Utilities {
 
+    const val FAILURE_MESSAGE = "Failure"
+    const val SUCCESS_MESSAGE = "Success"
+    const val SERVER_ERROR_MESSAGE = "ServerError"
+    const val INVALID_PARAMS_MESSAGE = "InvalidParams"
     const val DATE_FORMAT_LONG = "yyyy-MM-dd'T'HH:mm:ss"
     const val DATE_FORMAT_SHORT = "dd/MM/yyyy"
     const val REQUEST_CODE_EDIT_PROFILE = 22

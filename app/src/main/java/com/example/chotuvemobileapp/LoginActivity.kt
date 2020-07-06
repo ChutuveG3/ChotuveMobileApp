@@ -9,7 +9,10 @@ import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.chotuvemobileapp.data.users.LoginDataSource
+import com.example.chotuvemobileapp.data.repositories.LoginDataSource
+import com.example.chotuvemobileapp.helpers.Utilities.FAILURE_MESSAGE
+import com.example.chotuvemobileapp.helpers.Utilities.INVALID_PARAMS_MESSAGE
+import com.example.chotuvemobileapp.helpers.Utilities.USERNAME
 import com.example.chotuvemobileapp.helpers.Utilities.watchText
 import com.google.firebase.iid.FirebaseInstanceId
 import kotlinx.android.synthetic.main.activity_login.*
@@ -44,9 +47,9 @@ class LoginActivity : AppCompatActivity() {
                         val pass = LoginPassword.text.toString()
                         LoginDataSource.tokenLogin(username, pass, newToken) {
                             when (it) {
-                                "Failure" -> Toast.makeText(applicationContext, getString(R.string.internal_error),
+                                FAILURE_MESSAGE -> Toast.makeText(applicationContext, getString(R.string.internal_error),
                                     Toast.LENGTH_LONG).show()
-                                "InvalidParams" -> showInvalidUsername()
+                                INVALID_PARAMS_MESSAGE -> showInvalidUsername()
                                 else -> saveDataAndStartHome(it)
                             }
                             quitLoadingScreen()
@@ -84,7 +87,7 @@ class LoginActivity : AppCompatActivity() {
             Context.MODE_PRIVATE
         ).edit()
         preferences.putString("token", token)
-        preferences.putString("username", LogInUsername.text.toString())
+        preferences.putString(USERNAME, LogInUsername.text.toString())
         preferences.putString("password", LoginPassword.text.toString())
         preferences.apply()
         startActivity(Intent(this, HomeActivity::class.java))

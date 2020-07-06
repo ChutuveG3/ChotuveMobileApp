@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chotuvemobileapp.R
 import com.example.chotuvemobileapp.entities.VideoItem
+import com.example.chotuvemobileapp.helpers.Utilities.USERNAME
 import com.example.chotuvemobileapp.helpers.VideosAdapter
 import com.example.chotuvemobileapp.viewmodels.VideosViewModel
 import kotlinx.android.synthetic.main.fragment_profile_videos.*
@@ -31,7 +32,7 @@ class VideoListFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            user = it.getString("user")
+            user = it.getString(USERNAME)
         }
     }
 
@@ -76,7 +77,7 @@ class VideoListFragment : Fragment() {
         fun newInstance(user: String? = null) =
             VideoListFragment().apply {
                 arguments = Bundle().apply {
-                    putString("user", user)
+                    putString(USERNAME, user)
                 }
             }
     }

@@ -6,6 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.example.chotuvemobileapp.R
+import com.example.chotuvemobileapp.helpers.Utilities.BIRTH_DATE
+import com.example.chotuvemobileapp.helpers.Utilities.EMAIL
+import com.example.chotuvemobileapp.helpers.Utilities.FIRST_NAME
+import com.example.chotuvemobileapp.helpers.Utilities.LAST_NAME
+import com.example.chotuvemobileapp.helpers.Utilities.USERNAME
 import kotlinx.android.synthetic.main.profile_view_fragment.*
 
 class ProfileDetailsFragment : Fragment() {
@@ -15,16 +20,15 @@ class ProfileDetailsFragment : Fragment() {
     var email: String = ""
     private var birthDate: String = ""
     private var username = ""
-    private var ownProfile = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            firstName = it.getString("firstName", "")
-            lastName = it.getString("lastName", "")
-            email = it.getString("email", "")
-            birthDate = it.getString("birthDate", "")
-            username = it.getString("username", "")
+            firstName = it.getString(FIRST_NAME, "")
+            lastName = it.getString(LAST_NAME, "")
+            email = it.getString(EMAIL, "")
+            birthDate = it.getString(BIRTH_DATE, "")
+            username = it.getString(USERNAME, "")
         }
     }
 
@@ -50,11 +54,11 @@ class ProfileDetailsFragment : Fragment() {
         fun newInstance(firstName: String, lastName: String, email: String, birthDate: String, username: String) =
             ProfileDetailsFragment().apply {
                 arguments = Bundle().apply {
-                    putString("firstName", firstName)
-                    putString("lastName", lastName)
-                    putString("email", email)
-                    putString("birthDate", birthDate)
-                    putString("username", username)
+                    putString(FIRST_NAME, firstName)
+                    putString(LAST_NAME, lastName)
+                    putString(EMAIL, email)
+                    putString(BIRTH_DATE, birthDate)
+                    putString(USERNAME, username)
                 }
             }
     }

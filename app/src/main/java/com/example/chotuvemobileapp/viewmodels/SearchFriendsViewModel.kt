@@ -1,4 +1,4 @@
-package com.example.chotuvemobileapp.ui.friends
+package com.example.chotuvemobileapp.viewmodels
 
 import androidx.lifecycle.ViewModel
 

@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.chotuvemobileapp.R
 import com.example.chotuvemobileapp.helpers.FriendsAdapter
 import com.example.chotuvemobileapp.helpers.Utilities
-import com.example.chotuvemobileapp.ui.friends.FriendsViewModel
+import com.example.chotuvemobileapp.viewmodels.FriendsViewModel
 import kotlinx.android.synthetic.main.fragment_list.*
 
 

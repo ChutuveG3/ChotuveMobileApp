@@ -22,7 +22,7 @@ import com.bumptech.glide.Glide
 import com.example.chotuvemobileapp.HomeActivity
 import com.example.chotuvemobileapp.R
 import com.example.chotuvemobileapp.data.videos.Video
-import com.example.chotuvemobileapp.data.videos.VideoDataSource
+import com.example.chotuvemobileapp.data.repositories.VideoDataSource
 import com.example.chotuvemobileapp.helpers.PickRequest
 import com.example.chotuvemobileapp.helpers.Utilities.DATE_FORMAT_LONG
 import com.example.chotuvemobileapp.helpers.Utilities.REQUEST_GALLERY_PERMISSION

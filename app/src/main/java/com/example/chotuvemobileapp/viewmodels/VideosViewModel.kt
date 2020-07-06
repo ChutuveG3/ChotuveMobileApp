@@ -4,7 +4,7 @@ import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.RecyclerView
-import com.example.chotuvemobileapp.data.videos.VideoDataSource
+import com.example.chotuvemobileapp.data.repositories.VideoDataSource
 import com.example.chotuvemobileapp.entities.VideoItem
 
 class VideosViewModel : ViewModel() {

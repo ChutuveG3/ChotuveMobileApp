@@ -2,6 +2,7 @@ package com.example.chotuvemobileapp.data.services
 
 import com.example.chotuvemobileapp.data.requests.LoginRequest
 import com.example.chotuvemobileapp.data.requests.TokenLoginRequest
+import com.example.chotuvemobileapp.data.requests.reactions.CommentRequest
 import com.example.chotuvemobileapp.data.users.User
 import com.example.chotuvemobileapp.data.users.UserForModification
 import com.example.chotuvemobileapp.data.videos.Video
@@ -69,4 +70,19 @@ interface IAppServerApiService {
 
     @GET("users/{user}/potential_friends")
     fun searchFriends(@Path("user") sender: String, @Query("username") queryString: String) : Call<ResponseBody>
+
+    @PATCH("videos/{videoId}/like")
+    fun like(@Path("videoId") videoId: String) : Call<ResponseBody>
+
+    @PATCH("videos/{videoId}/unlike")
+    fun unlike(@Path("videoId") videoId: String) : Call<ResponseBody>
+
+    @PATCH("videos/{videoId}/dislike")
+    fun dislike(@Path("videoId") videoId: String) : Call<ResponseBody>
+
+    @PATCH("videos/{videoId}/undislike")
+    fun undislike(@Path("videoId") videoId: String) : Call<ResponseBody>
+
+    @POST("videos/{videoId}/comments")
+    fun comment(@Path("videoId") videoId: String, @Body comment: CommentRequest) : Call<ResponseBody>
 }

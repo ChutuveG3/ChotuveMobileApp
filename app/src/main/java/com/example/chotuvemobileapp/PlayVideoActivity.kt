@@ -25,6 +25,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.chotuvemobileapp.helpers.CommentsAdapter
+import com.example.chotuvemobileapp.helpers.Utilities.USERNAME
 import com.example.chotuvemobileapp.viewmodels.PlayVideoViewModel
 import kotlinx.android.synthetic.main.activity_play_video.*
 
@@ -188,7 +189,7 @@ class PlayVideoActivity : AppCompatActivity() {
 
     fun startProfileActivity(view: View) {
         val profileIntent = Intent(this, UserProfileActivity::class.java)
-        profileIntent.putExtra("user", intent.getStringExtra("videoAuthor"))
+        profileIntent.putExtra(USERNAME, intent.getStringExtra("videoAuthor"))
         startActivity(profileIntent)
     }
 
