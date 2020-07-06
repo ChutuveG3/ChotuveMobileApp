@@ -1,13 +1,23 @@
 package com.example.chotuvemobileapp.viewmodels
 
 import android.content.SharedPreferences
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.chotuvemobileapp.entities.CommentItem
+import kotlin.random.Random
 
 class PlayVideoViewModel : ViewModel() {
     private lateinit var prefs: SharedPreferences
-    private val comments by lazy{
-
+    val comments by lazy {
+        val liveData = MutableLiveData<ArrayList<CommentItem>>()
+        val dummyComments = ArrayList<CommentItem>()
+        for (i in 1..5) {
+            dummyComments.add(CommentItem("Comentario hardcodeado #$i.\nHardcodear es malo", "User $i", "$i/$i/$i"))
+        }
+        liveData.value = dummyComments
+        return@lazy liveData
     }
+
     var liked = false
     var disliked = false
 

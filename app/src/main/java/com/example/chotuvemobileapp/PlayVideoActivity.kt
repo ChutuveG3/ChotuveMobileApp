@@ -9,31 +9,35 @@ import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.view.animation.AlphaAnimation
 import android.widget.ImageView
 import android.widget.MediaController
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.widget.ImageViewCompat
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.example.chotuvemobileapp.ui.CommentsFragment
-import com.example.chotuvemobileapp.ui.CommentsEmptyListFragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.chotuvemobileapp.helpers.CommentsAdapter
 import com.example.chotuvemobileapp.viewmodels.PlayVideoViewModel
 import kotlinx.android.synthetic.main.activity_play_video.*
 
 
+@Suppress("UNUSED_PARAMETER")
 class PlayVideoActivity : AppCompatActivity() {
 
-    private var nComments = 0
     private var fullscreen = false
     private var backgroundColor = 0
     private val delayTime: Long = 5000
     private val displayMetrics = DisplayMetrics()
+    private val uri by lazy { Uri.parse(intent.getStringExtra("url")) }
+    private val mediaController by lazy { MediaController(this) }
     private val prefs by lazy {
         getSharedPreferences(getString(R.string.shared_preferences_file), Context.MODE_PRIVATE)
     }
@@ -51,54 +55,14 @@ class PlayVideoActivity : AppCompatActivity() {
 
         VideoTitle.text = intent.getStringExtra("videoTitle")
         VideoAuthor.text = intent.getStringExtra("videoAuthor")
-        VideoAuthor.setOnClickListener {
-            startProfileActivity()
-        }
-        VideoAuthorPic.setOnClickListener {
-            startProfileActivity()
-        }
-        LikeButton.setOnClickListener {
-            if (viewModel.liked) {
-                setLike(liked = false, disliked = false, color = R.color.white, button = LikeButton)
-                viewModel.likes -= 1
-            }
-            else {
-                if (viewModel.disliked) {
-                    setLike(true, disliked = false, color = R.color.white, button = DislikeButton)
-                    viewModel.dislikes -= 1
-                }
-                setLike(liked = true, disliked = false, color = R.color.like, button = LikeButton)
-                viewModel.likes += 1
-            }
-        }
 
-        DislikeButton.setOnClickListener {
-            if (viewModel.disliked) {
-                setLike(liked = false, disliked = false, color = R.color.white, button = DislikeButton)
-                viewModel.dislikes -= 1
-            }
-            else {
-                if (viewModel.liked) {
-                    setLike(false, disliked = true, color = R.color.white, button = LikeButton)
-                    viewModel.likes -= 1
-                }
-                setLike(liked = false, disliked = true, color = R.color.like, button = DislikeButton)
-                viewModel.dislikes += 1
-            }
-        }
+        NoCommentsImageView.visibility = View.GONE
+        NoCommentsTextView.visibility = View.GONE
+        PostCommentButton.visibility = View.GONE
+
         LikeCount.text = viewModel.likes.toString()
         DislikeCount.text = viewModel.dislikes.toString()
 
-        DescriptionToggle.setOnClickListener {
-            if (viewModel.descriptionExpanded){
-                viewModel.descriptionExpanded = false
-                toggleDescription(0, 0, 0F)
-            }
-            else{
-                viewModel.descriptionExpanded = true
-                toggleDescription(8, ViewGroup.LayoutParams.WRAP_CONTENT, 180F)
-            }
-        }
         VideoProgressBar.visibility = View.VISIBLE
 
         backgroundColor = getColor(R.color.white)
@@ -107,14 +71,28 @@ class PlayVideoActivity : AppCompatActivity() {
 
         VideoDescription.text = description
 
-        nComments = intent.getIntExtra("comments", 0)
+        viewModel.comments.observe(this, Observer {
+            if (it.isEmpty()) {
+                CommentsRecyclerView.visibility = View.GONE
+                NoCommentsImageView.visibility = View.VISIBLE
+                NoCommentsTextView.visibility = View.VISIBLE
+            }
+            else{
+                CommentsRecyclerView.adapter = CommentsAdapter(it)
+                CommentsRecyclerView.layoutManager = LinearLayoutManager(applicationContext)
+            }
+        })
 
-        if (nComments == 0) supportFragmentManager.beginTransaction().replace(R.id.VideoCommentsFragment, CommentsEmptyListFragment()).commit()
-        else supportFragmentManager.beginTransaction().replace(R.id.VideoCommentsFragment, CommentsFragment.newInstance(nComments)).commit()
+        AddCommentInput.addTextChangedListener(object : TextWatcher{
+            override fun afterTextChanged(s: Editable?) {
+                PostCommentButton.visibility = if (s.isNullOrEmpty()) View.GONE else View.VISIBLE
+            }
 
-        val uri = Uri.parse(intent.getStringExtra("url"))
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
-        val mediaController = MediaController(this)
+        })
+
         mediaController.setAnchorView(VideoWrapper)
         mediaController.setMediaPlayer(Video)
 
@@ -143,31 +121,72 @@ class PlayVideoActivity : AppCompatActivity() {
             }
         }
 
-        Video.setOnClickListener {
-            FullscreenToggle.visibility = View.VISIBLE
-            Handler().postDelayed({FullscreenToggle.visibility = View.GONE}, delayTime)
-            Handler().postDelayed({ if (fullscreen) setFullscreenFlags() }, delayTime)
-        }
-
-        FullscreenToggle.setOnClickListener {
-            if (!fullscreen) makeFullScreen()
-            else exitFullScreen()
-        }
         Handler().postDelayed({FullscreenToggle.visibility = View.GONE}, delayTime)
 
+    }
+
+    fun toggleFullScreen(view: View) {
+        if (!fullscreen) makeFullScreen()
+        else exitFullScreen()
+    }
+
+    fun tapVideo(view: View) {
+        FullscreenToggle.visibility = View.VISIBLE
+        Handler().postDelayed({ FullscreenToggle.visibility = View.GONE }, delayTime)
+        Handler().postDelayed({ if (fullscreen) setFullscreenFlags() }, delayTime)
+    }
+
+    fun handleDescriptionToggle(view: View) {
+        if (viewModel.descriptionExpanded) {
+            viewModel.descriptionExpanded = false
+            toggleDescription(0, 0, 0F)
+        } else {
+            viewModel.descriptionExpanded = true
+            toggleDescription(8, ViewGroup.LayoutParams.WRAP_CONTENT, 180F)
+        }
+    }
+
+    fun dislike(view: View) {
+        view as ImageView
+        if (viewModel.disliked) {
+            setLike(liked = false, disliked = false, color = R.color.white, button = view)
+            viewModel.dislikes -= 1
+        } else {
+            if (viewModel.liked) {
+                setLike(false, disliked = true, color = R.color.white, button = LikeButton)
+                viewModel.likes -= 1
+            }
+            setLike(liked = false, disliked = true, color = R.color.dislike, button = view)
+            viewModel.dislikes += 1
+        }
+    }
+
+    fun like(view: View) {
+        view as ImageView
+        if (viewModel.liked) {
+            setLike(liked = false, disliked = false, color = R.color.white, button = view)
+            viewModel.likes -= 1
+        } else {
+            if (viewModel.disliked) {
+                setLike(true, disliked = false, color = R.color.white, button = DislikeButton)
+                viewModel.dislikes -= 1
+            }
+            setLike(liked = true, disliked = false, color = R.color.like, button = view)
+            viewModel.likes += 1
+        }
     }
 
     private fun toggleDescription(margin: Int, height: Int, rotation: Float) {
         val constraints = ConstraintSet()
         constraints.clone(ScrollViewLayout)
         constraints.connect(R.id.VideoDescription, ConstraintSet.TOP, R.id.VideoDescriptionHeader, ConstraintSet.BOTTOM, margin)
-        constraints.connect(R.id.VideoCommentsHeader, ConstraintSet.TOP, R.id.VideoDescription, ConstraintSet.BOTTOM, margin)
+        constraints.connect(R.id.StickyPart, ConstraintSet.TOP, R.id.VideoDescription, ConstraintSet.BOTTOM, margin)
         constraints.applyTo(ScrollViewLayout)
         VideoDescription.layoutParams.height = height
         DescriptionToggle.rotationX = rotation
     }
 
-    private fun startProfileActivity() {
+    fun startProfileActivity(view: View) {
         val profileIntent = Intent(this, UserProfileActivity::class.java)
         profileIntent.putExtra("user", intent.getStringExtra("videoAuthor"))
         startActivity(profileIntent)
