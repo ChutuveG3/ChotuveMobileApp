@@ -85,4 +85,7 @@ interface IAppServerApiService {
 
     @POST("videos/{videoId}/comments")
     fun comment(@Path("videoId") videoId: String, @Body comment: CommentRequest) : Call<ResponseBody>
+
+    @GET("videos/{videoId}")
+    fun getVideo(@Path("videoId") videoId: String) : Call<ResponseBody>
 }

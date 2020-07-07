@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import com.example.chotuvemobileapp.data.response.VideoListResponse
 import com.example.chotuvemobileapp.data.utilities.HttpUtilities.buildAuthenticatedClient
 import com.example.chotuvemobileapp.data.videos.Video
+import com.example.chotuvemobileapp.data.videos.VideoInfo
 import com.example.chotuvemobileapp.entities.VideoItem
 import com.example.chotuvemobileapp.helpers.Utilities.FAILURE_MESSAGE
 import com.example.chotuvemobileapp.helpers.Utilities.SERVER_ERROR_MESSAGE
@@ -12,6 +13,7 @@ import com.example.chotuvemobileapp.helpers.Utilities.USERNAME
 import com.google.gson.Gson
 import okhttp3.ResponseBody
 import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.Response
 
 object VideoDataSource {
@@ -20,10 +22,9 @@ object VideoDataSource {
 
         val retrofit = buildAuthenticatedClient(preferences)
 
-        retrofit.uploadVideo(video).enqueue(object : retrofit2.Callback<ResponseBody> {
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                myCallback.invoke(FAILURE_MESSAGE)
-            }
+        retrofit.uploadVideo(video).enqueue(object : Callback<ResponseBody> {
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) = myCallback.invoke(FAILURE_MESSAGE)
+            
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>){
                 when {
                     response.isSuccessful -> myCallback.invoke(SUCCESS_MESSAGE)
@@ -42,10 +43,9 @@ object VideoDataSource {
             else -> retrofit.getVideos(user, pageNumber, pageSize)
         }
         val fail = ArrayList<VideoItem>()
-        method.enqueue(object : retrofit2.Callback<ResponseBody> {
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                myCallback.invoke(fail)
-            }
+        method.enqueue(object : Callback<ResponseBody> {
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) = myCallback.invoke(fail)
+
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>){
                 when {
                     response.isSuccessful -> {
@@ -60,4 +60,19 @@ object VideoDataSource {
         })
     }
 
+    fun getVideo(prefs: SharedPreferences, videoId: String, callback: (VideoInfo?) -> Unit){
+        val retrofit = buildAuthenticatedClient(prefs)
+
+        retrofit.getVideo(videoId).enqueue(object : Callback<ResponseBody> {
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) = callback.invoke(null)
+
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                when{
+                    response.isSuccessful -> callback.invoke(Gson().fromJson(response.body()!!.string(), VideoInfo::class.java))
+                    else -> callback.invoke(null)
+                }
+            }
+
+        })
+    }
 }

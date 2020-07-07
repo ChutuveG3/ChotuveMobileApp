@@ -5,6 +5,7 @@ import java.io.FileDescriptor
 
 
 class VideoItem(
+    val id: String,
     val title: String,
     @SerializedName("owner")
     val user: String,

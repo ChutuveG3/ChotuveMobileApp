@@ -24,8 +24,10 @@ import androidx.core.widget.ImageViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.chotuvemobileapp.data.repositories.ReactionsDataSource
 import com.example.chotuvemobileapp.helpers.CommentsAdapter
 import com.example.chotuvemobileapp.helpers.Utilities.USERNAME
+import com.example.chotuvemobileapp.helpers.VideoReaction
 import com.example.chotuvemobileapp.viewmodels.PlayVideoViewModel
 import kotlinx.android.synthetic.main.activity_play_video.*
 
@@ -37,6 +39,7 @@ class PlayVideoActivity : AppCompatActivity() {
     private var backgroundColor = 0
     private val delayTime: Long = 5000
     private val displayMetrics = DisplayMetrics()
+    private val videoId by lazy { intent.getStringExtra("videoId") }
     private val uri by lazy { Uri.parse(intent.getStringExtra("url")) }
     private val mediaController by lazy { MediaController(this) }
     private val prefs by lazy {
@@ -152,6 +155,7 @@ class PlayVideoActivity : AppCompatActivity() {
         if (viewModel.disliked) {
             setLike(liked = false, disliked = false, color = R.color.white, button = view)
             viewModel.dislikes -= 1
+            ReactionsDataSource.reactToVideo(prefs, videoId, VideoReaction.Undislike){}
         } else {
             if (viewModel.liked) {
                 setLike(false, disliked = true, color = R.color.white, button = LikeButton)
@@ -159,6 +163,7 @@ class PlayVideoActivity : AppCompatActivity() {
             }
             setLike(liked = false, disliked = true, color = R.color.dislike, button = view)
             viewModel.dislikes += 1
+            ReactionsDataSource.reactToVideo(prefs, videoId, VideoReaction.Dislike){}
         }
     }
 
@@ -167,6 +172,7 @@ class PlayVideoActivity : AppCompatActivity() {
         if (viewModel.liked) {
             setLike(liked = false, disliked = false, color = R.color.white, button = view)
             viewModel.likes -= 1
+            ReactionsDataSource.reactToVideo(prefs, videoId, VideoReaction.Unlike){}
         } else {
             if (viewModel.disliked) {
                 setLike(true, disliked = false, color = R.color.white, button = DislikeButton)
@@ -174,6 +180,7 @@ class PlayVideoActivity : AppCompatActivity() {
             }
             setLike(liked = true, disliked = false, color = R.color.like, button = view)
             viewModel.likes += 1
+            ReactionsDataSource.reactToVideo(prefs, videoId, VideoReaction.Like){}
         }
     }
 
