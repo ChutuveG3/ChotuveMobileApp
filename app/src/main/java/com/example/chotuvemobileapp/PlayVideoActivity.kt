@@ -17,6 +17,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.MediaController
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
@@ -25,8 +26,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.chotuvemobileapp.data.repositories.ReactionsDataSource
+import com.example.chotuvemobileapp.data.requests.reactions.CommentRequest
+import com.example.chotuvemobileapp.entities.CommentItem
 import com.example.chotuvemobileapp.helpers.CommentsAdapter
+import com.example.chotuvemobileapp.helpers.Utilities.REACTION_DISLIKE
+import com.example.chotuvemobileapp.helpers.Utilities.REACTION_LIKE
+import com.example.chotuvemobileapp.helpers.Utilities.SUCCESS_MESSAGE
 import com.example.chotuvemobileapp.helpers.Utilities.USERNAME
+import com.example.chotuvemobileapp.helpers.Utilities.nowDateTimeStr
 import com.example.chotuvemobileapp.helpers.VideoReaction
 import com.example.chotuvemobileapp.viewmodels.PlayVideoViewModel
 import kotlinx.android.synthetic.main.activity_play_video.*
@@ -52,7 +59,7 @@ class PlayVideoActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_play_video)
-        viewModel.setPrefs(prefs)
+        viewModel.setValues(prefs, videoId)
 
         windowManager.defaultDisplay.getMetrics(displayMetrics)
         VideoWrapper.maxHeight = displayMetrics.heightPixels / 2
@@ -64,17 +71,25 @@ class PlayVideoActivity : AppCompatActivity() {
         NoCommentsTextView.visibility = View.GONE
         PostCommentButton.visibility = View.GONE
 
-        LikeCount.text = viewModel.likes.toString()
-        DislikeCount.text = viewModel.dislikes.toString()
-
         VideoProgressBar.visibility = View.VISIBLE
 
         backgroundColor = getColor(R.color.white)
-        val description = (intent.getStringExtra("videoDate")!!).plus("\n")
-            .plus(intent.getStringExtra("description"))
 
-        VideoDescription.text = description
-
+        viewModel.video.observe(this, Observer {
+            val description = intent.getStringExtra("videoDate")!! + "\n" + it.description
+            VideoDescription.text = description
+            LikeCount.text = it.likes.toString()
+            DislikeCount.text = it.dislikes.toString()
+            val (colorLike, colorDislike) = mapColors(it.reaction)
+            ImageViewCompat.setImageTintList(
+                LikeButton,
+                ColorStateList.valueOf(ContextCompat.getColor(applicationContext, colorLike))
+            )
+            ImageViewCompat.setImageTintList(
+                DislikeButton,
+                ColorStateList.valueOf(ContextCompat.getColor(applicationContext, colorDislike))
+            )
+        })
         viewModel.comments.observe(this, Observer {
             if (it.isEmpty()) {
                 CommentsRecyclerView.visibility = View.GONE
@@ -91,7 +106,6 @@ class PlayVideoActivity : AppCompatActivity() {
             override fun afterTextChanged(s: Editable?) {
                 PostCommentButton.visibility = if (s.isNullOrEmpty()) View.GONE else View.VISIBLE
             }
-
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 
@@ -126,7 +140,6 @@ class PlayVideoActivity : AppCompatActivity() {
         }
 
         Handler().postDelayed({FullscreenToggle.visibility = View.GONE}, delayTime)
-
     }
 
     fun toggleFullScreen(view: View) {
@@ -152,35 +165,61 @@ class PlayVideoActivity : AppCompatActivity() {
 
     fun dislike(view: View) {
         view as ImageView
-        if (viewModel.disliked) {
-            setLike(liked = false, disliked = false, color = R.color.white, button = view)
-            viewModel.dislikes -= 1
+        if (viewModel.video.value?.reaction == REACTION_DISLIKE){
+            viewModel.video.value!!.reaction = null
+            setButtonColor(R.color.white, view)
+            viewModel.video.value!!.dislikes -= 1
             ReactionsDataSource.reactToVideo(prefs, videoId, VideoReaction.Undislike){}
-        } else {
-            if (viewModel.liked) {
-                setLike(false, disliked = true, color = R.color.white, button = LikeButton)
-                viewModel.likes -= 1
             }
-            setLike(liked = false, disliked = true, color = R.color.dislike, button = view)
-            viewModel.dislikes += 1
+        else{
+            viewModel.video.value!!.reaction = REACTION_DISLIKE
+            if (viewModel.video.value?.reaction == REACTION_LIKE) {
+                setButtonColor(R.color.white, LikeButton)
+                viewModel.video.value!!.likes -= 1
+            }
+            setButtonColor(R.color.dislike, view)
+            viewModel.video.value!!.dislikes += 1
             ReactionsDataSource.reactToVideo(prefs, videoId, VideoReaction.Dislike){}
         }
     }
 
     fun like(view: View) {
         view as ImageView
-        if (viewModel.liked) {
-            setLike(liked = false, disliked = false, color = R.color.white, button = view)
-            viewModel.likes -= 1
+        if (viewModel.video.value?.reaction == REACTION_LIKE) {
+            viewModel.video.value!!.reaction = null
+            setButtonColor(R.color.white, view)
+            viewModel.video.value!!.likes -= 1
             ReactionsDataSource.reactToVideo(prefs, videoId, VideoReaction.Unlike){}
         } else {
-            if (viewModel.disliked) {
-                setLike(true, disliked = false, color = R.color.white, button = DislikeButton)
-                viewModel.dislikes -= 1
+            viewModel.video.value!!.reaction = REACTION_LIKE
+            if (viewModel.video.value?.reaction == REACTION_DISLIKE) {
+                setButtonColor(R.color.white, DislikeButton)
+                viewModel.video.value!!.dislikes -= 1
             }
-            setLike(liked = true, disliked = false, color = R.color.like, button = view)
-            viewModel.likes += 1
+            setButtonColor(R.color.like, view)
+            viewModel.video.value!!.likes += 1
             ReactionsDataSource.reactToVideo(prefs, videoId, VideoReaction.Like){}
+        }
+    }
+
+    fun startProfileActivity(view: View) {
+        val profileIntent = Intent(this, UserProfileActivity::class.java)
+        profileIntent.putExtra(USERNAME, intent.getStringExtra("videoAuthor"))
+        startActivity(profileIntent)
+    }
+
+    fun postComment(view: View) {
+        val comment = CommentRequest(nowDateTimeStr(), AddCommentInput.text.toString())
+        ReactionsDataSource.commentVideo(prefs, videoId, comment){
+            val text: String
+            when(it){
+                SUCCESS_MESSAGE -> {
+                    text = getString(R.string.comment_post_success)
+                    viewModel.addComment(CommentItem(comment.comment, prefs.getString(USERNAME, "")!!, comment.datetime))
+                }
+                else -> text = getString(R.string.internal_error)
+            }
+            Toast.makeText(applicationContext, text, Toast.LENGTH_LONG).show()
         }
     }
 
@@ -192,12 +231,6 @@ class PlayVideoActivity : AppCompatActivity() {
         constraints.applyTo(ScrollViewLayout)
         VideoDescription.layoutParams.height = height
         DescriptionToggle.rotationX = rotation
-    }
-
-    fun startProfileActivity(view: View) {
-        val profileIntent = Intent(this, UserProfileActivity::class.java)
-        profileIntent.putExtra(USERNAME, intent.getStringExtra("videoAuthor"))
-        startActivity(profileIntent)
     }
 
     private fun setLayout(height: Int){
@@ -240,9 +273,16 @@ class PlayVideoActivity : AppCompatActivity() {
         else super.onBackPressed()
     }
 
-    private fun setLike(liked: Boolean, disliked: Boolean, color: Int, button: ImageView){
-        viewModel.liked = liked
-        viewModel.disliked = disliked
+    private fun setButtonColor(color: Int, button: ImageView){
         ImageViewCompat.setImageTintList(button, ColorStateList.valueOf(ContextCompat.getColor(applicationContext, color)))
+    }
+
+    data class ColorResult(val colorLike: Int, val colorDislike: Int)
+    private fun mapColors(reaction: String?): ColorResult{
+        return when(reaction){
+            "like" -> ColorResult(R.color.like, R.color.white)
+            "dislike" -> ColorResult(R.color.white, R.color.dislike)
+            else -> ColorResult(R.color.white, R.color.white)
+        }
     }
 }

@@ -16,43 +16,36 @@ import retrofit2.Response
 
 object ProfileInfoDataSource {
     fun getProfileInfo(preferences: SharedPreferences, user: String, myCallback: (UserInfo?) -> Unit){
-
         val retrofit = buildAuthenticatedClient(preferences)
 
         retrofit.getProfile(user).enqueue(object : Callback<ResponseBody> {
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                myCallback.invoke(null)
-            }
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) = myCallback.invoke(null)
+
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>){
                 when {
                     response.isSuccessful -> {
                         val resp = Gson().fromJson(response.body()!!.string(), UserInfo::class.java)
                         myCallback.invoke(resp)
                     }
-                    else -> {
-                        myCallback.invoke(null)
-                    }
+                    else -> myCallback.invoke(null)
                 }
             }
         })
     }
 
     fun modifyProfileInfo(preferences: SharedPreferences, userInfo: UserForModification, myCallback: (String) -> Unit){
-
         val retrofit = buildAuthenticatedClient(preferences)
-
         val user = preferences.getString(USERNAME, "")!!
 
         retrofit.modifyProfile(user, userInfo).enqueue(object : Callback<ResponseBody> {
-            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                myCallback.invoke(FAILURE_MESSAGE)
-            }
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) = myCallback.invoke(FAILURE_MESSAGE)
+
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>){
-                when {
-                    response.isSuccessful -> myCallback.invoke(SUCCESS_MESSAGE)
-                    response.code() == 502 -> myCallback.invoke("EmailInvalid")
-                    else -> myCallback.invoke(SERVER_ERROR_MESSAGE)
-                }
+                myCallback.invoke(when {
+                    response.isSuccessful -> SUCCESS_MESSAGE
+                    response.code() == 502 -> "EmailInvalid"
+                    else -> SERVER_ERROR_MESSAGE
+                })
             }
         })
     }

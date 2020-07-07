@@ -1,9 +1,11 @@
 package com.example.chotuvemobileapp.data.repositories
 
 import android.content.SharedPreferences
+import com.example.chotuvemobileapp.data.requests.reactions.CommentRequest
 import com.example.chotuvemobileapp.data.utilities.HttpUtilities
 import com.example.chotuvemobileapp.helpers.Utilities
 import com.example.chotuvemobileapp.helpers.Utilities.FAILURE_MESSAGE
+import com.example.chotuvemobileapp.helpers.Utilities.SUCCESS_MESSAGE
 import com.example.chotuvemobileapp.helpers.VideoReaction
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -23,10 +25,25 @@ object ReactionsDataSource {
         request.enqueue(object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) = myCallback.invoke(FAILURE_MESSAGE)
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                when {
-                    response.isSuccessful -> myCallback.invoke(Utilities.SUCCESS_MESSAGE)
-                    else -> myCallback.invoke(FAILURE_MESSAGE)
-                }
+                myCallback.invoke(when {
+                    response.isSuccessful -> SUCCESS_MESSAGE
+                    else -> FAILURE_MESSAGE
+                })
+            }
+        })
+    }
+
+    fun commentVideo(preferences: SharedPreferences, videoId: String, comment: CommentRequest, callback: (String) -> Unit){
+        val retrofit = HttpUtilities.buildAuthenticatedClient(preferences)
+
+        retrofit.comment(videoId, comment).enqueue(object : Callback<ResponseBody> {
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) = callback.invoke(FAILURE_MESSAGE)
+
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                callback.invoke(when{
+                    response.isSuccessful -> SUCCESS_MESSAGE
+                    else -> FAILURE_MESSAGE
+                })
             }
         })
     }

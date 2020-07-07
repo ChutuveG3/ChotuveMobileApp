@@ -1,8 +1,6 @@
 package com.example.chotuvemobileapp.entities
 
 import com.google.gson.annotations.SerializedName
-import java.io.FileDescriptor
-
 
 class VideoItem(
     val id: String,
@@ -11,7 +9,5 @@ class VideoItem(
     val user: String,
     @SerializedName("datetime")
     val date: String,
-    val url: String,
-    val description: String,
-    val visibility: String
+    val url: String
 )

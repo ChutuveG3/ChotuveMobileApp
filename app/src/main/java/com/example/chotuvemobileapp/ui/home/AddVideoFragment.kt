@@ -24,18 +24,16 @@ import com.example.chotuvemobileapp.R
 import com.example.chotuvemobileapp.data.videos.Video
 import com.example.chotuvemobileapp.data.repositories.VideoDataSource
 import com.example.chotuvemobileapp.helpers.PickRequest
-import com.example.chotuvemobileapp.helpers.Utilities.DATE_FORMAT_LONG
 import com.example.chotuvemobileapp.helpers.Utilities.REQUEST_GALLERY_PERMISSION
 import com.example.chotuvemobileapp.helpers.Utilities.REQUEST_LOCATION_PERMISSION
 import com.example.chotuvemobileapp.helpers.Utilities.getFileName
+import com.example.chotuvemobileapp.helpers.Utilities.nowDateTimeStr
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.fragment_add_video.*
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 
 class AddVideoFragment : Fragment() {
@@ -217,12 +215,6 @@ class AddVideoFragment : Fragment() {
             cursor!!.close()
         }
         return fileSize
-    }
-
-    private fun nowDateTimeStr() : String {
-        val current = LocalDateTime.now()
-        val formatter = DateTimeFormatter.ofPattern(DATE_FORMAT_LONG)
-        return current.format(formatter)
     }
 
     @SuppressLint("MissingPermission")

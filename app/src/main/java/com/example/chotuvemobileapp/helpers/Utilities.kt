@@ -14,6 +14,8 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.core.app.ActivityCompat.startActivityForResult
 import java.text.DecimalFormat
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 
 object Utilities {
@@ -35,6 +37,8 @@ object Utilities {
     const val REQUEST_GALLERY_PERMISSION = 35
     const val TYPE = "type"
     const val NOT_FOUND_MESSAGE = "notFoundMessage"
+    const val REACTION_LIKE = "like"
+    const val REACTION_DISLIKE = "dislike"
 
     fun createDatePicker(field: EditText, context: Context){
         val calendar = Calendar.getInstance()
@@ -72,6 +76,12 @@ object Utilities {
             type = selectType
         }
         startActivityForResult(activity, Intent.createChooser(intent, title), responseCode.value, null)
+    }
+
+    fun nowDateTimeStr() : String {
+        val current = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ofPattern(DATE_FORMAT_LONG)
+        return current.format(formatter)
     }
 
     @SuppressLint("Recycle")

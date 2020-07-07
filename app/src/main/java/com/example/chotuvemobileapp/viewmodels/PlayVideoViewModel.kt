@@ -9,34 +9,31 @@ import com.example.chotuvemobileapp.entities.CommentItem
 
 class PlayVideoViewModel : ViewModel() {
     private lateinit var prefs: SharedPreferences
+    lateinit var videoId: String
+
     val comments by lazy {
-        val liveData = MutableLiveData<ArrayList<CommentItem>>()
-        val dummyComments = ArrayList<CommentItem>()
-        for (i in 1..5) {
-            dummyComments.add(CommentItem("Comentario hardcodeado #$i.\nHardcodear es malo", "User $i", "$i/$i/$i"))
-        }
-        liveData.value = dummyComments
-        return@lazy liveData
+        MutableLiveData<ArrayList<CommentItem>>()
     }
 
     val video by lazy {
         val liveData = MutableLiveData<VideoInfo>()
         VideoDataSource.getVideo(prefs, videoId){
             liveData.value = it
+            if (it != null ) comments.postValue(it.comments)
         }
         return@lazy liveData
     }
 
-    lateinit var videoId: String
-    var liked = false
-    var disliked = false
-
-    var likes = 32525
-    var dislikes = 2
-
     var descriptionExpanded = false
 
-    fun setPrefs(preferences: SharedPreferences){
+    fun setValues(preferences: SharedPreferences, id: String){
         prefs = preferences
+        videoId = id
+    }
+
+    fun addComment(commentItem: CommentItem){
+        val newComments = comments.value
+        newComments?.add(commentItem)
+        comments.postValue(newComments)
     }
 }

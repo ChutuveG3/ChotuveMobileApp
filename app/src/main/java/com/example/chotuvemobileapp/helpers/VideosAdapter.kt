@@ -49,7 +49,6 @@ class VideosAdapter(private val mVideos: List<VideoItem>) : RecyclerView.Adapter
             intent.putExtra("videoTitle", video.title)
             intent.putExtra("videoAuthor", video.user)
             intent.putExtra("videoDate", dateToDisplay)
-            intent.putExtra("description", video.description)
             intent.putExtra("url", video.url)
             it.context.startActivity(intent)
         }

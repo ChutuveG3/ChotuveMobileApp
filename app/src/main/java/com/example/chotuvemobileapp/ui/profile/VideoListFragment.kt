@@ -60,15 +60,13 @@ class VideoListFragment : Fragment() {
         recyclerView.adapter = VideosAdapter(videos)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        recyclerView.addOnScrollListener(
-            object : RecyclerView.OnScrollListener(){
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-                    if(!recyclerView.canScrollVertically(1)){
-                        viewModel.getMoreVideos(recyclerView)
-                    }
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener(){
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if(!recyclerView.canScrollVertically(1)){
+                    viewModel.getMoreVideos(recyclerView)
                 }
-            }
+            }}
         )
     }
 

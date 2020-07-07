@@ -4,8 +4,8 @@ import com.example.chotuvemobileapp.entities.CommentItem
 
 class VideoInfo(
     val description: String,
-    val reaction: String?,
-    val likes: Int,
-    val dislikes: Int,
+    var reaction: String?,
+    var likes: Int,
+    var dislikes: Int,
     val comments: ArrayList<CommentItem>
 )

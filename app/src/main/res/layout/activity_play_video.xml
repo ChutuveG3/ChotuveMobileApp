@@ -240,7 +240,8 @@
                     app:layout_constraintBottom_toBottomOf="@+id/AddCommentInput"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/AddCommentInput"
-                    app:srcCompat="@drawable/ic_baseline_send_45"
+                    app:srcCompat="@drawable/ic_baseline_send_36"
+                    android:onClick="postComment"
                     tools:ignore="ContentDescription" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
