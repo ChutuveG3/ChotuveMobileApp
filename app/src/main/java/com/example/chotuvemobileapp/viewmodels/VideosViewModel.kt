@@ -10,8 +10,8 @@ import com.example.chotuvemobileapp.entities.VideoItem
 class VideosViewModel : ViewModel() {
     private lateinit var prefs: SharedPreferences
     private var user: String? = null
-    var loadedAllVideos = false
-    private val pageSize = 10
+    private var loadedAllVideos = false
+    private val pageSize = 30
     private var currentPage = 1
 
     val videos by lazy {

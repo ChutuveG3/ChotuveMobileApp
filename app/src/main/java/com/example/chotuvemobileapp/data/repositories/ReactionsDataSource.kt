@@ -3,7 +3,6 @@ package com.example.chotuvemobileapp.data.repositories
 import android.content.SharedPreferences
 import com.example.chotuvemobileapp.data.requests.reactions.CommentRequest
 import com.example.chotuvemobileapp.data.utilities.HttpUtilities
-import com.example.chotuvemobileapp.helpers.Utilities
 import com.example.chotuvemobileapp.helpers.Utilities.FAILURE_MESSAGE
 import com.example.chotuvemobileapp.helpers.Utilities.SUCCESS_MESSAGE
 import com.example.chotuvemobileapp.helpers.VideoReaction

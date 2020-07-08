@@ -15,6 +15,7 @@ import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.MediaController
 import android.widget.Toast
@@ -72,11 +73,14 @@ class PlayVideoActivity : AppCompatActivity() {
         PostCommentButton.visibility = View.GONE
 
         VideoProgressBar.visibility = View.VISIBLE
+        VideoInfoProgressBar.visibility = View.VISIBLE
+        ScrollViewBlocker.visibility = View.VISIBLE
 
         backgroundColor = getColor(R.color.white)
 
         viewModel.video.observe(this, Observer {
-            val description = intent.getStringExtra("videoDate")!! + "\n" + it.description
+            val description = intent.getStringExtra("videoDate")!! + "\n" +
+                    if (it.description.isBlank()) getString(R.string.no_description) else it.description
             VideoDescription.text = description
             LikeCount.text = it.likes.toString()
             DislikeCount.text = it.dislikes.toString()
@@ -89,9 +93,11 @@ class PlayVideoActivity : AppCompatActivity() {
                 DislikeButton,
                 ColorStateList.valueOf(ContextCompat.getColor(applicationContext, colorDislike))
             )
+            VideoInfoProgressBar.visibility = View.GONE
+            ScrollViewBlocker.visibility = View.GONE
         })
         viewModel.comments.observe(this, Observer {
-            if (it.isEmpty()) {
+            if (it == null || it.isEmpty()) {
                 CommentsRecyclerView.visibility = View.GONE
                 NoCommentsImageView.visibility = View.VISIBLE
                 NoCommentsTextView.visibility = View.VISIBLE
@@ -142,10 +148,7 @@ class PlayVideoActivity : AppCompatActivity() {
         Handler().postDelayed({FullscreenToggle.visibility = View.GONE}, delayTime)
     }
 
-    fun toggleFullScreen(view: View) {
-        if (!fullscreen) makeFullScreen()
-        else exitFullScreen()
-    }
+    fun toggleFullScreen(view: View) = if (!fullscreen) makeFullScreen() else exitFullScreen()
 
     fun tapVideo(view: View) {
         FullscreenToggle.visibility = View.VISIBLE
@@ -156,49 +159,58 @@ class PlayVideoActivity : AppCompatActivity() {
     fun handleDescriptionToggle(view: View) {
         if (viewModel.descriptionExpanded) {
             viewModel.descriptionExpanded = false
-            toggleDescription(0, 0, 0F)
+            view.startAnimation(AnimationUtils.loadAnimation(this, R.anim.flip_back))
+            toggleDescription(0, 0)
         } else {
             viewModel.descriptionExpanded = true
-            toggleDescription(8, ViewGroup.LayoutParams.WRAP_CONTENT, 180F)
+            view.startAnimation(AnimationUtils.loadAnimation(this, R.anim.flip))
+            toggleDescription(8, ViewGroup.LayoutParams.WRAP_CONTENT)
         }
     }
 
     fun dislike(view: View) {
         view as ImageView
         if (viewModel.video.value?.reaction == REACTION_DISLIKE){
-            viewModel.video.value!!.reaction = null
-            setButtonColor(R.color.white, view)
-            viewModel.video.value!!.dislikes -= 1
-            ReactionsDataSource.reactToVideo(prefs, videoId, VideoReaction.Undislike){}
+            ReactionsDataSource.reactToVideo(prefs, videoId, VideoReaction.Undislike) {
+                if (it == SUCCESS_MESSAGE) {
+                    setButtonColor(R.color.white, view)
+                    viewModel.react(VideoReaction.Undislike)
+                }
             }
+        }
         else{
-            viewModel.video.value!!.reaction = REACTION_DISLIKE
-            if (viewModel.video.value?.reaction == REACTION_LIKE) {
-                setButtonColor(R.color.white, LikeButton)
-                viewModel.video.value!!.likes -= 1
+            ReactionsDataSource.reactToVideo(prefs, videoId, VideoReaction.Dislike) {
+                if (it == SUCCESS_MESSAGE) {
+                    if (viewModel.video.value?.reaction == REACTION_LIKE) setButtonColor(R.color.white, LikeButton)
+
+                    setButtonColor(R.color.dislike, view)
+                    viewModel.react(VideoReaction.Dislike)
+                    Toast.makeText(applicationContext, getString(R.string.toast_dislike), Toast.LENGTH_LONG).show()
+                }
             }
-            setButtonColor(R.color.dislike, view)
-            viewModel.video.value!!.dislikes += 1
-            ReactionsDataSource.reactToVideo(prefs, videoId, VideoReaction.Dislike){}
         }
     }
 
     fun like(view: View) {
         view as ImageView
         if (viewModel.video.value?.reaction == REACTION_LIKE) {
-            viewModel.video.value!!.reaction = null
-            setButtonColor(R.color.white, view)
-            viewModel.video.value!!.likes -= 1
-            ReactionsDataSource.reactToVideo(prefs, videoId, VideoReaction.Unlike){}
-        } else {
-            viewModel.video.value!!.reaction = REACTION_LIKE
-            if (viewModel.video.value?.reaction == REACTION_DISLIKE) {
-                setButtonColor(R.color.white, DislikeButton)
-                viewModel.video.value!!.dislikes -= 1
+            ReactionsDataSource.reactToVideo(prefs, videoId, VideoReaction.Unlike) {
+                if (it == SUCCESS_MESSAGE) {
+                    setButtonColor(R.color.white, view)
+                    viewModel.react(VideoReaction.Unlike)
+                }
             }
-            setButtonColor(R.color.like, view)
-            viewModel.video.value!!.likes += 1
-            ReactionsDataSource.reactToVideo(prefs, videoId, VideoReaction.Like){}
+        }
+        else {
+            ReactionsDataSource.reactToVideo(prefs, videoId, VideoReaction.Like) {
+                if (it == SUCCESS_MESSAGE) {
+                    if (viewModel.video.value?.reaction == REACTION_DISLIKE) setButtonColor(R.color.white, DislikeButton)
+
+                    setButtonColor(R.color.like, view)
+                    viewModel.react(VideoReaction.Like)
+                    Toast.makeText(applicationContext, getString(R.string.toast_like), Toast.LENGTH_LONG).show()
+                }
+            }
         }
     }
 
@@ -223,14 +235,13 @@ class PlayVideoActivity : AppCompatActivity() {
         }
     }
 
-    private fun toggleDescription(margin: Int, height: Int, rotation: Float) {
+    private fun toggleDescription(margin: Int, height: Int) {
         val constraints = ConstraintSet()
         constraints.clone(ScrollViewLayout)
         constraints.connect(R.id.VideoDescription, ConstraintSet.TOP, R.id.VideoDescriptionHeader, ConstraintSet.BOTTOM, margin)
         constraints.connect(R.id.StickyPart, ConstraintSet.TOP, R.id.VideoDescription, ConstraintSet.BOTTOM, margin)
         constraints.applyTo(ScrollViewLayout)
         VideoDescription.layoutParams.height = height
-        DescriptionToggle.rotationX = rotation
     }
 
     private fun setLayout(height: Int){
@@ -240,11 +251,10 @@ class PlayVideoActivity : AppCompatActivity() {
         VideoWrapper.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
     }
 
-    private fun setFullscreenFlags(){
+    private fun setFullscreenFlags() =
         window.decorView.apply {
             systemUiVisibility = View.SYSTEM_UI_FLAG_FULLSCREEN or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
         }
-    }
 
     @SuppressLint("SourceLockedOrientationActivity")
     private fun makeFullScreen(){
@@ -268,20 +278,16 @@ class PlayVideoActivity : AppCompatActivity() {
         fullscreen = false
     }
 
-    override fun onBackPressed() {
-        if (fullscreen) exitFullScreen()
-        else super.onBackPressed()
-    }
+    override fun onBackPressed() = if (fullscreen) exitFullScreen() else super.onBackPressed()
 
-    private fun setButtonColor(color: Int, button: ImageView){
+    private fun setButtonColor(color: Int, button: ImageView) =
         ImageViewCompat.setImageTintList(button, ColorStateList.valueOf(ContextCompat.getColor(applicationContext, color)))
-    }
 
     data class ColorResult(val colorLike: Int, val colorDislike: Int)
     private fun mapColors(reaction: String?): ColorResult{
         return when(reaction){
-            "like" -> ColorResult(R.color.like, R.color.white)
-            "dislike" -> ColorResult(R.color.white, R.color.dislike)
+            REACTION_LIKE -> ColorResult(R.color.like, R.color.white)
+            REACTION_DISLIKE -> ColorResult(R.color.white, R.color.dislike)
             else -> ColorResult(R.color.white, R.color.white)
         }
     }

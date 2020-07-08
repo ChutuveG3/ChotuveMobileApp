@@ -7,5 +7,5 @@ class VideoInfo(
     var reaction: String?,
     var likes: Int,
     var dislikes: Int,
-    val comments: ArrayList<CommentItem>
+    val comments: ArrayList<CommentItem>?
 )
