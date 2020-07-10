@@ -16,6 +16,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.animation.AnimationUtils
+import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.MediaController
 import android.widget.Toast
@@ -68,13 +69,10 @@ class PlayVideoActivity : AppCompatActivity() {
         VideoTitle.text = intent.getStringExtra("videoTitle")
         VideoAuthor.text = intent.getStringExtra("videoAuthor")
 
-        NoCommentsImageView.visibility = View.GONE
-        NoCommentsTextView.visibility = View.GONE
         PostCommentButton.visibility = View.GONE
 
         VideoProgressBar.visibility = View.VISIBLE
-        VideoInfoProgressBar.visibility = View.VISIBLE
-        ScrollViewBlocker.visibility = View.VISIBLE
+        showLoadingVideoInfoScreen()
 
         backgroundColor = getColor(R.color.white)
 
@@ -93,18 +91,18 @@ class PlayVideoActivity : AppCompatActivity() {
                 DislikeButton,
                 ColorStateList.valueOf(ContextCompat.getColor(applicationContext, colorDislike))
             )
-            VideoInfoProgressBar.visibility = View.GONE
-            ScrollViewBlocker.visibility = View.GONE
+            quitLoadingVideoInfo()
         })
         viewModel.comments.observe(this, Observer {
             if (it == null || it.isEmpty()) {
-                CommentsRecyclerView.visibility = View.GONE
                 NoCommentsImageView.visibility = View.VISIBLE
                 NoCommentsTextView.visibility = View.VISIBLE
             }
             else{
                 CommentsRecyclerView.adapter = CommentsAdapter(it)
                 CommentsRecyclerView.layoutManager = LinearLayoutManager(applicationContext)
+                NoCommentsImageView.visibility = View.GONE
+                NoCommentsTextView.visibility = View.GONE
             }
         })
 
@@ -123,13 +121,13 @@ class PlayVideoActivity : AppCompatActivity() {
         Video.setMediaController(mediaController)
         Video.setVideoURI(uri)
         Video.setOnPreparedListener{
-            setLayout(ViewGroup.LayoutParams.WRAP_CONTENT)
+            setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, false)
             VideoProgressBar.visibility = View.GONE
             Video.start()
         }
         Video.setOnInfoListener { _, what, _ ->
             when (what) {
-                MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START -> {
+                MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START, MediaPlayer.MEDIA_INFO_BUFFERING_END -> {
                     VideoProgressBar.visibility = View.GONE
                     true
                 }
@@ -137,15 +135,23 @@ class PlayVideoActivity : AppCompatActivity() {
                     VideoProgressBar.visibility = View.VISIBLE
                     true
                 }
-                MediaPlayer.MEDIA_INFO_BUFFERING_END -> {
-                    VideoProgressBar.visibility = View.GONE
-                    true
-                }
                 else -> false
             }
         }
 
         Handler().postDelayed({FullscreenToggle.visibility = View.GONE}, delayTime)
+    }
+
+    private fun quitLoadingVideoInfo() {
+        VideoInfoProgressBar.visibility = View.GONE
+        ScrollViewBlocker.visibility = View.GONE
+        ScrollViewLayout.alpha = 1F
+    }
+
+    private fun showLoadingVideoInfoScreen() {
+        VideoInfoProgressBar.visibility = View.VISIBLE
+        ScrollViewLayout.alpha = .2F
+        ScrollViewBlocker.visibility = View.VISIBLE
     }
 
     fun toggleFullScreen(view: View) = if (!fullscreen) makeFullScreen() else exitFullScreen()
@@ -221,16 +227,23 @@ class PlayVideoActivity : AppCompatActivity() {
     }
 
     fun postComment(view: View) {
+        showLoadingVideoInfoScreen()
         val comment = CommentRequest(nowDateTimeStr(), AddCommentInput.text.toString())
         ReactionsDataSource.commentVideo(prefs, videoId, comment){
             val text: String
             when(it){
                 SUCCESS_MESSAGE -> {
+                    AddCommentInput.text.clear()
+                    AddCommentInput.clearFocus()
+                    StickyPart.requestFocus()
+                    val inputManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    inputManager.hideSoftInputFromWindow(currentFocus!!.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
                     text = getString(R.string.comment_post_success)
                     viewModel.addComment(CommentItem(comment.comment, prefs.getString(USERNAME, "")!!, comment.datetime))
                 }
                 else -> text = getString(R.string.internal_error)
             }
+            quitLoadingVideoInfo()
             Toast.makeText(applicationContext, text, Toast.LENGTH_LONG).show()
         }
     }
@@ -244,10 +257,12 @@ class PlayVideoActivity : AppCompatActivity() {
         VideoDescription.layoutParams.height = height
     }
 
-    private fun setLayout(height: Int){
-        Video.layoutParams.height = height
-        VideoWrapper.layoutParams.height = height
-        Video.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
+    private fun setLayout(height: Int, fullscreen: Boolean){
+        val condition = Video.height > displayMetrics.heightPixels
+
+        Video.layoutParams.height = if (condition) ViewGroup.LayoutParams.MATCH_PARENT else ViewGroup.LayoutParams.WRAP_CONTENT
+        VideoWrapper.layoutParams.height = if (condition && fullscreen) ViewGroup.LayoutParams.MATCH_PARENT else  height
+        Video.layoutParams.width = if (condition) ViewGroup.LayoutParams.WRAP_CONTENT else ViewGroup.LayoutParams.MATCH_PARENT
         VideoWrapper.layoutParams.width = ViewGroup.LayoutParams.MATCH_PARENT
     }
 
@@ -264,7 +279,7 @@ class PlayVideoActivity : AppCompatActivity() {
         setFullscreenFlags()
         if(Video.width > Video.height) this.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
         else VideoWrapper.maxHeight = displayMetrics.heightPixels
-        setLayout(ViewGroup.LayoutParams.MATCH_PARENT)
+        setLayout(ViewGroup.LayoutParams.MATCH_PARENT, true)
         fullscreen = true
     }
 
@@ -273,7 +288,7 @@ class PlayVideoActivity : AppCompatActivity() {
         window.decorView.setBackgroundColor(backgroundColor)
         window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
-        setLayout(ViewGroup.LayoutParams.WRAP_CONTENT)
+        setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, false)
         if(Video.height > Video.width) VideoWrapper.maxHeight = displayMetrics.heightPixels / 2
         fullscreen = false
     }

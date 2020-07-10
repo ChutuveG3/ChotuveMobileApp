@@ -1,5 +1,5 @@
 package com.example.chotuvemobileapp.entities
 
-class CommentItem (val body: String,
-                   val author: String,
-                   val date: String)
+class CommentItem (val comment: String,
+                   val username: String,
+                   val datetime: String)
