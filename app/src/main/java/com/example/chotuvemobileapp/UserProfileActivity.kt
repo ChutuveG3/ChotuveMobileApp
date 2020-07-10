@@ -13,8 +13,11 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.bumptech.glide.Glide
-import com.example.chotuvemobileapp.data.users.ProfileInfoDataSource
+import com.example.chotuvemobileapp.data.repositories.FriendsDataSource
+import com.example.chotuvemobileapp.data.repositories.ProfileInfoDataSource
 import com.example.chotuvemobileapp.helpers.Utilities
+import com.example.chotuvemobileapp.helpers.Utilities.SUCCESS_MESSAGE
+import com.example.chotuvemobileapp.helpers.Utilities.USERNAME
 import com.example.chotuvemobileapp.ui.profile.FullSizeImageActivity
 import com.example.chotuvemobileapp.ui.profile.ProfileDetailsFragment
 import com.example.chotuvemobileapp.ui.profile.VideoListFragment
@@ -28,7 +31,7 @@ class UserProfileActivity : AppCompatActivity() {
         applicationContext.getSharedPreferences(getString(R.string.shared_preferences_file), Context.MODE_PRIVATE)
     }
     private val username by lazy{
-        intent.getStringExtra("user")
+        intent.getStringExtra(USERNAME)
     }
     private val viewModel by lazy {
         ViewModelProvider(this).get(UserProfileViewModel::class.java)
@@ -52,8 +55,8 @@ class UserProfileActivity : AppCompatActivity() {
                 AddFriendButton.setOnClickListener {_ ->
                     if (it.friendship == "no") {
                         showLoadingScreen()
-                        ProfileInfoDataSource.addFriend(prefs, username) {str ->
-                            if (str == "Success") {
+                        FriendsDataSource.addFriend(prefs, username) { str ->
+                            if (str == SUCCESS_MESSAGE) {
                                 Toast.makeText(applicationContext,"Request sent to $username!", Toast.LENGTH_LONG).show()
                                 AddFriendButton.setImageDrawable(getDrawable(R.drawable.ic_account_clock))
                             }

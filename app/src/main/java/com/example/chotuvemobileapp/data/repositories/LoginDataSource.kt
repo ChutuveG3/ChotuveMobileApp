@@ -1,10 +1,14 @@
-package com.example.chotuvemobileapp.data.users
+package com.example.chotuvemobileapp.data.repositories
 
 import com.example.chotuvemobileapp.data.requests.LoginRequest
 import com.example.chotuvemobileapp.data.requests.TokenLoginRequest
 import com.example.chotuvemobileapp.data.response.AuthErrorResponse
 import com.example.chotuvemobileapp.data.response.LoginResponse
+import com.example.chotuvemobileapp.data.users.User
 import com.example.chotuvemobileapp.data.utilities.HttpUtilities.buildClient
+import com.example.chotuvemobileapp.helpers.Utilities.FAILURE_MESSAGE
+import com.example.chotuvemobileapp.helpers.Utilities.INVALID_PARAMS_MESSAGE
+import com.example.chotuvemobileapp.helpers.Utilities.SUCCESS_MESSAGE
 import com.google.gson.Gson
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -20,7 +24,7 @@ object LoginDataSource {
 
         retrofit.loginUser(request).enqueue(object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                myCallback.invoke("Failure")
+                myCallback.invoke(FAILURE_MESSAGE)
             }
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>){
                 when {
@@ -28,7 +32,7 @@ object LoginDataSource {
                         val resp = Gson().fromJson(response.body()!!.string(), LoginResponse::class.java)
                         myCallback.invoke(resp.token)
                     }
-                    else -> myCallback.invoke("InvalidParams")
+                    else -> myCallback.invoke(INVALID_PARAMS_MESSAGE)
                 }
             }
         })
@@ -40,16 +44,16 @@ object LoginDataSource {
 
         retrofit.registerUser(user).enqueue(object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                myCallback.invoke("Failure")
+                myCallback.invoke(FAILURE_MESSAGE)
             }
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>){
                 when {
-                    response.isSuccessful -> myCallback.invoke("Success")
+                    response.isSuccessful -> myCallback.invoke(SUCCESS_MESSAGE)
                     response.code() == 502 -> {
                         val error = Gson().fromJson(response.errorBody()!!.string(), AuthErrorResponse::class.java)
                         myCallback.invoke(error.message.internal_code)
                     }
-                    else -> myCallback.invoke("InvalidParams")
+                    else -> myCallback.invoke(INVALID_PARAMS_MESSAGE)
                 }
             }
         })
@@ -63,14 +67,14 @@ object LoginDataSource {
 
         retrofit.tokenLoginUser(request).enqueue(object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                myCallback.invoke("Failure")
+                myCallback.invoke(FAILURE_MESSAGE)
             }
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>){
                 when {
                     response.isSuccessful -> {
-                        myCallback.invoke("Success")
+                        myCallback.invoke(SUCCESS_MESSAGE)
                     }
-                    else -> myCallback.invoke("InvalidParams")
+                    else -> myCallback.invoke(INVALID_PARAMS_MESSAGE)
                 }
             }
         })

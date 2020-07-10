@@ -6,50 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".PlayVideoActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/VideoWrapper"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <VideoView
-            android:id="@+id/Video"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="w,16:9"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ProgressBar
-            android:id="@+id/VideoProgressBar"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:indeterminateTint="#FFFFFF"
-            android:progressTint="#FFFFFF"
-            app:layout_constraintBottom_toBottomOf="@+id/Video"
-            app:layout_constraintEnd_toEndOf="@+id/Video"
-            app:layout_constraintStart_toStartOf="@+id/Video"
-            app:layout_constraintTop_toTopOf="@+id/Video" />
-
-        <ImageView
-            android:id="@+id/FullscreenToggle"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:alpha="0.6"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_fullscreen_black_24dp"
-            tools:ignore="ContentDescription" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.core.widget.NestedScrollView
+    <com.emilsjolander.components.StickyScrollViewItems.StickyScrollView
         android:id="@+id/nestedScrollView"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -61,8 +18,10 @@
         app:layout_constraintTop_toBottomOf="@id/VideoWrapper">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/ScrollViewLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/VideoHeader"
@@ -95,7 +54,8 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="4dp"
                     android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="4dp"
+                    android:layout_marginBottom="8dp"
+                    android:onClick="startProfileActivity"
                     android:textColor="#FFFFFF"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -108,9 +68,8 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="10dp"
                     app:cardCornerRadius="25dp"
-                    app:layout_constraintBottom_toBottomOf="@+id/VideoAuthor"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
@@ -118,23 +77,24 @@
                         android:id="@+id/VideoAuthorPic"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:background="@color/ic_launcher_background"
+                        android:onClick="startProfileActivity"
+                        android:tint="#EDE7F6"
                         app:srcCompat="@drawable/ic_person_black_24dp"
-                        tools:ignore="ContentDescription"
-                        tools:srcCompat="@tools:sample/avatars" />
+                        tools:ignore="ContentDescription" />
                 </androidx.cardview.widget.CardView>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
                 android:id="@+id/VideoDescriptionHeader"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="60dp"
                 android:background="#2B018A"
                 android:fontFamily="sans-serif-medium"
                 android:paddingLeft="16dp"
                 android:paddingTop="4dp"
                 android:paddingRight="16dp"
                 android:paddingBottom="4dp"
-                android:text="@string/video_description"
                 android:textAllCaps="true"
                 android:textColor="#FFFFFF"
                 android:textSize="16sp"
@@ -142,49 +102,250 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/VideoHeader" />
 
-            <TextView
-                android:id="@+id/VideoCommentsHeader"
-                android:layout_width="0dp"
+            <ImageView
+                android:id="@+id/LikeButton"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
                 android:layout_marginTop="8dp"
-                android:background="#2B018A"
-                android:fontFamily="sans-serif-medium"
-                android:paddingLeft="16dp"
-                android:paddingTop="4dp"
-                android:paddingRight="16dp"
-                android:paddingBottom="4dp"
-                android:text="@string/video_comments"
-                android:textAllCaps="true"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
+                android:onClick="like"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/VideoDescription" />
+                app:layout_constraintTop_toBottomOf="@+id/VideoHeader"
+                app:srcCompat="@drawable/ic_baseline_thumb_up_alt_30"
+                tools:ignore="ContentDescription" />
+
+            <ImageView
+                android:id="@+id/DescriptionToggle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:onClick="handleDescriptionToggle"
+                app:layout_constraintBottom_toBottomOf="@+id/VideoDescriptionHeader"
+                app:layout_constraintEnd_toEndOf="@+id/VideoDescriptionHeader"
+                app:layout_constraintTop_toBottomOf="@+id/VideoHeader"
+                app:srcCompat="@drawable/ic_baseline_expand_more_24"
+                tools:ignore="ContentDescription" />
+
+            <ImageView
+                android:id="@+id/DislikeButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/transparent"
+                android:onClick="dislike"
+                app:layout_constraintStart_toEndOf="@+id/LikeButton"
+                app:layout_constraintTop_toBottomOf="@+id/VideoHeader"
+                app:srcCompat="@drawable/ic_baseline_thumb_down_alt_30"
+                tools:ignore="ContentDescription" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/StickyPart"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:backgroundTint="@color/white"
+                android:tag="sticky"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/VideoDescription">
+
+                <TextView
+                    android:id="@+id/VideoCommentsHeader"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:background="#2B018A"
+                    android:fontFamily="sans-serif-medium"
+                    android:paddingLeft="16dp"
+                    android:paddingTop="4dp"
+                    android:paddingRight="16dp"
+                    android:paddingBottom="4dp"
+                    android:text="@string/video_comments"
+                    android:textAllCaps="true"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <EditText
+                    android:id="@+id/AddCommentInput"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:autofillHints=""
+                    android:ems="10"
+                    android:gravity="start|top"
+                    android:hint="@string/add_comment"
+                    android:inputType="textMultiLine"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/PostCommentButton"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/VideoCommentsHeader" />
+
+                <ImageView
+                    android:id="@+id/PostCommentButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:onClick="postComment"
+                    app:layout_constraintBottom_toBottomOf="@+id/AddCommentInput"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/AddCommentInput"
+                    app:srcCompat="@drawable/ic_baseline_send_36"
+                    tools:ignore="ContentDescription" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <TextView
                 android:id="@+id/VideoDescription"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/VideoDescriptionHeader"
-                tools:text="@tools:sample/lorem/random[2]" />
+                tools:text="@tools:sample/lorem" />
 
-            <androidx.fragment.app.FragmentContainerView
-                android:id="@+id/VideoCommentsFragment"
+            <TextView
+                android:id="@+id/NoCommentsTextView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/fira_sans_condensed_medium"
+                android:text="@string/looks_like_there_s_nothing_to_see_here_be_the_first_to_comment"
+                android:textAlignment="center"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/NoCommentsImageView" />
+
+            <ImageView
+                android:id="@+id/NoCommentsImageView"
+                android:layout_width="0dp"
+                android:layout_height="180dp"
+                android:layout_marginTop="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/VideoCommentsHeader"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintTop_toBottomOf="@id/StickyPart"
+                app:layout_constraintVertical_bias="0.0"
+                app:srcCompat="@drawable/ic_comments"
+                tools:ignore="ContentDescription"
+                tools:srcCompat="@drawable/ic_comments" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/CommentsRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/StickyPart"
+                app:layout_constraintVertical_bias="0.0"
+                tools:listitem="@layout/item_comment" />
+
+            <TextView
+                android:id="@+id/LikeCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:textColor="@color/ic_launcher_background"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@+id/VideoDescriptionHeader"
+                app:layout_constraintEnd_toEndOf="@+id/LikeButton"
+                app:layout_constraintStart_toStartOf="@+id/LikeButton"
+                app:layout_constraintTop_toBottomOf="@+id/LikeButton"
+                tools:text="@tools:sample/us_zipcodes" />
+
+            <TextView
+                android:id="@+id/DislikeCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:textColor="@color/ic_launcher_background"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@+id/VideoDescriptionHeader"
+                app:layout_constraintEnd_toEndOf="@+id/DislikeButton"
+                app:layout_constraintStart_toStartOf="@+id/DislikeButton"
+                app:layout_constraintTop_toBottomOf="@+id/DislikeButton"
+                tools:text="@tools:sample/us_zipcodes" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
+    </com.emilsjolander.components.StickyScrollViewItems.StickyScrollView>
+
+    <LinearLayout
+        android:id="@+id/ScrollViewBlocker"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/VideoWrapper">
+
+    </LinearLayout>
+
+    <ProgressBar
+        android:id="@+id/VideoInfoProgressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint="@color/colorPrimaryDark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/VideoWrapper" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/VideoWrapper"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <VideoView
+            android:id="@+id/Video"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="w,16:9"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:onClick="tapVideo"/>
+
+        <ProgressBar
+            android:id="@+id/VideoProgressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateTint="#FFFFFF"
+            android:progressTint="#FFFFFF"
+            app:layout_constraintBottom_toBottomOf="@+id/Video"
+            app:layout_constraintEnd_toEndOf="@+id/Video"
+            app:layout_constraintStart_toStartOf="@+id/Video"
+            app:layout_constraintTop_toTopOf="@+id/Video" />
+
+        <ImageView
+            android:id="@+id/FullscreenToggle"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:alpha="0.6"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_fullscreen_black_24dp"
+            tools:ignore="ContentDescription"
+            android:onClick="toggleFullScreen"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

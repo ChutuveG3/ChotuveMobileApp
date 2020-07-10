@@ -1,17 +1,18 @@
-package com.example.chotuvemobileapp.ui.friends
+package com.example.chotuvemobileapp.viewmodels
 
 import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.chotuvemobileapp.data.repositories.FriendsDataSource
 import com.example.chotuvemobileapp.data.users.FriendsInfo
-import com.example.chotuvemobileapp.data.users.ProfileInfoDataSource
+import com.example.chotuvemobileapp.helpers.Utilities.USERNAME
 
 class FriendsViewModel : ViewModel() {
 
     private lateinit var prefs: SharedPreferences
     val friends by lazy {
         val liveData = MutableLiveData<ArrayList<String>>()
-        ProfileInfoDataSource.getFriends(prefs, prefs.getString("username", "")!!){
+        FriendsDataSource.getFriends(prefs, prefs.getString(USERNAME, "")!!){
             liveData.value = it
         }
         return@lazy liveData
@@ -19,17 +20,17 @@ class FriendsViewModel : ViewModel() {
 
     val pendingFriends by lazy {
         val liveData = MutableLiveData<ArrayList<String>>()
-        ProfileInfoDataSource.getPendingFriends(prefs, prefs.getString("username", "")!!){
+        FriendsDataSource.getPendingFriends(prefs, prefs.getString(USERNAME, "")!!){
             liveData.value = it
         }
         return@lazy liveData
     }
 
     fun updateFriends(){
-        ProfileInfoDataSource.getFriends(prefs, prefs.getString("username", "")!!){
+        FriendsDataSource.getFriends(prefs, prefs.getString(USERNAME, "")!!){
             friends.postValue(it)
         }
-        ProfileInfoDataSource.getPendingFriends(prefs, prefs.getString("username", "")!!){
+        FriendsDataSource.getPendingFriends(prefs, prefs.getString(USERNAME, "")!!){
             pendingFriends.postValue(it)
         }
 

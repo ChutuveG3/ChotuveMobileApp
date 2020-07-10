@@ -8,8 +8,10 @@ import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.example.chotuvemobileapp.data.users.LoginDataSource
+import com.example.chotuvemobileapp.data.repositories.LoginDataSource
 import com.example.chotuvemobileapp.data.users.User
+import com.example.chotuvemobileapp.helpers.Utilities.FAILURE_MESSAGE
+import com.example.chotuvemobileapp.helpers.Utilities.SUCCESS_MESSAGE
 import com.example.chotuvemobileapp.helpers.Utilities.createDatePicker
 import com.example.chotuvemobileapp.helpers.Utilities.watchText
 import kotlinx.android.synthetic.main.activity_sign_up.*
@@ -50,8 +52,8 @@ class SignUpActivity : AppCompatActivity() {
                 showLoadingScreen()
                 LoginDataSource.addUser(registerInfo){
                     when (it) {
-                        "Failure" -> Toast.makeText(applicationContext, getString(R.string.request_failure), Toast.LENGTH_LONG).show()
-                        "Success" -> goToLogin(registerInfo)
+                        FAILURE_MESSAGE -> Toast.makeText(applicationContext, getString(R.string.request_failure), Toast.LENGTH_LONG).show()
+                        SUCCESS_MESSAGE -> goToLogin(registerInfo)
                         "user_name_already_exists" -> RegUsername.error = getString(R.string.user_taken)
                         "user_email_already_exists" -> RegEmail.error = getString(R.string.email_taken)
                         else -> Toast.makeText( applicationContext, getString(R.string.internal_error), Toast.LENGTH_LONG).show()

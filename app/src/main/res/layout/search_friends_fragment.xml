@@ -30,7 +30,23 @@
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/SearchFriendsRecyclerView" />
+        app:layout_constraintTop_toBottomOf="@+id/SadFaceImage" />
+
+    <ImageView
+        android:id="@+id/SadFaceImage"
+        android:layout_width="252dp"
+        android:layout_height="227dp"
+        android:layout_marginTop="60dp"
+        android:alpha="0.7"
+        android:src="@drawable/ic_buscar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/SearchFriendSearchView"
+        app:layout_constraintVertical_bias="0.110000014"
+        app:srcCompat="@drawable/ic_buscar"
+        tools:ignore="ContentDescription"
+        tools:srcCompat="@drawable/ic_buscar" />
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/SearchFriendsToolbar"

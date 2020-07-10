@@ -14,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.bumptech.glide.Glide
 import com.example.chotuvemobileapp.R
-import com.example.chotuvemobileapp.data.users.ProfileInfoDataSource
+import com.example.chotuvemobileapp.data.repositories.ProfileInfoDataSource
 import com.example.chotuvemobileapp.data.users.UserForModification
 import com.example.chotuvemobileapp.helpers.PickRequest
 import com.example.chotuvemobileapp.helpers.Utilities

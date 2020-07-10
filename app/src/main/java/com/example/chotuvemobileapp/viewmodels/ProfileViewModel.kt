@@ -3,15 +3,16 @@ package com.example.chotuvemobileapp.viewmodels
 import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.chotuvemobileapp.data.users.ProfileInfoDataSource
+import com.example.chotuvemobileapp.data.repositories.ProfileInfoDataSource
 import com.example.chotuvemobileapp.data.users.UserInfo
+import com.example.chotuvemobileapp.helpers.Utilities.USERNAME
 
 class ProfileViewModel : ViewModel() {
 
     private lateinit var prefs: SharedPreferences
     val userInfo by lazy {
         val liveData = MutableLiveData<UserInfo>()
-        ProfileInfoDataSource.getProfileInfo(prefs, prefs.getString("username", "")!!){
+        ProfileInfoDataSource.getProfileInfo(prefs, prefs.getString(USERNAME, "")!!){
             liveData.value = it
         }
         return@lazy liveData
