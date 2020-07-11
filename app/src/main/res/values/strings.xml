@@ -3,6 +3,7 @@
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in_short">Sign in</string>
+    <string name="sign_in_google">Sign in with Google</string>
     <!-- Strings used for fragments for navigation -->
     <string name="user_taken">Username already taken</string>
     <string name="email_taken">A user with that email already exists</string>

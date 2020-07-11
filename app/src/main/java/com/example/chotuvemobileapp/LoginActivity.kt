@@ -1,5 +1,6 @@
 package com.example.chotuvemobileapp
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -14,18 +15,32 @@ import com.example.chotuvemobileapp.helpers.Utilities.FAILURE_MESSAGE
 import com.example.chotuvemobileapp.helpers.Utilities.INVALID_PARAMS_MESSAGE
 import com.example.chotuvemobileapp.helpers.Utilities.USERNAME
 import com.example.chotuvemobileapp.helpers.Utilities.watchText
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.iid.FirebaseInstanceId
 import kotlinx.android.synthetic.main.activity_login.*
+import java.lang.Exception
 
 
 class LoginActivity : AppCompatActivity() {
 
+    private val gso by lazy{
+        GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken("GoogleToken")
+            .requestEmail()
+            .requestProfile()
+            .build()
+    }
+    private val googleSignInClient by lazy {GoogleSignIn.getClient(this, gso)}
+
+    private val firebaseAuth by lazy { FirebaseAuth.getInstance() }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentView(R.layout.activity_login)
-
-        GoToSignUpBtn.setOnClickListener { startActivity(Intent(this, SignUpActivity::class.java)) }
 
         SignInButton.isEnabled = false
         SignInButton.alpha = .5f
@@ -35,35 +50,66 @@ class LoginActivity : AppCompatActivity() {
         LogInUsername.watchText(SignInButton, this::isDataCorrect)
         LoginPassword.watchText(SignInButton, this::isDataCorrect)
 
-        SignInButton.setOnClickListener {
-            if(isDataValid()) {
-                showLoadingScreen()
-                FirebaseInstanceId.getInstance().instanceId
-                    .addOnSuccessListener(this@LoginActivity) { instanceIdResult ->
-                        val newToken = instanceIdResult.token
-                        Log.d(FIREBASE_TAG, newToken)
+        GoogleSignInButton.setOnClickListener {
+            startActivityForResult(googleSignInClient.signInIntent, RC_SIGN_IN)
+        }
+    }
 
-                        val username = LogInUsername.text.toString()
-                        val pass = LoginPassword.text.toString()
-                        LoginDataSource.tokenLogin(username, pass, newToken) {
-                            when (it) {
-                                FAILURE_MESSAGE -> Toast.makeText(applicationContext, getString(R.string.internal_error),
-                                    Toast.LENGTH_LONG).show()
-                                INVALID_PARAMS_MESSAGE -> showInvalidUsername()
-                                else -> saveDataAndStartHome(it)
-                            }
-                            quitLoadingScreen()
+    fun goToSignUp(view: View) = startActivity(Intent(this, SignUpActivity::class.java))
+
+    fun signIn(view: View) {
+        if (isDataValid()) {
+            showLoadingScreen()
+            FirebaseInstanceId.getInstance().instanceId
+                .addOnSuccessListener(this@LoginActivity) { instanceIdResult ->
+                    val newToken = instanceIdResult.token
+                    Log.d(FIREBASE_TAG, newToken)
+
+                    val username = LogInUsername.text.toString()
+                    val pass = LoginPassword.text.toString()
+                    LoginDataSource.tokenLogin(username, pass, newToken) {
+                        when (it) {
+                            FAILURE_MESSAGE -> Toast.makeText(
+                                applicationContext, getString(R.string.internal_error),
+                                Toast.LENGTH_LONG
+                            ).show()
+                            INVALID_PARAMS_MESSAGE -> showInvalidUsername()
+                            else -> saveDataAndStartHome(it)
+                        }
+                        quitLoadingScreen()
                     }
                 }.addOnFailureListener { Exception ->
-                        Log.d(FIREBASE_TAG, Exception.toString())
-                        Toast.makeText(applicationContext, R.string.internal_error, Toast.LENGTH_LONG)
-                            .show()
-                    }
+                    Log.d(FIREBASE_TAG, Exception.toString())
+                    Toast.makeText(applicationContext, R.string.internal_error, Toast.LENGTH_LONG)
+                        .show()
+                }
 
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == RC_SIGN_IN && resultCode == Activity.RESULT_OK){
+            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+            try {
+                firebaseAuthWithGoogle(task.getResult(ApiException::class.java)!!.idToken!!)
+            }
+            catch (e: ApiException) {
+                Toast.makeText(this, "Fail", Toast.LENGTH_LONG).show()
             }
         }
     }
 
+    private fun firebaseAuthWithGoogle(idToken: String){
+        firebaseAuth.signInWithCredential(GoogleAuthProvider.getCredential(idToken, null))
+            .addOnCompleteListener {
+                if (it.isSuccessful){
+                    val user = firebaseAuth.currentUser
+                    //Login con el app server
+                }
+                else Toast.makeText(this, "Fail", Toast.LENGTH_LONG).show()
+            }
+    }
     private fun showLoadingScreen() {
         val inputManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputManager.hideSoftInputFromWindow(currentFocus?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
@@ -130,5 +176,6 @@ class LoginActivity : AppCompatActivity() {
         private const val USERNAME_MAX_LENGTH = 30
         private const val PASSWORD_MIN_LENGTH = 6
         private const val FIREBASE_TAG = "FIREBASE"
+        private const val RC_SIGN_IN = 9001
     }
 }
