@@ -29,7 +29,7 @@ class LoginActivity : AppCompatActivity() {
 
     private val gso by lazy{
         GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken("GoogleToken")
+            .requestIdToken(getString(R.string.default_web_client_id))
             .requestEmail()
             .requestProfile()
             .build()
@@ -41,6 +41,7 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
+        firebaseAuth.signOut()
 
         SignInButton.isEnabled = false
         SignInButton.alpha = .5f
@@ -104,7 +105,6 @@ class LoginActivity : AppCompatActivity() {
         firebaseAuth.signInWithCredential(GoogleAuthProvider.getCredential(idToken, null))
             .addOnCompleteListener {
                 if (it.isSuccessful){
-                    val user = firebaseAuth.currentUser
                     //Login con el app server
                 }
                 else Toast.makeText(this, "Fail", Toast.LENGTH_LONG).show()
