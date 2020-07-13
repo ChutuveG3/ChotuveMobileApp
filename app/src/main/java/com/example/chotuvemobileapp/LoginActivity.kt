@@ -15,9 +15,15 @@ import com.example.chotuvemobileapp.helpers.Utilities.FAILURE_MESSAGE
 import com.example.chotuvemobileapp.helpers.Utilities.INVALID_PARAMS_MESSAGE
 import com.example.chotuvemobileapp.helpers.Utilities.USERNAME
 import com.example.chotuvemobileapp.helpers.Utilities.watchText
+import com.facebook.AccessToken
+import com.facebook.CallbackManager
+import com.facebook.FacebookCallback
+import com.facebook.FacebookException
+import com.facebook.login.LoginResult
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.FacebookAuthProvider
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.iid.FirebaseInstanceId
@@ -35,6 +41,7 @@ class LoginActivity : AppCompatActivity() {
             .build()
     }
     private val googleSignInClient by lazy {GoogleSignIn.getClient(this, gso)}
+    private val fbCallbackManager by lazy { CallbackManager.Factory.create() }
 
     private val firebaseAuth by lazy { FirebaseAuth.getInstance() }
 
@@ -54,6 +61,18 @@ class LoginActivity : AppCompatActivity() {
         GoogleSignInButton.setOnClickListener {
             startActivityForResult(googleSignInClient.signInIntent, RC_SIGN_IN)
         }
+
+        FacebookSignInButton.setPermissions("email", "public_profile")
+        FacebookSignInButton.registerCallback(fbCallbackManager, object : FacebookCallback<LoginResult> {
+            override fun onSuccess(result: LoginResult?) = firebaseAuthWithFacebook(result!!.accessToken)
+
+            override fun onCancel() =
+                Toast.makeText(applicationContext, R.string.internal_error, Toast.LENGTH_LONG).show()
+
+            override fun onError(error: FacebookException?) =
+                Toast.makeText(applicationContext, R.string.internal_error, Toast.LENGTH_LONG).show()
+
+        })
     }
 
     fun goToSignUp(view: View) = startActivity(Intent(this, SignUpActivity::class.java))
@@ -99,6 +118,21 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(this, "Fail", Toast.LENGTH_LONG).show()
             }
         }
+        else fbCallbackManager.onActivityResult(requestCode, resultCode, data)
+    }
+
+    private fun firebaseAuthWithFacebook(token: AccessToken){
+        firebaseAuth.signInWithCredential(FacebookAuthProvider.getCredential(token.token))
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful){
+                    val user = firebaseAuth.currentUser!!.getIdToken(true).addOnCompleteListener {
+                        if (it.isSuccessful){
+                            val idtoken = it.result!!.token
+                        }
+                    }
+                }
+                else Toast.makeText(this, "Fail", Toast.LENGTH_LONG).show()
+            }
     }
 
     private fun firebaseAuthWithGoogle(idToken: String){
