@@ -31,6 +31,7 @@ import kotlinx.android.synthetic.main.activity_login.*
 import java.lang.Exception
 
 
+@Suppress("UNUSED_PARAMETER")
 class LoginActivity : AppCompatActivity() {
 
     private val gso by lazy{
@@ -48,7 +49,6 @@ class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        firebaseAuth.signOut()
 
         SignInButton.isEnabled = false
         SignInButton.alpha = .5f
@@ -71,8 +71,9 @@ class LoginActivity : AppCompatActivity() {
 
             override fun onError(error: FacebookException?) =
                 Toast.makeText(applicationContext, R.string.internal_error, Toast.LENGTH_LONG).show()
-
         })
+        UsernameInput.clearFocus()
+        LogInUsername.clearFocus()
     }
 
     fun goToSignUp(view: View) = startActivity(Intent(this, SignUpActivity::class.java))
@@ -122,9 +123,10 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun firebaseAuthWithFacebook(token: AccessToken){
-        firebaseAuth.signInWithCredential(FacebookAuthProvider.getCredential(token.token))
-            .addOnCompleteListener { task ->
-                if (task.isSuccessful){
+        val credential = FacebookAuthProvider.getCredential(token.token)
+        firebaseAuth.signInWithCredential(credential)
+            .addOnCompleteListener { res ->
+                if (res.isSuccessful){
                     val user = firebaseAuth.currentUser!!.getIdToken(true).addOnCompleteListener {
                         if (it.isSuccessful){
                             val idtoken = it.result!!.token
@@ -132,6 +134,12 @@ class LoginActivity : AppCompatActivity() {
                     }
                 }
                 else Toast.makeText(this, "Fail", Toast.LENGTH_LONG).show()
+            }
+            .addOnFailureListener {
+                Toast.makeText(this, "Fail", Toast.LENGTH_LONG).show()
+            }
+            .addOnCanceledListener {
+                Toast.makeText(this, "Canceled", Toast.LENGTH_LONG).show()
             }
     }
 

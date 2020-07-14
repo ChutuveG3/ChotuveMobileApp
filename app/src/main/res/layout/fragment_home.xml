@@ -22,27 +22,6 @@
         app:layout_constraintTop_toTopOf="parent"
         app:navigationIcon="@drawable/ic_baseline_menu_36" />
 
-    <SearchView
-        android:id="@+id/SearchIcon"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:closeIcon="@drawable/ic_close_white_32dp"
-        android:commitIcon="@drawable/ic_search_white_32dp"
-        android:layoutDirection="rtl"
-        android:searchIcon="@drawable/ic_search_white_32dp"
-        android:textAlignment="viewStart"
-        android:theme="@style/AppTheme.NoActionBar.Light.TextWhite"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@+id/HomeToolbar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/HomeToolbar"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
-        app:showAsAction="always|collapseActionView">
-
-    </SearchView>
-
     <ImageView
         android:id="@+id/chotuveLogo"
         android:layout_width="136dp"
