@@ -81,31 +81,27 @@ class LoginActivity : AppCompatActivity() {
     fun signIn(view: View) {
         if (isDataValid()) {
             showLoadingScreen()
-            FirebaseInstanceId.getInstance().instanceId
-                .addOnSuccessListener(this@LoginActivity) { instanceIdResult ->
-                    val newToken = instanceIdResult.token
-                    Log.d(FIREBASE_TAG, newToken)
-
-                    val username = LogInUsername.text.toString()
-                    val pass = LoginPassword.text.toString()
-                    LoginDataSource.tokenLogin(username, pass, newToken) {
-                        when (it) {
-                            FAILURE_MESSAGE -> Toast.makeText(
-                                applicationContext, getString(R.string.internal_error),
-                                Toast.LENGTH_LONG
-                            ).show()
-                            INVALID_PARAMS_MESSAGE -> showInvalidUsername()
-                            else -> saveDataAndStartHome(it)
-                        }
-                        quitLoadingScreen()
-                    }
-                }.addOnFailureListener { Exception ->
-                    Log.d(FIREBASE_TAG, Exception.toString())
-                    Toast.makeText(applicationContext, R.string.internal_error, Toast.LENGTH_LONG)
-                        .show()
-                }
-
+            tokenLogin(LogInUsername.text.toString(), LoginPassword.text.toString())
         }
+    }
+
+    private fun tokenLogin(user: String, pass: String) {
+        FirebaseInstanceId.getInstance().instanceId
+            .addOnSuccessListener(this) { instanceIdResult ->
+                val newToken = instanceIdResult.token
+                Log.d(FIREBASE_TAG, newToken)
+                LoginDataSource.tokenLogin(user, pass, newToken) {
+                    when (it) {
+                        FAILURE_MESSAGE -> Toast.makeText(applicationContext, getString(R.string.internal_error), Toast.LENGTH_LONG).show()
+                        INVALID_PARAMS_MESSAGE -> showInvalidUsername()
+                        else -> saveDataAndStartHome(it)
+                    }
+                    quitLoadingScreen()
+                }
+            }.addOnFailureListener { Exception ->
+                Log.d(FIREBASE_TAG, Exception.toString())
+                Toast.makeText(applicationContext, R.string.internal_error, Toast.LENGTH_LONG).show()
+            }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -127,7 +123,7 @@ class LoginActivity : AppCompatActivity() {
         firebaseAuth.signInWithCredential(credential)
             .addOnCompleteListener { res ->
                 if (res.isSuccessful){
-                    val user = firebaseAuth.currentUser!!.getIdToken(true).addOnCompleteListener {
+                    firebaseAuth.currentUser!!.getIdToken(true).addOnCompleteListener {
                         if (it.isSuccessful){
                             val idtoken = it.result!!.token
                         }
