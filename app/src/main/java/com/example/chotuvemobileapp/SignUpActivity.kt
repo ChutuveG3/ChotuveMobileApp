@@ -11,9 +11,12 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.chotuvemobileapp.data.repositories.LoginDataSource
 import com.example.chotuvemobileapp.data.users.User
 import com.example.chotuvemobileapp.helpers.Utilities.FAILURE_MESSAGE
+import com.example.chotuvemobileapp.helpers.Utilities.INVALID_PARAMS_MESSAGE
 import com.example.chotuvemobileapp.helpers.Utilities.SUCCESS_MESSAGE
+import com.example.chotuvemobileapp.helpers.Utilities.USERNAME
 import com.example.chotuvemobileapp.helpers.Utilities.createDatePicker
 import com.example.chotuvemobileapp.helpers.Utilities.watchText
+import com.google.firebase.iid.FirebaseInstanceId
 import kotlinx.android.synthetic.main.activity_sign_up.*
 import java.time.LocalDate
 
@@ -24,6 +27,7 @@ class SignUpActivity : AppCompatActivity() {
             RegLastNameText.text.toString(),
             RegEmailText.text.toString(),
             RegPwFirstText.text.toString(),
+            null,
             RegUsernameText.text.toString(),
             RegDateText.text.toString()
         )
@@ -52,13 +56,24 @@ class SignUpActivity : AppCompatActivity() {
                 showLoadingScreen()
                 LoginDataSource.addUser(registerInfo){
                     when (it) {
-                        FAILURE_MESSAGE -> Toast.makeText(applicationContext, getString(R.string.request_failure), Toast.LENGTH_LONG).show()
+                        FAILURE_MESSAGE -> {
+                            clearLoadingScreen()
+                            Toast.makeText(applicationContext, getString(R.string.request_failure), Toast.LENGTH_LONG).show()
+                        }
                         SUCCESS_MESSAGE -> goToLogin(registerInfo)
-                        "user_name_already_exists" -> RegUsername.error = getString(R.string.user_taken)
-                        "user_email_already_exists" -> RegEmail.error = getString(R.string.email_taken)
-                        else -> Toast.makeText( applicationContext, getString(R.string.internal_error), Toast.LENGTH_LONG).show()
+                        "user_name_already_exists" -> {
+                            RegUsername.error = getString(R.string.user_taken)
+                            clearLoadingScreen()
+                        }
+                        "user_email_already_exists" ->{
+                            RegEmail.error = getString(R.string.email_taken)
+                            clearLoadingScreen()
+                        }
+                        else -> {
+                            Toast.makeText( applicationContext, getString(R.string.internal_error), Toast.LENGTH_LONG).show()
+                            clearLoadingScreen()
+                        }
                     }
-                    clearLoadingScreen()
                 }
             }
         }
@@ -72,7 +87,7 @@ class SignUpActivity : AppCompatActivity() {
 
     private fun showLoadingScreen() {
         val inputManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        inputManager.hideSoftInputFromWindow(currentFocus!!.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+        inputManager.hideSoftInputFromWindow(currentFocus?.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
         SignupScreen.alpha = .2F
         window.setFlags(
             WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
@@ -82,13 +97,32 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     private fun goToLogin(registerInfo: User) {
-        startActivity(Intent(this, LoginActivity::class.java))
-        val nameToShow = registerInfo.first_name
-        Toast.makeText(
-            applicationContext, "Welcome, $nameToShow! \nNow please sign in",
-            Toast.LENGTH_LONG
-        ).show()
-        finish()
+        FirebaseInstanceId.getInstance().instanceId
+            .addOnSuccessListener(this) { instanceIdResult ->
+                val newToken = instanceIdResult.token
+                LoginDataSource.tokenLogin(registerInfo.user_name, registerInfo.password!!, newToken) {
+                    when (it) {
+                        FAILURE_MESSAGE, INVALID_PARAMS_MESSAGE -> Toast.makeText(applicationContext, getString(R.string.internal_error), Toast.LENGTH_LONG).show()
+                        else -> {
+                            val preferences = applicationContext.getSharedPreferences(
+                                getString(R.string.shared_preferences_file),
+                                Context.MODE_PRIVATE
+                            ).edit()
+                            preferences.putString("token", newToken)
+                            preferences.putString(USERNAME, registerInfo.user_name)
+                            preferences.putString("password", registerInfo.password)
+                            preferences.apply()
+                            startActivity(Intent(this, HomeActivity::class.java))
+                            Toast.makeText(
+                                applicationContext, "Welcome, ${registerInfo.first_name}!",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            finish()
+                        }
+                    }
+                    clearLoadingScreen()
+                }
+            }.addOnFailureListener { Toast.makeText(applicationContext, R.string.internal_error, Toast.LENGTH_LONG).show() }
     }
     private fun isDataValid(): Boolean{
         var valid = true

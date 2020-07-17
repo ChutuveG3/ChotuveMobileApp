@@ -15,7 +15,14 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupWithNavController
 import com.example.chotuvemobileapp.data.repositories.LogoutDataSource
+import com.example.chotuvemobileapp.helpers.Utilities.FIREBASE_AUTH_TOKEN
+import com.example.chotuvemobileapp.helpers.Utilities.THIRD_PARTY_LOGIN
+import com.example.chotuvemobileapp.helpers.Utilities.USERNAME
+import com.facebook.login.LoginManager
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_home.*
 import kotlinx.android.synthetic.main.content_home.*
 
@@ -29,6 +36,13 @@ class HomeActivity : AppCompatActivity() {
         findNavController(R.id.nav_host_fragment)
     }
 
+    private val gso by lazy{
+        GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .requestProfile()
+            .build()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -117,9 +131,15 @@ class HomeActivity : AppCompatActivity() {
     private fun logout() {
         preferences.edit()
             .remove("token")
-            .remove("username")
+            .remove(USERNAME)
             .remove("password")
+            .remove(FIREBASE_AUTH_TOKEN)
+            .remove(THIRD_PARTY_LOGIN)
             .apply()
+
+        GoogleSignIn.getClient(this, gso).signOut()
+        LoginManager.getInstance().logOut()
+        FirebaseAuth.getInstance().signOut()
         finish()
         startActivity(Intent(this, HomeActivity::class.java))
     }

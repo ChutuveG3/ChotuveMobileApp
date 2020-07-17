@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "83352224797-7pqac8bebfh99ej5ks8rr2n0qbvhmf25.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.chotuvemobileapp",
+            "certificate_hash": "68f4dd722a5deab193a8f5a3d8ff34fe2ee48abb"
+          }
+        },
+        {
           "client_id": "83352224797-jpjio5apc7dg0ip2ut51a1kjiqeu30kk.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -36,7 +44,7 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "83352224797-pnjo53iqigsp98dhr1i47ahl53f6nbe8.apps.googleusercontent.com",
+              "client_id": "83352224797-pdsd0hiq8e6r9rsaksoi2i408t7om0fv.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

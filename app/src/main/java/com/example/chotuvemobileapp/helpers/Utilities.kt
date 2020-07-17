@@ -35,10 +35,14 @@ object Utilities {
     const val PIC_URL = "pic_url"
     const val REQUEST_LOCATION_PERMISSION = 34
     const val REQUEST_GALLERY_PERMISSION = 35
+    const val REQUEST_SIGNUP = 36
     const val TYPE = "type"
     const val NOT_FOUND_MESSAGE = "notFoundMessage"
     const val REACTION_LIKE = "like"
     const val REACTION_DISLIKE = "dislike"
+    const val USER_NOT_REGISTERED = "User not registered"
+    const val THIRD_PARTY_LOGIN = "thirdPartyLogin"
+    const val FIREBASE_AUTH_TOKEN = "firebase_token"
 
     fun createDatePicker(field: EditText, context: Context){
         val calendar = Calendar.getInstance()

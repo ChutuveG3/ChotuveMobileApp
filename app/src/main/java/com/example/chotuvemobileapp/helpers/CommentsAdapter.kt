@@ -34,10 +34,10 @@ class CommentsAdapter(private val mComments: List<CommentItem>) : RecyclerView.A
         val comment = mComments[position]
         holder.user.text = comment.username
         holder.body.text = comment.comment
-//        val dateToDisplay = LocalDateTime
-//            .parse(comment.datetime, DateTimeFormatter.ofPattern(Utilities.DATE_FORMAT_LONG))
-//            .format(DateTimeFormatter.ofPattern(Utilities.DATE_FORMAT_SHORT))
-        holder.date.text = comment.datetime
+        val dateToDisplay = LocalDateTime
+            .parse(comment.datetime, DateTimeFormatter.ofPattern(Utilities.DATE_FORMAT_LONG))
+            .format(DateTimeFormatter.ofPattern(Utilities.DATE_FORMAT_SHORT))
+        holder.date.text = dateToDisplay
 
         holder.user.setOnClickListener {
             val intent = Intent(it.context, UserProfileActivity::class.java)

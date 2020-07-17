@@ -3,6 +3,7 @@
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in_short">Sign in</string>
+    <string name="sign_in_google">Sign in with Google</string>
     <!-- Strings used for fragments for navigation -->
     <string name="user_taken">Username already taken</string>
     <string name="email_taken">A user with that email already exists</string>
@@ -63,4 +64,7 @@
     <string name="toast_like">You liked the video!</string>
     <string name="toast_dislike">You disliked the video</string>
     <string name="looks_like_there_s_nothing_to_see_here_be_the_first_to_comment">Looks like there\'s nothing to see here… be the first to comment !</string>
+    <string name="facebook_app_id">3177427842350967</string>
+    <string name="fb_login_protocol_scheme">fb3177427842350967</string>
+    <string name="signup_request">Please fill the following fields</string>
 </resources>

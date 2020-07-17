@@ -1,6 +1,7 @@
 package com.example.chotuvemobileapp.data.services
 
 import com.example.chotuvemobileapp.data.requests.LoginRequest
+import com.example.chotuvemobileapp.data.requests.ThirdPartyLoginRequest
 import com.example.chotuvemobileapp.data.requests.TokenLoginRequest
 import com.example.chotuvemobileapp.data.requests.reactions.CommentRequest
 import com.example.chotuvemobileapp.data.users.User
@@ -30,6 +31,9 @@ interface IAppServerApiService {
     fun tokenLoginUser(
         @Body request: TokenLoginRequest
     ): Call<ResponseBody>
+
+    @POST("users/sessions")
+    fun loginThirdParty(@Body request: ThirdPartyLoginRequest) : Call<ResponseBody>
 
     @DELETE("users/{user}/sessions")
     fun logoutUser(@Path("user") user: String): Call<ResponseBody>
