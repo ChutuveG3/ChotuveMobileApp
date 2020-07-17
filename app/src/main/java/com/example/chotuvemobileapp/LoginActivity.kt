@@ -12,6 +12,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.chotuvemobileapp.data.repositories.LoginDataSource
 import com.example.chotuvemobileapp.data.users.User
+import com.example.chotuvemobileapp.helpers.ThirdPartyLoginResult
 import com.example.chotuvemobileapp.helpers.Utilities.BIRTH_DATE
 import com.example.chotuvemobileapp.helpers.Utilities.FAILURE_MESSAGE
 import com.example.chotuvemobileapp.helpers.Utilities.FIREBASE_AUTH_TOKEN
@@ -35,7 +36,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.iid.FirebaseInstanceId
 import kotlinx.android.synthetic.main.activity_login.*
-import kotlinx.android.synthetic.main.activity_sign_up.*
 
 
 @Suppress("UNUSED_PARAMETER")
@@ -102,7 +102,7 @@ class LoginActivity : AppCompatActivity() {
                     when (it) {
                         FAILURE_MESSAGE -> Toast.makeText(applicationContext, getString(R.string.internal_error), Toast.LENGTH_LONG).show()
                         INVALID_PARAMS_MESSAGE -> showInvalidUsername()
-                        else -> saveDataAndStartHome(it, false)
+                        else -> saveDataAndStartHome(it)
                     }
                     quitLoadingScreen()
                 }
@@ -119,10 +119,10 @@ class LoginActivity : AppCompatActivity() {
                 val newToken = instanceIdResult.token
                 Log.d(FIREBASE_TAG, newToken)
                 LoginDataSource.loginWithThirdParty(firebaseToken, newToken) {
-                    when (it) {
-                        FAILURE_MESSAGE -> Toast.makeText(applicationContext, getString(R.string.internal_error), Toast.LENGTH_LONG).show()
+                    when (it.message) {
+                        FAILURE_MESSAGE, INVALID_PARAMS_MESSAGE -> Toast.makeText(applicationContext, getString(R.string.internal_error), Toast.LENGTH_LONG).show()
                         USER_NOT_REGISTERED -> startActivityForResult(Intent(this, ThirdPartyLoginActivity::class.java), REQUEST_SIGNUP)
-                        else -> saveDataAndStartHome(it, true)
+                        else -> saveDataAndStartHome(it)
                     }
                     quitLoadingScreen()
                 }
@@ -238,7 +238,7 @@ class LoginActivity : AppCompatActivity() {
         LoginProgressBar.visibility = View.GONE
     }
 
-    private fun saveDataAndStartHome(token: String, thirdParty: Boolean) {
+    private fun saveDataAndStartHome(token: String) {
         val preferences = applicationContext.getSharedPreferences(
             getString(R.string.shared_preferences_file),
             Context.MODE_PRIVATE
@@ -246,8 +246,21 @@ class LoginActivity : AppCompatActivity() {
         preferences.putString("token", token)
         preferences.putString(USERNAME, LogInUsername.text.toString())
         preferences.putString("password", LoginPassword.text.toString())
+        preferences.putBoolean(THIRD_PARTY_LOGIN, false)
+        preferences.apply()
+        startActivity(Intent(this, HomeActivity::class.java))
+        finish()
+    }
+
+    private fun saveDataAndStartHome(result: ThirdPartyLoginResult) {
+        val preferences = applicationContext.getSharedPreferences(
+            getString(R.string.shared_preferences_file),
+            Context.MODE_PRIVATE
+        ).edit()
+        preferences.putString("token", result.token)
+        preferences.putString(USERNAME, result.username )
         preferences.putString(FIREBASE_AUTH_TOKEN, firebaseToken)
-        preferences.putBoolean(THIRD_PARTY_LOGIN, thirdParty)
+        preferences.putBoolean(THIRD_PARTY_LOGIN, true)
         preferences.apply()
         startActivity(Intent(this, HomeActivity::class.java))
         finish()
