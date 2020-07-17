@@ -27,6 +27,7 @@ class SignUpActivity : AppCompatActivity() {
             RegLastNameText.text.toString(),
             RegEmailText.text.toString(),
             RegPwFirstText.text.toString(),
+            null,
             RegUsernameText.text.toString(),
             RegDateText.text.toString()
         )
@@ -55,10 +56,19 @@ class SignUpActivity : AppCompatActivity() {
                 showLoadingScreen()
                 LoginDataSource.addUser(registerInfo){
                     when (it) {
-                        FAILURE_MESSAGE -> Toast.makeText(applicationContext, getString(R.string.request_failure), Toast.LENGTH_LONG).show()
+                        FAILURE_MESSAGE -> {
+                            clearLoadingScreen()
+                            Toast.makeText(applicationContext, getString(R.string.request_failure), Toast.LENGTH_LONG).show()
+                        }
                         SUCCESS_MESSAGE -> goToLogin(registerInfo)
-                        "user_name_already_exists" -> RegUsername.error = getString(R.string.user_taken)
-                        "user_email_already_exists" -> RegEmail.error = getString(R.string.email_taken)
+                        "user_name_already_exists" -> {
+                            RegUsername.error = getString(R.string.user_taken)
+                            clearLoadingScreen()
+                        }
+                        "user_email_already_exists" ->{
+                            RegEmail.error = getString(R.string.email_taken)
+                            clearLoadingScreen()
+                        }
                         else -> {
                             Toast.makeText( applicationContext, getString(R.string.internal_error), Toast.LENGTH_LONG).show()
                             clearLoadingScreen()
@@ -90,7 +100,7 @@ class SignUpActivity : AppCompatActivity() {
         FirebaseInstanceId.getInstance().instanceId
             .addOnSuccessListener(this) { instanceIdResult ->
                 val newToken = instanceIdResult.token
-                LoginDataSource.tokenLogin(registerInfo.user_name, registerInfo.password, newToken) {
+                LoginDataSource.tokenLogin(registerInfo.user_name, registerInfo.password!!, newToken) {
                     when (it) {
                         FAILURE_MESSAGE, INVALID_PARAMS_MESSAGE -> Toast.makeText(applicationContext, getString(R.string.internal_error), Toast.LENGTH_LONG).show()
                         else -> {

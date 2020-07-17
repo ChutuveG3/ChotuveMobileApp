@@ -1,6 +1,7 @@
 package com.example.chotuvemobileapp.data.repositories
 
 import com.example.chotuvemobileapp.data.requests.LoginRequest
+import com.example.chotuvemobileapp.data.requests.ThirdPartyLoginRequest
 import com.example.chotuvemobileapp.data.requests.TokenLoginRequest
 import com.example.chotuvemobileapp.data.response.AuthErrorResponse
 import com.example.chotuvemobileapp.data.response.LoginResponse
@@ -9,6 +10,7 @@ import com.example.chotuvemobileapp.data.utilities.HttpUtilities.buildClient
 import com.example.chotuvemobileapp.helpers.Utilities.FAILURE_MESSAGE
 import com.example.chotuvemobileapp.helpers.Utilities.INVALID_PARAMS_MESSAGE
 import com.example.chotuvemobileapp.helpers.Utilities.SUCCESS_MESSAGE
+import com.example.chotuvemobileapp.helpers.Utilities.USER_NOT_REGISTERED
 import com.google.gson.Gson
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -17,12 +19,12 @@ import retrofit2.Response
 
 object LoginDataSource {
 
-    fun login(username: String, password: String, myCallback: (String) -> Unit){
+    fun loginWithThirdParty(token: String, deviceToken: String, myCallback: (String) -> Unit){
 
         val retrofit = buildClient()
-        val request = LoginRequest(username, password)
+        val request = ThirdPartyLoginRequest(token, deviceToken)
 
-        retrofit.loginUser(request).enqueue(object : Callback<ResponseBody> {
+        retrofit.loginThirdParty(request).enqueue(object : Callback<ResponseBody> {
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 myCallback.invoke(FAILURE_MESSAGE)
             }
@@ -32,6 +34,7 @@ object LoginDataSource {
                         val resp = Gson().fromJson(response.body()!!.string(), LoginResponse::class.java)
                         myCallback.invoke(resp.token)
                     }
+                    response.code() == 409 -> myCallback.invoke(USER_NOT_REGISTERED)
                     else -> myCallback.invoke(INVALID_PARAMS_MESSAGE)
                 }
             }

@@ -11,9 +11,16 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.chotuvemobileapp.data.repositories.LoginDataSource
+import com.example.chotuvemobileapp.data.users.User
+import com.example.chotuvemobileapp.helpers.Utilities.BIRTH_DATE
 import com.example.chotuvemobileapp.helpers.Utilities.FAILURE_MESSAGE
+import com.example.chotuvemobileapp.helpers.Utilities.FIREBASE_AUTH_TOKEN
 import com.example.chotuvemobileapp.helpers.Utilities.INVALID_PARAMS_MESSAGE
+import com.example.chotuvemobileapp.helpers.Utilities.REQUEST_SIGNUP
+import com.example.chotuvemobileapp.helpers.Utilities.SUCCESS_MESSAGE
+import com.example.chotuvemobileapp.helpers.Utilities.THIRD_PARTY_LOGIN
 import com.example.chotuvemobileapp.helpers.Utilities.USERNAME
+import com.example.chotuvemobileapp.helpers.Utilities.USER_NOT_REGISTERED
 import com.example.chotuvemobileapp.helpers.Utilities.watchText
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
@@ -28,7 +35,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.iid.FirebaseInstanceId
 import kotlinx.android.synthetic.main.activity_login.*
-import java.lang.Exception
+import kotlinx.android.synthetic.main.activity_sign_up.*
 
 
 @Suppress("UNUSED_PARAMETER")
@@ -45,6 +52,7 @@ class LoginActivity : AppCompatActivity() {
     private val fbCallbackManager by lazy { CallbackManager.Factory.create() }
 
     private val firebaseAuth by lazy { FirebaseAuth.getInstance() }
+    private lateinit var firebaseToken: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -94,7 +102,27 @@ class LoginActivity : AppCompatActivity() {
                     when (it) {
                         FAILURE_MESSAGE -> Toast.makeText(applicationContext, getString(R.string.internal_error), Toast.LENGTH_LONG).show()
                         INVALID_PARAMS_MESSAGE -> showInvalidUsername()
-                        else -> saveDataAndStartHome(it)
+                        else -> saveDataAndStartHome(it, false)
+                    }
+                    quitLoadingScreen()
+                }
+            }.addOnFailureListener { Exception ->
+                Log.d(FIREBASE_TAG, Exception.toString())
+                Toast.makeText(applicationContext, R.string.internal_error, Toast.LENGTH_LONG).show()
+            }
+    }
+
+    private fun loginThirdParty(firebaseToken: String){
+        showLoadingScreen()
+        FirebaseInstanceId.getInstance().instanceId
+            .addOnSuccessListener(this) { instanceIdResult ->
+                val newToken = instanceIdResult.token
+                Log.d(FIREBASE_TAG, newToken)
+                LoginDataSource.loginWithThirdParty(firebaseToken, newToken) {
+                    when (it) {
+                        FAILURE_MESSAGE -> Toast.makeText(applicationContext, getString(R.string.internal_error), Toast.LENGTH_LONG).show()
+                        USER_NOT_REGISTERED -> startActivityForResult(Intent(this, ThirdPartyLoginActivity::class.java), REQUEST_SIGNUP)
+                        else -> saveDataAndStartHome(it, true)
                     }
                     quitLoadingScreen()
                 }
@@ -106,16 +134,53 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == RC_SIGN_IN && resultCode == Activity.RESULT_OK){
-            val task = GoogleSignIn.getSignedInAccountFromIntent(data)
-            try {
-                firebaseAuthWithGoogle(task.getResult(ApiException::class.java)!!.idToken!!)
-            }
-            catch (e: ApiException) {
-                Toast.makeText(this, "Fail", Toast.LENGTH_LONG).show()
+        if (resultCode == Activity.RESULT_OK){
+            when(requestCode) {
+                RC_SIGN_IN -> {
+                    val task = GoogleSignIn.getSignedInAccountFromIntent(data)
+                    try {
+                        firebaseAuthWithGoogle(task.getResult(ApiException::class.java)!!.idToken!!)
+                    } catch (e: ApiException) {
+                        Toast.makeText(this, "Fail", Toast.LENGTH_LONG).show()
+                    }
+                }
+                REQUEST_SIGNUP ->{
+                    val names = firebaseAuth.currentUser!!.displayName!!.split(' ')
+                    val lastName = names.subList(1, names.lastIndex).joinToString(" " )
+                    val user = User(
+                        names[0],
+                        lastName,
+                        firebaseAuth.currentUser!!.email!!,
+                        null,
+                        firebaseToken,
+                        data!!.getStringExtra(USERNAME)!!,
+                        data.getStringExtra(BIRTH_DATE)!!
+                    )
+                    LoginDataSource.addUser(user){
+                        when(it){
+                            SUCCESS_MESSAGE-> loginThirdParty(firebaseToken)
+                            "user_name_already_exists" -> {
+                                Toast.makeText(applicationContext, getString(R.string.user_taken), Toast.LENGTH_LONG).show()
+                                quitLoadingScreen()
+                            }
+                            "user_email_already_exists" -> {
+                                Toast.makeText(applicationContext, getString(R.string.email_taken), Toast.LENGTH_LONG).show()
+                                quitLoadingScreen()
+                            }
+                            FAILURE_MESSAGE -> {
+                                quitLoadingScreen()
+                                Toast.makeText(applicationContext, getString(R.string.request_failure), Toast.LENGTH_LONG).show()
+                            }
+                            else -> {
+                                Toast.makeText( applicationContext, getString(R.string.internal_error), Toast.LENGTH_LONG).show()
+                                quitLoadingScreen()
+                            }
+                        }
+                    }
+                }
+                else -> fbCallbackManager.onActivityResult(requestCode, resultCode, data)
             }
         }
-        else fbCallbackManager.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun firebaseAuthWithFacebook(token: AccessToken){
@@ -124,15 +189,17 @@ class LoginActivity : AppCompatActivity() {
             .addOnCompleteListener { res ->
                 if (res.isSuccessful){
                     firebaseAuth.currentUser!!.getIdToken(true).addOnCompleteListener {
-                        if (it.isSuccessful){
-                            val idtoken = it.result!!.token
+                        if (it.isSuccessful) {
+                            firebaseToken = it.result!!.token!!
+                            loginThirdParty(firebaseToken)
                         }
+                        else Toast.makeText(this, getString(R.string.internal_error), Toast.LENGTH_LONG).show()
                     }
                 }
-                else Toast.makeText(this, "Fail", Toast.LENGTH_LONG).show()
+                else Toast.makeText(this, getString(R.string.internal_error), Toast.LENGTH_LONG).show()
             }
             .addOnFailureListener {
-                Toast.makeText(this, "Fail", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, getString(R.string.internal_error), Toast.LENGTH_LONG).show()
             }
             .addOnCanceledListener {
                 Toast.makeText(this, "Canceled", Toast.LENGTH_LONG).show()
@@ -141,9 +208,15 @@ class LoginActivity : AppCompatActivity() {
 
     private fun firebaseAuthWithGoogle(idToken: String){
         firebaseAuth.signInWithCredential(GoogleAuthProvider.getCredential(idToken, null))
-            .addOnCompleteListener {
-                if (it.isSuccessful){
-                    //Login con el app server
+            .addOnCompleteListener {res ->
+                if (res.isSuccessful){
+                    firebaseAuth.currentUser!!.getIdToken(true).addOnCompleteListener {
+                        if (it.isSuccessful) {
+                            firebaseToken = it.result!!.token!!
+                            loginThirdParty(firebaseToken)
+                        }
+                        else Toast.makeText(this, getString(R.string.internal_error), Toast.LENGTH_LONG).show()
+                    }
                 }
                 else Toast.makeText(this, "Fail", Toast.LENGTH_LONG).show()
             }
@@ -165,7 +238,7 @@ class LoginActivity : AppCompatActivity() {
         LoginProgressBar.visibility = View.GONE
     }
 
-    private fun saveDataAndStartHome(token: String) {
+    private fun saveDataAndStartHome(token: String, thirdParty: Boolean) {
         val preferences = applicationContext.getSharedPreferences(
             getString(R.string.shared_preferences_file),
             Context.MODE_PRIVATE
@@ -173,6 +246,8 @@ class LoginActivity : AppCompatActivity() {
         preferences.putString("token", token)
         preferences.putString(USERNAME, LogInUsername.text.toString())
         preferences.putString("password", LoginPassword.text.toString())
+        preferences.putString(FIREBASE_AUTH_TOKEN, firebaseToken)
+        preferences.putBoolean(THIRD_PARTY_LOGIN, thirdParty)
         preferences.apply()
         startActivity(Intent(this, HomeActivity::class.java))
         finish()
