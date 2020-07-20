@@ -7,10 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import com.example.chotuvemobileapp.HomeActivity
 import com.example.chotuvemobileapp.R
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.fragment_messages.*
 
 class MessagesFragment : Fragment() {
 
+    private val database by lazy {FirebaseDatabase.getInstance().reference }
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

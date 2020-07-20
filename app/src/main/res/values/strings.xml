@@ -67,4 +67,5 @@
     <string name="facebook_app_id">3177427842350967</string>
     <string name="fb_login_protocol_scheme">fb3177427842350967</string>
     <string name="signup_request">Please fill the following fields</string>
+    <string name="type_message">Type a message</string>
 </resources>
