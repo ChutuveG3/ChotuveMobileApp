@@ -88,6 +88,12 @@ object Utilities {
         return current.format(formatter)
     }
 
+    fun parseTimestamp(timestamp: LocalDateTime) : String{
+        val now = LocalDateTime.now()
+        return if(timestamp.year == now.year && timestamp.dayOfYear == now.dayOfYear) "${timestamp.hour}:${timestamp.minute}"
+        else timestamp.format(DateTimeFormatter.ofPattern(DATE_FORMAT_SHORT))
+    }
+
     @SuppressLint("Recycle")
     fun getFileName(uri: Uri, contentResolver: ContentResolver) : String {
         var result = null as String?
