@@ -124,6 +124,8 @@ object Utilities {
         return arrayOf(srcUsername, dstUsername).sorted().joinToString(separator="-")
     }
 
+    fun sizeInPx(dps: Int, density: Float) : Int = (dps*density + 0.5f).toInt()
+
     @SuppressLint("ClickableViewAccessibility")
     fun buttonEffect(button: View) {
         button.setOnTouchListener { v, event ->

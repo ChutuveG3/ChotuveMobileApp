@@ -1,22 +1,24 @@
 package com.example.chotuvemobileapp
 
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
+import android.view.LayoutInflater
+import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.example.chotuvemobileapp.entities.ChatItem
 import com.example.chotuvemobileapp.entities.ChatMessageItem
-import com.example.chotuvemobileapp.helpers.ChatMessagesAdapter
-import com.example.chotuvemobileapp.helpers.Utilities
-import com.example.chotuvemobileapp.helpers.Utilities.buttonEffect
+import com.example.chotuvemobileapp.helpers.ChatMessageViewHolder
+import com.example.chotuvemobileapp.helpers.Utilities.USERNAME
 import com.example.chotuvemobileapp.helpers.Utilities.getChatId
-import com.google.firebase.database.ChildEventListener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
+import com.example.chotuvemobileapp.helpers.Utilities.sizeInPx
+import com.firebase.ui.database.FirebaseRecyclerAdapter
+import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_chat.*
 import java.time.LocalDateTime
+import java.time.ZoneId
 
 class ChatActivity : AppCompatActivity() {
     /*
@@ -43,59 +45,101 @@ class ChatActivity : AppCompatActivity() {
     *
     *   chat_id_2 { ... }
     * */
-    private val database by lazy { FirebaseDatabase.getInstance() }
-    private val messagesReference by lazy { database.getReference("messages") }
-    private val chatReference by lazy {
-        messagesReference.child(getChatId(username, "otro"))
-    }
-    private val username by lazy {
-        applicationContext
-            .getSharedPreferences(getString(R.string.shared_preferences_file), Context.MODE_PRIVATE)
-            .getString(Utilities.USERNAME, "")!!
-    }
-    private val adapter = ChatMessagesAdapter(ArrayList())
 
+    private val database by lazy { FirebaseDatabase.getInstance().reference }
+
+    private val ownUsername by lazy {
+        getSharedPreferences(getString(R.string.shared_preferences_file), Context.MODE_PRIVATE)
+            .getString(USERNAME, "")!!
+    }
+
+    private val destinationUsername by lazy { intent.getStringExtra(USERNAME)}
+
+    private val chatId by lazy {
+        getChatId(ownUsername, destinationUsername)
+    }
+
+    private val messagesReference by lazy {
+        database.child("messages").child(chatId)
+    }
+
+    private val messageQuery by lazy { messagesReference.orderByChild("timestamp") }
+
+    private val options by lazy {
+        FirebaseRecyclerOptions
+            .Builder<ChatMessageItem>()
+            .setQuery(messageQuery, ChatMessageItem::class.java)
+            .build()
+    }
+    private val adapter by lazy {
+        object : FirebaseRecyclerAdapter<ChatMessageItem, ChatMessageViewHolder>(options) {
+            override fun onCreateViewHolder(
+                parent: ViewGroup,
+                viewType: Int
+            ): ChatMessageViewHolder {
+                val context = parent.context
+                val inflater = LayoutInflater.from(context)
+                val messageView = inflater.inflate(R.layout.item_message, parent, false)
+                return ChatMessageViewHolder(messageView)
+            }
+
+            override fun onBindViewHolder(
+                holder: ChatMessageViewHolder,
+                position: Int,
+                model: ChatMessageItem
+            ) {
+                holder.message.text = model.message
+                if (model.user != ownUsername) {
+                    val density = resources.displayMetrics.density
+                    holder.message.background =
+                        holder.itemView.context.getDrawable(R.drawable.message_incoming_bubble)
+                    holder.message.setPadding(
+                        sizeInPx(20, density),
+                        sizeInPx(4, density),
+                        sizeInPx(10, density),
+                        sizeInPx(6, density)
+                    )
+                    val constraintSet = ConstraintSet()
+                    constraintSet.clone(holder.layout)
+                    constraintSet.setHorizontalBias(R.id.MessageText, 0f)
+                    constraintSet.applyTo(holder.layout)
+                }
+            }
+        }
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
 
+        ChatToolbar.setNavigationOnClickListener { this.onBackPressed() }
+
+        ChatToolbar.title = destinationUsername
+
         MessagesRecyclerView.adapter = adapter
-        MessagesRecyclerView.layoutManager = LinearLayoutManager(applicationContext)
+        MessagesRecyclerView.layoutManager = LinearLayoutManager(this)
+        adapter.startListening()
 
         MessageSendButton.setOnClickListener{
             val messageText = MessageEditText.text.toString()
-            val newMessage = ChatMessageItem(username, messageText, LocalDateTime.now())
 
-            if (messageText.isNullOrBlank()) return@setOnClickListener
+            if (messageText.isBlank()) return@setOnClickListener
 
-            chatReference.push().setValue(newMessage)
-            // Esto no debe ir aca.
-            adapter.addMessage(newMessage)
-            MessageEditText.setText("")
+            val timestamp = LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond()
+            val newMessage = ChatMessageItem(ownUsername, messageText, timestamp)
+            messagesReference.push().setValue(newMessage)
+            val ownChat = ChatItem(chatId, destinationUsername, messageText, timestamp)
+            val destinationChat = ChatItem(chatId, ownUsername, messageText, timestamp)
+            database
+                .child("chats")
+                .child(ownUsername)
+                .child(destinationUsername)
+                .setValue(ownChat)
+            database
+                .child("chats")
+                .child(destinationUsername)
+                .child(ownUsername)
+                .setValue(destinationChat)
+            MessageEditText.text.clear()
         }
-
-        // Esto me esta crasheando.
-
-//        val chatListener = object : ChildEventListener {
-//            override fun onCancelled(error: DatabaseError) =
-//                Toast.makeText(applicationContext, getString(R.string.internal_error), Toast.LENGTH_LONG).show()
-//
-//            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-//            }
-//
-//            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-//            }
-//
-//            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-//                val newMessage : ChatMessageItem = snapshot.value as ChatMessageItem
-//                adapter.addMessage(newMessage)
-//            }
-//
-//            override fun onChildRemoved(snapshot: DataSnapshot) {
-//            }
-//        }
-//        chatReference.addChildEventListener(chatListener)
-
-        // Mepa que aca va messagesReference en vez de chatReference.
     }
 }

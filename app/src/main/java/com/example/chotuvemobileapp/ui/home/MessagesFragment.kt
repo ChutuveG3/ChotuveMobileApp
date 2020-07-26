@@ -6,27 +6,64 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.chotuvemobileapp.ChatActivity
 import com.example.chotuvemobileapp.HomeActivity
 import com.example.chotuvemobileapp.R
+import com.example.chotuvemobileapp.SelectFriendActivity
+import com.example.chotuvemobileapp.entities.ChatItem
+import com.example.chotuvemobileapp.helpers.ChatViewHolder
 import com.example.chotuvemobileapp.helpers.Utilities
 import com.example.chotuvemobileapp.helpers.Utilities.USERNAME
-import com.example.chotuvemobileapp.ui.profile.FullSizeImageActivity
-import com.google.firebase.database.ChildEventListener
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
+import com.firebase.ui.database.FirebaseRecyclerAdapter
+import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.fragment_messages.*
+import java.time.Instant
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.util.*
 
 class MessagesFragment : Fragment() {
     private val database by lazy {FirebaseDatabase.getInstance().reference}
-    private val chatsReference by lazy {database.child("users").child(username)}
+    private val chatsReference by lazy {database.child("chats").child(username)}
     private val username by lazy {
         requireActivity().applicationContext
             .getSharedPreferences(getString(R.string.shared_preferences_file), Context.MODE_PRIVATE)
             .getString(USERNAME, "")!!
+    }
+
+    val options by lazy {
+        FirebaseRecyclerOptions
+            .Builder<ChatItem>()
+            .setQuery(chatsReference, ChatItem::class.java)
+            .build()
+    }
+    val adapter by lazy {
+        object : FirebaseRecyclerAdapter<ChatItem, ChatViewHolder>(options) {
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatViewHolder {
+                val context = parent.context
+                val inflater = LayoutInflater.from(context)
+                val messageView = inflater.inflate(R.layout.item_chat, parent, false)
+                return ChatViewHolder(messageView)
+            }
+
+            override fun onBindViewHolder(holder: ChatViewHolder, position: Int, model: ChatItem) {
+                holder.user.text = model.user
+                holder.lastMessage.text = model.lastMessage
+                holder.timestamp.text = Utilities.parseTimestamp(LocalDateTime.ofInstant(
+                    Instant.ofEpochSecond(model.timestamp),
+                    TimeZone.getDefault().toZoneId()))
+                holder.itemView.setOnClickListener {
+                    val intent = Intent(it.context, ChatActivity::class.java)
+                    intent.putExtra("ChatId", model.messagesId)
+                    intent.putExtra(USERNAME, model.user)
+                    it.context.startActivity(intent)
+                }
+            }
+        }
     }
 
     override fun onCreateView(
@@ -41,7 +78,7 @@ class MessagesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         newChatButton.setOnClickListener {
-            val intent = Intent(requireContext(), ChatActivity::class.java)
+            val intent = Intent(requireContext(), SelectFriendActivity::class.java)
             startActivity(intent)
         }
 
@@ -50,31 +87,10 @@ class MessagesFragment : Fragment() {
             home.openDrawer()
         }
 
-        val chats = chatsReference.orderByChild("timestamp")
-        val chatListener = object : ChildEventListener {
-            override fun onCancelled(error: DatabaseError) =
-                Toast.makeText(requireContext(), getString(R.string.internal_error), Toast.LENGTH_LONG).show()
+        //val chatQuery = chatsReference.orderByChild("timestamp")
 
-            override fun onChildMoved(snapshot: DataSnapshot, previousChildName: String?) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onChildChanged(snapshot: DataSnapshot, previousChildName: String?) {
-                TODO("Not yet implemented")
-            }
-
-            override fun onChildAdded(snapshot: DataSnapshot, previousChildName: String?) {
-                TODO("Not yet implemented")
-//                val message = snapshot.getValue()
-//                adapter.addMensaje(m)
-            }
-
-            override fun onChildRemoved(snapshot: DataSnapshot) {
-                TODO("Not yet implemented")
-            }
-
-        }
-
-
+        ChatsRecyclerView.adapter = adapter
+        ChatsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        adapter.startListening()
     }
 }
