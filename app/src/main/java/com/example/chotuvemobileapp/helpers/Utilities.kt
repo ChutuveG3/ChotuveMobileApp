@@ -17,6 +17,7 @@ import android.widget.Button
 import android.widget.EditText
 import androidx.core.app.ActivityCompat.startActivityForResult
 import java.text.DecimalFormat
+import java.time.Instant
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -93,8 +94,13 @@ object Utilities {
 
     fun parseTimestamp(timestamp: LocalDateTime) : String{
         val now = LocalDateTime.now()
-        return if(timestamp.year == now.year && timestamp.dayOfYear == now.dayOfYear) "${timestamp.hour}:${timestamp.minute}"
+        return if(timestamp.year == now.year && timestamp.dayOfYear == now.dayOfYear) "${timestamp.hour}:${String.format("%02d", timestamp.minute)}"
         else timestamp.format(DateTimeFormatter.ofPattern(DATE_FORMAT_SHORT))
+    }
+
+    fun parseTime(epoch: Long) : String{
+        val timestamp = LocalDateTime.ofInstant(Instant.ofEpochSecond(epoch), TimeZone.getDefault().toZoneId())
+        return "${timestamp.hour}:${String.format("%02d", timestamp.minute)}"
     }
 
     @SuppressLint("Recycle")

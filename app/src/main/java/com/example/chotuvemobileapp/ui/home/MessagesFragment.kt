@@ -21,9 +21,7 @@ import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.fragment_messages.*
 import java.time.Instant
-import java.time.LocalDate
 import java.time.LocalDateTime
-import java.time.ZoneId
 import java.util.*
 
 class MessagesFragment : Fragment() {
@@ -76,6 +74,7 @@ class MessagesFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        adapter.startListening()
 
         newChatButton.setOnClickListener {
             val intent = Intent(requireContext(), SelectFriendActivity::class.java)
@@ -91,6 +90,5 @@ class MessagesFragment : Fragment() {
 
         ChatsRecyclerView.adapter = adapter
         ChatsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        adapter.startListening()
     }
 }

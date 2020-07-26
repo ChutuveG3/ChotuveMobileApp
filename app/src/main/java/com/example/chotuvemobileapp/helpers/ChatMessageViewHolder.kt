@@ -9,4 +9,6 @@ import com.example.chotuvemobileapp.R
 class ChatMessageViewHolder(listItemView: View) : RecyclerView.ViewHolder(listItemView){
     val message: TextView = itemView.findViewById(R.id.MessageText)
     var layout: ConstraintLayout = itemView.findViewById(R.id.MessageLayout)
+    var messageBubble : ConstraintLayout = itemView.findViewById(R.id.MessageBubble)
+    val messageTimestamp: TextView = itemView.findViewById(R.id.MessageTimestamp)
 }

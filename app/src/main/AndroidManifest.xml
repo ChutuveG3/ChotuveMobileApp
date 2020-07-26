@@ -19,7 +19,8 @@
             android:theme="@style/AppTheme.NoActionBar.Dark"/>
         <activity
             android:name=".ChatActivity"
-            android:theme="@style/AppTheme.NoActionBar.Dark"/>
+            android:theme="@style/AppTheme.NoActionBar.Dark"
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".ThirdPartyLoginActivity"
             android:theme="@style/AppTheme.NoActionBar.Light" />

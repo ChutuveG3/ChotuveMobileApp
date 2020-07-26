@@ -23,8 +23,8 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/UserPicWrapperChat"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
         android:layout_marginStart="45dp"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
@@ -35,8 +35,8 @@
 
         <ImageView
             android:id="@+id/UserPicChat"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
             app:srcCompat="@drawable/ic_baseline_person_45"
             tools:ignore="ContentDescription" />
     </androidx.cardview.widget.CardView>
@@ -50,6 +50,8 @@
         android:layout_marginBottom="4dp"
         android:background="@drawable/rounded_button_background"
         android:backgroundTint="@color/ic_launcher_background"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
@@ -87,17 +89,29 @@
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/MessagesRecyclerView"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/RecyclerWrapper"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="4dp"
+        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/MessageTextWrapper"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ChatToolbar"
-        tools:listitem="@layout/item_message" />
+        app:layout_constraintTop_toBottomOf="@+id/ChatToolbar">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/MessagesRecyclerView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0"
+            tools:listitem="@layout/item_message" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,5 +6,6 @@ class ChatItem (
     var messagesId: String = "",
     var user: String = "",
     var lastMessage: String = "",
-    var timestamp: Long = 0
+    var timestamp: Long = 0,
+    var picUrl: String = ""
 )
