@@ -7,5 +7,5 @@ class ChatItem (
     var user: String = "",
     var lastMessage: String = "",
     var timestamp: Long = 0,
-    var picUrl: String = ""
+    var picUrl: String? = null
 )

@@ -64,6 +64,7 @@
     <string name="toast_like">You liked the video!</string>
     <string name="toast_dislike">You disliked the video</string>
     <string name="looks_like_there_s_nothing_to_see_here_be_the_first_to_comment">Looks like there\'s nothing to see here… be the first to comment !</string>
+    <string name="no_chats_text">Looks like there\'s nothing to see here… \nStart chatting with your friends!</string>
     <string name="facebook_app_id">3177427842350967</string>
     <string name="fb_login_protocol_scheme">fb3177427842350967</string>
     <string name="signup_request">Please fill the following fields</string>

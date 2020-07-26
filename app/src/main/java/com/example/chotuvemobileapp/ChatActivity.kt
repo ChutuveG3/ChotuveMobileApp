@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -20,12 +19,11 @@ import com.example.chotuvemobileapp.helpers.Utilities.USERNAME
 import com.example.chotuvemobileapp.helpers.Utilities.getChatId
 import com.example.chotuvemobileapp.helpers.Utilities.parseTime
 import com.example.chotuvemobileapp.helpers.Utilities.sizeInPx
+import com.example.chotuvemobileapp.ui.profile.FullSizeImageActivity
 import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_chat.*
-import kotlinx.android.synthetic.main.fragment_profile.*
-import kotlinx.android.synthetic.main.item_chat.*
 import java.time.LocalDateTime
 import java.time.ZoneId
 
@@ -68,8 +66,6 @@ class ChatActivity : AppCompatActivity() {
     private val messagesReference by lazy { database.child("messages").child(chatId) }
 
     private val messageQuery by lazy { messagesReference.orderByChild("timestamp") }
-
-    private val picUrl by lazy { intent.getStringExtra(PIC_URL) }
 
     private val options by lazy {
         FirebaseRecyclerOptions
@@ -152,6 +148,8 @@ class ChatActivity : AppCompatActivity() {
         setContentView(R.layout.activity_chat)
         adapter.startListening()
 
+        var picUrl = intent.getStringExtra(PIC_URL)
+
         MessageEditText.clearFocus()
         ChatToolbar.setNavigationOnClickListener { this.onBackPressed() }
         ChatToolbar.title = destinationUsername
@@ -177,6 +175,7 @@ class ChatActivity : AppCompatActivity() {
                         .load(Uri.parse(it.profile_img_url))
                         .centerCrop()
                         .into(UserPicChat)
+                    picUrl = it.profile_img_url
                 }
             }
         }
@@ -212,5 +211,20 @@ class ChatActivity : AppCompatActivity() {
             MessageEditText.text.clear()
             MessagesRecyclerView.smoothScrollToPosition(MessagesRecyclerView.adapter!!.itemCount)
         }
+
+        UserPicChat.setOnClickListener {
+            val intent = Intent(this, FullSizeImageActivity::class.java)
+            intent.putExtra(PIC_URL, picUrl)
+            startActivity(intent)
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        adapter.stopListening()
+    }
+    override fun onResume() {
+        super.onResume()
+        adapter.startListening()
     }
 }

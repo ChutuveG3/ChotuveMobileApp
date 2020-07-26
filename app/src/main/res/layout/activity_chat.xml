@@ -28,7 +28,7 @@
         android:layout_marginStart="45dp"
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp"
-        app:cardCornerRadius="40dp"
+        app:cardCornerRadius="22dp"
         app:layout_constraintBottom_toBottomOf="@+id/ChatToolbar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
