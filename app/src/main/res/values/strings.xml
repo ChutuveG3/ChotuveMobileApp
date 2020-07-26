@@ -67,4 +67,9 @@
     <string name="facebook_app_id">3177427842350967</string>
     <string name="fb_login_protocol_scheme">fb3177427842350967</string>
     <string name="signup_request">Please fill the following fields</string>
+    <string name="forgot_your_password">Forgot your password?</string>
+    <string name="email">Email</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="send">Send</string>
+    <string name="dont_worry_revert_your_password_is_easy_just_tell_us_the_email_address_you_registered_with_chotuve">Dont worry. Revert your password is easy, just tell us the email address you registered with Chotuve</string>
 </resources>

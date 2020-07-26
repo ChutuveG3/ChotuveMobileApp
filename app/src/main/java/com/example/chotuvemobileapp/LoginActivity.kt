@@ -23,6 +23,7 @@ import com.example.chotuvemobileapp.helpers.Utilities.THIRD_PARTY_LOGIN
 import com.example.chotuvemobileapp.helpers.Utilities.USERNAME
 import com.example.chotuvemobileapp.helpers.Utilities.USER_NOT_REGISTERED
 import com.example.chotuvemobileapp.helpers.Utilities.watchText
+import com.example.chotuvemobileapp.ui.profile.FullSizeImageActivity
 import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
@@ -68,6 +69,10 @@ class LoginActivity : AppCompatActivity() {
 
         GoogleSignInButton.setOnClickListener {
             startActivityForResult(googleSignInClient.signInIntent, RC_SIGN_IN)
+        }
+
+        ForgotPassText.setOnClickListener {
+            startActivity(Intent(applicationContext, RevertPasswordActivity::class.java))
         }
 
         FacebookSignInButton.setPermissions("email", "public_profile")
