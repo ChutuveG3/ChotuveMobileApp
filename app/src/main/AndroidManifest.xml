@@ -27,6 +27,9 @@
             android:name=".ThirdPartyLoginActivity"
             android:theme="@style/AppTheme.NoActionBar.Light" />
         <activity
+            android:name=".PasswordConfigActivity"
+            android:theme="@style/AppTheme.NoActionBar.Light" />
+        <activity
             android:name=".RevertPasswordActivity"
             android:theme="@style/AppTheme.NoActionBar.Light" />
         <activity

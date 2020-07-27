@@ -1,6 +1,7 @@
 package com.example.chotuvemobileapp
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
@@ -9,31 +10,30 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.chotuvemobileapp.data.repositories.RevertPassDataSource
 import com.example.chotuvemobileapp.helpers.Utilities
-import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_revert_password.*
 
 
 class RevertPasswordActivity : AppCompatActivity() {
+    private val email by lazy {
+        RevertPassEmail.text.toString()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_revert_password)
 
-//        SendMeInstructionsBtn.isEnabled = false
-//        SendMeInstructionsBtn.alpha = .5f
         RevertPassProgressBar.visibility = View.GONE
 
         SendMeInstructionsBtn.setOnClickListener {
             // TODO: * Validar email.
-            val email = RevertPassEmail.text.toString()
-
             showLoadingScreen()
             RevertPassDataSource.sendEmail(email) {
                 when (it) {
                     Utilities.SUCCESS_MESSAGE -> {
-                        // GOTO: Pantalla para ingresar el token (6 caracteres) + pass y confirm pass.
                         clearLoadingScreen()
-                        Toast.makeText(applicationContext, "Success email send", Toast.LENGTH_LONG)
+                        Toast.makeText(applicationContext, "Success email send", Toast.LENGTH_LONG).show()
+
+                        goToPassConfiguration()
                     }
                     Utilities.FAILURE_MESSAGE -> {
                         clearLoadingScreen()
@@ -46,6 +46,12 @@ class RevertPasswordActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun goToPassConfiguration() {
+        val passConfigIntent = Intent(this, PasswordConfigActivity::class.java)
+        passConfigIntent.putExtra(Utilities.EMAIL, email)
+        startActivity(passConfigIntent)
     }
 
     private fun showLoadingScreen() {
@@ -66,6 +72,4 @@ class RevertPasswordActivity : AppCompatActivity() {
         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         RevertPassProgressBar.visibility = View.GONE
     }
-
-
 }
