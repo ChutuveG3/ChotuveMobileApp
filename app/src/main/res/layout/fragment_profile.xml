@@ -90,6 +90,7 @@
                     android:id="@+id/ProfilePicWrapper"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:transitionName="profilePic"
                     app:cardBackgroundColor="@android:color/transparent"
                     app:cardCornerRadius="65dp"
                     app:cardElevation="0dp"

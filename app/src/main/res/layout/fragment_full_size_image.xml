@@ -7,15 +7,23 @@
     android:layout_gravity="center"
     tools:context=".ui.profile.FullSizeImageActivity">
 
-    <ImageView
-        android:id="@+id/FullScreenImage"
+    <androidx.cardview.widget.CardView
+        android:id="@+id/FullImageWrapper"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="#DCDCDC"
+        android:transitionName="profilePic"
+        app:cardCornerRadius="65dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_baseline_person_400"
-        tools:ignore="ContentDescription" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/FullScreenImage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#DCDCDC"
+            app:srcCompat="@drawable/ic_baseline_person_400"
+            tools:ignore="ContentDescription" />
+    </androidx.cardview.widget.CardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

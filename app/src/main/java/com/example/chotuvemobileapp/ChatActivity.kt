@@ -1,5 +1,6 @@
 package com.example.chotuvemobileapp
 
+import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -24,6 +25,7 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_chat.*
+import kotlinx.android.synthetic.main.fragment_profile.*
 import java.time.LocalDateTime
 import java.time.ZoneId
 
@@ -215,7 +217,8 @@ class ChatActivity : AppCompatActivity() {
         UserPicChat.setOnClickListener {
             val intent = Intent(this, FullSizeImageActivity::class.java)
             intent.putExtra(PIC_URL, picUrl)
-            startActivity(intent)
+            val options = ActivityOptions.makeSceneTransitionAnimation(this, UserPicWrapperChat, "profilePic")
+            startActivity(intent, options.toBundle())
         }
     }
 

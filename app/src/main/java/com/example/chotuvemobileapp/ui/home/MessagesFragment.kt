@@ -1,5 +1,6 @@
 package com.example.chotuvemobileapp.ui.home
 
+import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -28,6 +29,8 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.fragment_messages.*
+import kotlinx.android.synthetic.main.fragment_profile.*
+import kotlinx.android.synthetic.main.item_chat.*
 import java.time.Instant
 import java.time.LocalDateTime
 import java.util.*
@@ -73,7 +76,8 @@ class MessagesFragment : Fragment() {
                 holder.userPic.setOnClickListener {
                     val intent = Intent(requireContext(), FullSizeImageActivity::class.java)
                     intent.putExtra(PIC_URL, model.picUrl)
-                    startActivity(intent)
+                    val options = ActivityOptions.makeSceneTransitionAnimation(requireActivity(), CardViewChat, "profilePic")
+                    startActivity(intent, options.toBundle())
                 }
 
                 holder.itemView.setOnClickListener {
