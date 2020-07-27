@@ -1,6 +1,7 @@
 package com.example.chotuvemobileapp.data.services
 
 import com.example.chotuvemobileapp.data.requests.LoginRequest
+import com.example.chotuvemobileapp.data.requests.RevertPassRequest
 import com.example.chotuvemobileapp.data.requests.ThirdPartyLoginRequest
 import com.example.chotuvemobileapp.data.requests.TokenLoginRequest
 import com.example.chotuvemobileapp.data.requests.reactions.CommentRequest
@@ -21,6 +22,11 @@ interface IAppServerApiService {
 //    refactor
     @POST("/videos")
     fun uploadVideo(@Body video: Video): Call<ResponseBody>
+
+    @POST("/sessions/password_recovery")
+    fun passwordRecovery(
+        @Body request: RevertPassRequest
+    ): Call<ResponseBody>
 
     @POST("users/sessions")
     fun loginUser(
