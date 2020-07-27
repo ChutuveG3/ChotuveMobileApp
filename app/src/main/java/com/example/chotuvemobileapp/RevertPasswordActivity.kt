@@ -10,7 +10,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.chotuvemobileapp.data.repositories.RevertPassDataSource
 import com.example.chotuvemobileapp.helpers.Utilities
+import com.example.chotuvemobileapp.helpers.Utilities.FAILURE_MESSAGE
+import com.example.chotuvemobileapp.helpers.Utilities.INVALID_PARAMS_MESSAGE
+import com.example.chotuvemobileapp.helpers.Utilities.SUCCESS_MESSAGE
+import com.example.chotuvemobileapp.helpers.Utilities.watchText
 import kotlinx.android.synthetic.main.activity_revert_password.*
+import kotlinx.android.synthetic.main.activity_sign_up.*
 
 
 class RevertPasswordActivity : AppCompatActivity() {
@@ -23,25 +28,24 @@ class RevertPasswordActivity : AppCompatActivity() {
         setContentView(R.layout.activity_revert_password)
 
         RevertPassProgressBar.visibility = View.GONE
+        RevertPassEmail.watchText(SendMeInstructionsBtn, this::isEmailValid)
 
         SendMeInstructionsBtn.setOnClickListener {
-            // TODO: * Validar email.
             showLoadingScreen()
             RevertPassDataSource.sendEmail(email) {
                 when (it) {
-                    Utilities.SUCCESS_MESSAGE -> {
+                    SUCCESS_MESSAGE -> {
                         clearLoadingScreen()
-                        Toast.makeText(applicationContext, "Success email send", Toast.LENGTH_LONG).show()
-
+                        Toast.makeText(applicationContext, "Email sent, check your inbox", Toast.LENGTH_LONG).show()
                         goToPassConfiguration()
                     }
-                    Utilities.FAILURE_MESSAGE -> {
+                    INVALID_PARAMS_MESSAGE -> {
                         clearLoadingScreen()
-                        Toast.makeText(
-                            applicationContext,
-                            getString(R.string.request_failure),
-                            Toast.LENGTH_LONG
-                        ).show()
+                        EmailInput.error = "Email not registered"
+                    }
+                    FAILURE_MESSAGE -> {
+                        clearLoadingScreen()
+                        Toast.makeText(applicationContext, getString(R.string.request_failure), Toast.LENGTH_LONG).show()
                     }
                 }
             }
@@ -72,4 +76,6 @@ class RevertPasswordActivity : AppCompatActivity() {
         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         RevertPassProgressBar.visibility = View.GONE
     }
+
+    private fun isEmailValid(): Boolean = android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
 }

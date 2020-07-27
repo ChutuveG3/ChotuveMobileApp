@@ -73,9 +73,10 @@
     <string name="send">Send</string>
     <string name="dont_worry_revert_your_password_is_easy_just_tell_us_the_email_address_you_registered_with_chotuve">Dont worry. Revert your password is easy, just tell us the email address you registered with Chotuve</string>
     <string name="confirm">Confirm</string>
-    <string name="password_configuration">Password Configuration</string>
+    <string name="text_change_pw">Change your password</string>
     <string name="Code">code</string>
     <string name="code">Code</string>
     <string name="confirm_password">Confirm password</string>
-    <string name="now_configure_your_now_password">Now, configure your now password</string>
+    <string name="enter_pw_tet">Enter your new password</string>
+    <string name="message_email_sent">We sent an email to</string>
 </resources>
