@@ -15,7 +15,6 @@ import com.example.chotuvemobileapp.helpers.Utilities.INVALID_PARAMS_MESSAGE
 import com.example.chotuvemobileapp.helpers.Utilities.SUCCESS_MESSAGE
 import com.example.chotuvemobileapp.helpers.Utilities.watchText
 import kotlinx.android.synthetic.main.activity_revert_password.*
-import kotlinx.android.synthetic.main.activity_sign_up.*
 
 
 class RevertPasswordActivity : AppCompatActivity() {
@@ -56,6 +55,7 @@ class RevertPasswordActivity : AppCompatActivity() {
         val passConfigIntent = Intent(this, PasswordConfigActivity::class.java)
         passConfigIntent.putExtra(Utilities.EMAIL, email)
         startActivity(passConfigIntent)
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
     }
 
     private fun showLoadingScreen() {
@@ -75,6 +75,11 @@ class RevertPasswordActivity : AppCompatActivity() {
         RevertPassScreen.alpha = 1F
         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         RevertPassProgressBar.visibility = View.GONE
+    }
+
+    override fun finish() {
+        super.finish()
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     private fun isEmailValid(): Boolean = android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()

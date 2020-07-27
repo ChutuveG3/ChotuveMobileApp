@@ -1,9 +1,6 @@
 package com.example.chotuvemobileapp.data.services
 
-import com.example.chotuvemobileapp.data.requests.LoginRequest
-import com.example.chotuvemobileapp.data.requests.RevertPassRequest
-import com.example.chotuvemobileapp.data.requests.ThirdPartyLoginRequest
-import com.example.chotuvemobileapp.data.requests.TokenLoginRequest
+import com.example.chotuvemobileapp.data.requests.*
 import com.example.chotuvemobileapp.data.requests.reactions.CommentRequest
 import com.example.chotuvemobileapp.data.users.User
 import com.example.chotuvemobileapp.data.users.UserForModification
@@ -26,6 +23,11 @@ interface IAppServerApiService {
     @POST("/sessions/password_recovery")
     fun passwordRecovery(
         @Body request: RevertPassRequest
+    ): Call<ResponseBody>
+
+    @PUT("/sessions/password_configuration")
+    fun changePassword(
+        @Body request: ChangePassRequest
     ): Call<ResponseBody>
 
     @POST("users/sessions")
