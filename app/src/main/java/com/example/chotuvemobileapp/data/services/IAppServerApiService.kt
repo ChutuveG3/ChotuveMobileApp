@@ -18,7 +18,6 @@ interface IAppServerApiService {
         @Body user: User
     ): Call<ResponseBody>
 
-//    refactor
     @POST("/videos")
     fun uploadVideo(@Body video: Video): Call<ResponseBody>
 

@@ -1,5 +1,6 @@
 package com.example.chotuvemobileapp
 
+import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -80,7 +81,8 @@ class UserProfileActivity : AppCompatActivity() {
                 ProfilePic.setOnClickListener {_ ->
                     val intent = Intent(applicationContext, FullSizeImageActivity::class.java)
                     intent.putExtra(Utilities.PIC_URL, it.profile_img_url)
-                    startActivity(intent)
+                    val options = ActivityOptions.makeSceneTransitionAnimation(this, ProfilePicWrapper, "profilePic")
+                    startActivity(intent, options.toBundle())
                 }
             }
         })
