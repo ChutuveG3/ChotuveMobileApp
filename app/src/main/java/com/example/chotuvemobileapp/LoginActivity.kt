@@ -70,6 +70,11 @@ class LoginActivity : AppCompatActivity() {
             startActivityForResult(googleSignInClient.signInIntent, RC_SIGN_IN)
         }
 
+        ForgotPassText.setOnClickListener {
+            startActivity(Intent(applicationContext, RevertPasswordActivity::class.java))
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+        }
+
         FacebookSignInButton.setPermissions("email", "public_profile")
         FacebookSignInButton.registerCallback(fbCallbackManager, object : FacebookCallback<LoginResult> {
             override fun onSuccess(result: LoginResult?) = firebaseAuthWithFacebook(result!!.accessToken)
@@ -84,7 +89,10 @@ class LoginActivity : AppCompatActivity() {
         LogInUsername.clearFocus()
     }
 
-    fun goToSignUp(view: View) = startActivity(Intent(this, SignUpActivity::class.java))
+    fun goToSignUp(view: View){
+        startActivity(Intent(this, SignUpActivity::class.java))
+        overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+    }
 
     fun signIn(view: View) {
         if (isDataValid()) {
@@ -296,6 +304,11 @@ class LoginActivity : AppCompatActivity() {
             valid = false
         }
         return valid
+    }
+
+    override fun finish() {
+        super.finish()
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
     companion object {
