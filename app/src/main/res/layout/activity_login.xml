@@ -61,7 +61,7 @@
                 android:layout_marginTop="50dp"
                 android:layout_marginEnd="32dp"
                 android:textColor="@color/white"
-                android:textColorHint="@color/white"
+                android:textColorHint="#99BEBEBE"
                 app:boxBackgroundColor="#FFFAFA"
                 app:errorTextColor="#FFAFCB"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -76,7 +76,7 @@
                     android:hint="@string/prompt_username"
                     android:inputType="text"
                     android:textColor="@color/white"
-                    android:textColorHint="@color/white" />
+                    android:textColorHint="#D3D3D3" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
@@ -151,7 +151,7 @@
                 app:passwordToggleEnabled="true"
                 app:passwordToggleTint="@color/white"
                 android:textColor="@color/white"
-                android:textColorHint="@color/white"
+                android:textColorHint="#99BEBEBE"
                 app:errorTextColor="#FFAFCB"
                 app:startIconTint="#FFFFFF">
 
@@ -159,7 +159,7 @@
                     android:id="@+id/LoginPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="#E6E6E6"
+                    android:backgroundTint="#FFFFFF"
                     android:textColor="@color/white"
                     android:textColorHint="@color/white"
                     android:hint="@string/prompt_password"

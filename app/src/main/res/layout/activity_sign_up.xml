@@ -3,8 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/SignupFullScreen"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@drawable/main_background"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -33,8 +34,9 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/SignupScreen"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/form_rounded_background">
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/RegUsername"
@@ -51,9 +53,10 @@
                     android:id="@+id/RegUsernameText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="#E6E6E6"
+                    android:backgroundTint="@color/transparent"
+                    android:textColorHint="@color/com_facebook_blue"
                     android:hint="@string/prompt_username"
-                    android:inputType="text" />
+                    android:inputType="text"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -178,7 +181,7 @@
             <Button
                 android:id="@+id/SignUpButton"
                 android:layout_width="0dp"
-                android:layout_height="60dp"
+                android:layout_height="50dp"
                 android:layout_marginStart="32dp"
                 android:layout_marginTop="32dp"
                 android:layout_marginEnd="32dp"
