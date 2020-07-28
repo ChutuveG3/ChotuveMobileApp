@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.example.chotuvemobileapp.data.repositories.ChatsDataSource
 import com.example.chotuvemobileapp.data.repositories.ProfileInfoDataSource
 import com.example.chotuvemobileapp.entities.ChatItem
 import com.example.chotuvemobileapp.entities.ChatMessageItem
@@ -25,7 +26,6 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter
 import com.firebase.ui.database.FirebaseRecyclerOptions
 import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.activity_chat.*
-import kotlinx.android.synthetic.main.fragment_profile.*
 import java.time.LocalDateTime
 import java.time.ZoneId
 
@@ -212,6 +212,7 @@ class ChatActivity : AppCompatActivity() {
                 .setValue(destinationChat)
             MessageEditText.text.clear()
             MessagesRecyclerView.smoothScrollToPosition(MessagesRecyclerView.adapter!!.itemCount)
+            ChatsDataSource.sendMessage(prefs, destinationUsername, messageText)
         }
 
         UserPicChat.setOnClickListener {

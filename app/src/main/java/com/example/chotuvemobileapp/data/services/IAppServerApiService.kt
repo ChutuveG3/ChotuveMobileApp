@@ -1,6 +1,7 @@
 package com.example.chotuvemobileapp.data.services
 
 import com.example.chotuvemobileapp.data.requests.LoginRequest
+import com.example.chotuvemobileapp.data.requests.MessageRequest
 import com.example.chotuvemobileapp.data.requests.ThirdPartyLoginRequest
 import com.example.chotuvemobileapp.data.requests.TokenLoginRequest
 import com.example.chotuvemobileapp.data.requests.reactions.CommentRequest
@@ -91,4 +92,7 @@ interface IAppServerApiService {
 
     @GET("videos/{videoId}")
     fun getVideo(@Path("videoId") videoId: String) : Call<ResponseBody>
+
+    @POST("users/{destUser}/messages")
+    fun sendMessage(@Path("destUser") dest: String, @Body message: MessageRequest) : Call<ResponseBody>
 }
