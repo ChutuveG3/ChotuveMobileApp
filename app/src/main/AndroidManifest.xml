@@ -49,7 +49,7 @@
             android:theme="@style/AppTheme.NoActionBar.Dark" />
         <activity
             android:name=".ui.profile.EditProfileActivity"
-            android:theme="@style/AppTheme.NoActionBar.Dark" />
+            android:theme="@style/AppTheme.NoActionBar.Home" />
         <activity
             android:name=".ui.profile.FullSizeImageActivity"
             android:theme="@style/AppTheme.NoActionBar.Dark" />

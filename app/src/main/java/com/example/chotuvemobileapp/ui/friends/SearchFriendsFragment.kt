@@ -13,7 +13,6 @@ import com.example.chotuvemobileapp.data.repositories.FriendsDataSource
 import com.example.chotuvemobileapp.helpers.SearchedUsersAdapter
 import com.example.chotuvemobileapp.helpers.Utilities.USERNAME
 import com.example.chotuvemobileapp.viewmodels.FriendsViewModel
-import kotlinx.android.synthetic.main.fragment_list.*
 import kotlinx.android.synthetic.main.search_friends_fragment.*
 
 class SearchFriendsFragment : Fragment() {
@@ -74,6 +73,7 @@ class SearchFriendsFragment : Fragment() {
             override fun onQueryTextChange(newText: String?): Boolean {
                 NotFoundText.visibility = View.GONE
                 SadFaceImage.visibility = View.GONE
+                SearchFriendsRecyclerView.adapter =  null
                 return true
             }
         })
