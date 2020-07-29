@@ -22,13 +22,14 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
-import androidx.core.text.HtmlCompat
 import androidx.core.text.bold
 import androidx.core.text.italic
 import androidx.core.widget.ImageViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.example.chotuvemobileapp.data.repositories.ProfileInfoDataSource
 import com.example.chotuvemobileapp.data.repositories.ReactionsDataSource
 import com.example.chotuvemobileapp.data.requests.reactions.CommentRequest
 import com.example.chotuvemobileapp.entities.CommentItem
@@ -79,6 +80,14 @@ class PlayVideoActivity : AppCompatActivity() {
         backgroundColor = getColor(R.color.white)
 
         viewModel.video.observe(this, Observer {
+            ProfileInfoDataSource.getProfileInfo(prefs, intent.getStringExtra("videoAuthor")!!){profile ->
+                if (profile?.profile_img_url != null)
+                    Glide
+                        .with(this)
+                        .load(Uri.parse(profile.profile_img_url))
+                        .centerCrop()
+                        .into(VideoAuthorPic)
+            }
             val description = SpannableStringBuilder()
                 .bold { append("${it.views} views\n") }
                 .italic { append(intent.getStringExtra("videoDate")!!) }

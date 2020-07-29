@@ -18,9 +18,13 @@ class FullSizeImageActivity : AppCompatActivity() {
         intent.getStringExtra(Utilities.PIC_URL)
     }
 
+    private val radius by lazy { resources.displayMetrics.widthPixels.toFloat() }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.fragment_full_size_image)
+
+        FullImageWrapper.radius =  radius
 
         window.sharedElementEnterTransition.addListener(object: Transition.TransitionListener{
             override fun onTransitionEnd(transition: Transition?) {}
@@ -28,9 +32,9 @@ class FullSizeImageActivity : AppCompatActivity() {
             override fun onTransitionPause(transition: Transition?) {}
             override fun onTransitionCancel(transition: Transition?) {}
             override fun onTransitionStart(transition: Transition?) {
-                val animator = ObjectAnimator.ofFloat(FullImageWrapper, "radius", 0f)
-                animator.duration = 300
-                animator.start()
+                val radiusAnimator = ObjectAnimator.ofFloat(FullImageWrapper, "radius", 0f)
+                radiusAnimator.duration = 150
+                radiusAnimator.start()
             }
 
         })
@@ -52,8 +56,8 @@ class FullSizeImageActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         super.onBackPressed()
-        val animator = ObjectAnimator.ofFloat(FullImageWrapper, "radius", resources.getDimension(R.dimen.img_radius))
-        animator.duration = 200
+        val animator = ObjectAnimator.ofFloat(FullImageWrapper, "radius", radius)
+        animator.duration = 150
         animator.start()
     }
 }

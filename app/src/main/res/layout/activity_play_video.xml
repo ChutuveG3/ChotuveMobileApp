@@ -79,7 +79,6 @@
                         android:layout_height="wrap_content"
                         android:background="@color/ic_launcher_background"
                         android:onClick="startProfileActivity"
-                        android:tint="#EDE7F6"
                         app:srcCompat="@drawable/ic_person_black_24dp"
                         tools:ignore="ContentDescription" />
                 </androidx.cardview.widget.CardView>
