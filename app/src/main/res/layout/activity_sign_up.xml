@@ -36,6 +36,7 @@
             android:id="@+id/SignupScreen"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center|center_horizontal|center_vertical"
             android:background="@drawable/form_rounded_background">
 
             <com.google.android.material.textfield.TextInputLayout
@@ -54,9 +55,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:backgroundTint="@color/transparent"
-                    android:textColorHint="@color/com_facebook_blue"
                     android:hint="@string/prompt_username"
-                    android:inputType="text"/>
+                    android:inputType="text"
+                    android:textColorHint="@color/com_facebook_blue" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
