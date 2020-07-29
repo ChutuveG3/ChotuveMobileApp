@@ -18,9 +18,6 @@ import kotlinx.android.synthetic.main.activity_revert_password.*
 
 
 class RevertPasswordActivity : AppCompatActivity() {
-    private val email by lazy {
-        RevertPassEmail.text.toString()
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +28,7 @@ class RevertPasswordActivity : AppCompatActivity() {
 
         SendMeInstructionsBtn.setOnClickListener {
             showLoadingScreen()
-            RevertPassDataSource.sendEmail(email) {
+            RevertPassDataSource.sendEmail(RevertPassEmail.text.toString()) {
                 when (it) {
                     SUCCESS_MESSAGE -> {
                         clearLoadingScreen()
@@ -53,7 +50,7 @@ class RevertPasswordActivity : AppCompatActivity() {
 
     private fun goToPassConfiguration() {
         val passConfigIntent = Intent(this, PasswordConfigActivity::class.java)
-        passConfigIntent.putExtra(Utilities.EMAIL, email)
+        passConfigIntent.putExtra(Utilities.EMAIL, RevertPassEmail.text.toString())
         startActivity(passConfigIntent)
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
     }
@@ -82,5 +79,5 @@ class RevertPasswordActivity : AppCompatActivity() {
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right)
     }
 
-    private fun isEmailValid(): Boolean = android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    private fun isEmailValid(): Boolean = android.util.Patterns.EMAIL_ADDRESS.matcher(RevertPassEmail.text.toString()).matches()
 }
