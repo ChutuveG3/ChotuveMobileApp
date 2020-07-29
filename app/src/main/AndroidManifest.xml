@@ -19,7 +19,7 @@
             android:theme="@style/AppTheme.NoActionBar.Dark"/>
         <activity
             android:name=".ChatActivity"
-            android:theme="@style/AppTheme.NoActionBar.Dark"
+            android:theme="@style/AppTheme.NoActionBar.Chat"
             android:windowSoftInputMode="adjustResize"/>
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
@@ -32,10 +32,10 @@
             android:value="@string/default_notification_channel_id" />
         <activity
             android:name=".PasswordConfigActivity"
-            android:theme="@style/AppTheme.NoActionBar.Light" />
+            android:theme="@style/AppTheme.NoActionBar.Dark" />
         <activity
             android:name=".RevertPasswordActivity"
-            android:theme="@style/AppTheme.NoActionBar.Light" />
+            android:theme="@style/AppTheme.NoActionBar.Dark" />
         <activity
             android:name=".UserProfileActivity"
             android:theme="@style/AppTheme.NoActionBar.Dark" />
@@ -63,11 +63,11 @@
         </activity>
         <activity
             android:name=".SignUpActivity"
-            android:theme="@style/AppTheme.NoActionBar.Light" />
+            android:theme="@style/AppTheme.NoActionBar.Dark" />
         <activity
             android:name=".LoginActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar.Light" />
+            android:theme="@style/AppTheme.NoActionBar.Dark" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"

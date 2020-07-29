@@ -8,9 +8,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import com.google.firebase.database.*
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -31,7 +30,6 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.android.synthetic.main.fragment_messages.*
-import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlinx.android.synthetic.main.item_chat.*
 import java.time.Instant
 import java.time.LocalDateTime
@@ -93,13 +91,6 @@ class MessagesFragment : Fragment() {
         }
     }
 
-    private val database by lazy {FirebaseDatabase.getInstance().reference }
-    private val username by lazy{
-        requireActivity().applicationContext
-            .getSharedPreferences(getString(R.string.shared_preferences_file), Context.MODE_PRIVATE)
-            .getString(USERNAME, "")!!
-    }
-    private val chatsReference by lazy {database.child("users").child(username)}
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -132,6 +123,7 @@ class MessagesFragment : Fragment() {
                 if (!snapshot.exists()){
                     NoChatsImageView.visibility = View.VISIBLE
                     NoChatsTextView.visibility = View.VISIBLE
+                    quitLoadingScreen()
                 }
             }
         })
@@ -145,6 +137,7 @@ class MessagesFragment : Fragment() {
 
         ChatsRecyclerView.adapter = adapter
         ChatsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        ChatsRecyclerView.addItemDecoration(DividerItemDecoration(ChatsRecyclerView.context, resources.configuration.orientation))
     }
 
     override fun onStop() {

@@ -9,8 +9,7 @@ import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
-import android.text.Editable
-import android.text.TextWatcher
+import android.text.*
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewGroup
@@ -23,6 +22,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
+import androidx.core.text.HtmlCompat
+import androidx.core.text.bold
+import androidx.core.text.italic
 import androidx.core.widget.ImageViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -77,8 +79,11 @@ class PlayVideoActivity : AppCompatActivity() {
         backgroundColor = getColor(R.color.white)
 
         viewModel.video.observe(this, Observer {
-            val description = intent.getStringExtra("videoDate")!! + "\n" +
-                    if (it.description.isBlank()) getString(R.string.no_description) else it.description
+            val description = SpannableStringBuilder()
+                .bold { append("${it.views} views\n") }
+                .italic { append(intent.getStringExtra("videoDate")!!) }
+                .append("\n\n${if (it.description.isBlank()) getString(R.string.no_description) else it.description}")
+
             VideoDescription.text = description
             LikeCount.text = it.likes.toString()
             DislikeCount.text = it.dislikes.toString()

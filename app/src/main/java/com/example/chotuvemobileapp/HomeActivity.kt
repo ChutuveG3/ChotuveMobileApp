@@ -90,7 +90,7 @@ class HomeActivity : AppCompatActivity() {
                     BottomNavMenu.visibility = View.VISIBLE
                     navController.navigate(getCurrentBottomMenuOption())
                     navView.menu.findItem(item.itemId).isChecked = true
-                    window.navigationBarColor = ContextCompat.getColor(this, R.color.colorPrimaryDark)
+                    window.navigationBarColor = ContextCompat.getColor(this, R.color.status_bar)
                     true
                 }
                 else -> {

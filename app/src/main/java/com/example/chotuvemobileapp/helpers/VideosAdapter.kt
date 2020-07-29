@@ -16,6 +16,7 @@ import com.example.chotuvemobileapp.entities.VideoItem
 import com.example.chotuvemobileapp.helpers.Utilities.DATE_FORMAT_LONG
 import com.example.chotuvemobileapp.helpers.Utilities.DATE_FORMAT_SHORT
 import com.example.chotuvemobileapp.helpers.Utilities.USERNAME
+import com.example.chotuvemobileapp.helpers.Utilities.parseNumber
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -25,6 +26,7 @@ class VideosAdapter(private val mVideos: List<VideoItem>) : RecyclerView.Adapter
         val title: TextView = itemView.findViewById(R.id.VideoTitle)
         val user: TextView = itemView.findViewById(R.id.VideoUser)
         val date: TextView = itemView.findViewById(R.id.VideoDate)
+        val views: TextView = itemView.findViewById(R.id.VideoViews)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -40,6 +42,7 @@ class VideosAdapter(private val mVideos: List<VideoItem>) : RecyclerView.Adapter
         val video = mVideos[position]
         holder.title.text = video.title
         holder.user.text = video.user
+        holder.views.text = parseNumber(video.views)
         val dateToDisplay = LocalDateTime.parse(video.date, DateTimeFormatter.ofPattern(DATE_FORMAT_LONG))
             .format(DateTimeFormatter.ofPattern(DATE_FORMAT_SHORT))
         holder.date.text = dateToDisplay

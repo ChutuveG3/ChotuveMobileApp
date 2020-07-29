@@ -6,13 +6,10 @@ import android.app.DatePickerDialog
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
-import android.graphics.PorterDuff
 import android.net.Uri
 import android.provider.OpenableColumns
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.MotionEvent
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import androidx.core.app.ActivityCompat.startActivityForResult
@@ -132,20 +129,14 @@ object Utilities {
 
     fun sizeInPx(dps: Int, density: Float) : Int = (dps*density + 0.5f).toInt()
 
-    @SuppressLint("ClickableViewAccessibility")
-    fun buttonEffect(button: View) {
-        button.setOnTouchListener { v, event ->
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    v.background.setColorFilter(-0x1f0b8adf, PorterDuff.Mode.SRC_ATOP)
-                    v.invalidate()
-                }
-                MotionEvent.ACTION_UP -> {
-                    v.background.clearColorFilter()
-                    v.invalidate()
-                }
-            }
-            false
+    fun parseNumber(number: Int) : String{
+        val views = when (number.toString().length){
+            in 0..4 -> number.toString()
+            in 4..6 -> "${(number / 1000f)} K"
+            in 6..9 -> "${(number / 1000000f)} M"
+            in 9..12 -> "${(number / 1000000f)} B"
+            else -> "Too many"
         }
+        return "$views views"
     }
 }

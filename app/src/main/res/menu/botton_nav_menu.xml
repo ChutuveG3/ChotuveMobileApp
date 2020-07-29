@@ -6,9 +6,9 @@
     android:layoutDirection="rtl"
     >
     <item
-        android:id="@+id/MenuMessages"
-        android:icon="@drawable/ic_baseline_forum_36"
-        android:title="@string/menu_message_inbox"
+        android:id="@+id/MenuHome"
+        android:icon="@drawable/ic_baseline_home_36"
+        android:title="@string/menu_home"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/MenuAddVideo"
@@ -16,8 +16,8 @@
         android:title="@string/action_upload"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/MenuHome"
-        android:icon="@drawable/ic_baseline_home_36"
-        android:title="@string/menu_home"
+        android:id="@+id/MenuMessages"
+        android:icon="@drawable/ic_baseline_forum_36"
+        android:title="@string/menu_message_inbox"
         app:showAsAction="ifRoom" />
 </menu>
