@@ -4,28 +4,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.home.NotificationsFragment" >
+    tools:context=".ChatActivity">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/NotificationsToolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:id="@+id/ChatToolbarFriends"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
-        android:textAlignment="textStart"
         android:theme="?attr/actionBarTheme"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:navigationIcon="@drawable/ic_baseline_menu_36"
-        app:title="@string/menu_notifications"
+        app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
+        app:title="Friends"
+        app:titleMarginStart="15dp"
         app:titleTextColor="@color/white" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/ChatSearchedFriendsRecyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/NotificationsToolbar" />
+        app:layout_constraintTop_toBottomOf="@+id/ChatToolbarFriends"
+        tools:listitem="@layout/item_searched_user" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

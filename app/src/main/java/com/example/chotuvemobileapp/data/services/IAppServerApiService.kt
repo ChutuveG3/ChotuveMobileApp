@@ -1,6 +1,9 @@
 package com.example.chotuvemobileapp.data.services
 
-import com.example.chotuvemobileapp.data.requests.*
+import com.example.chotuvemobileapp.data.requests.LoginRequest
+import com.example.chotuvemobileapp.data.requests.MessageRequest
+import com.example.chotuvemobileapp.data.requests.ThirdPartyLoginRequest
+import com.example.chotuvemobileapp.data.requests.TokenLoginRequest
 import com.example.chotuvemobileapp.data.requests.reactions.CommentRequest
 import com.example.chotuvemobileapp.data.users.User
 import com.example.chotuvemobileapp.data.users.UserForModification
@@ -16,7 +19,6 @@ interface IAppServerApiService {
         @Body user: User
     ): Call<ResponseBody>
 
-//    refactor
     @POST("/videos")
     fun uploadVideo(@Body video: Video): Call<ResponseBody>
 
@@ -100,4 +102,7 @@ interface IAppServerApiService {
 
     @GET("videos/{videoId}")
     fun getVideo(@Path("videoId") videoId: String) : Call<ResponseBody>
+
+    @POST("users/{destUser}/messages")
+    fun sendMessage(@Path("destUser") dest: String, @Body message: MessageRequest) : Call<ResponseBody>
 }

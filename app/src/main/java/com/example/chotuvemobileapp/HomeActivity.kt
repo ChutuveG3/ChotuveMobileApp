@@ -114,10 +114,6 @@ class HomeActivity : AppCompatActivity() {
                     navController.navigate(R.id.nav_add_video)
                     true
                 }
-                R.id.MenuInbox ->{
-                    navController.navigate(R.id.nav_notifications)
-                    true
-                }
                 R.id.MenuMessages ->{
                     navController.navigate(R.id.nav_messages)
                     true
@@ -167,7 +163,6 @@ class HomeActivity : AppCompatActivity() {
     private fun getCurrentBottomMenuOption() : Int{
         return when (BottomNavMenu.selectedItemId){
             R.id.MenuMessages -> R.id.nav_messages
-            R.id.MenuInbox -> R.id.nav_notifications
             R.id.MenuAddVideo -> R.id.nav_add_video
             else -> R.id.nav_home
         }

@@ -1,6 +1,8 @@
 package com.example.chotuvemobileapp.ui.profile
 
+import android.animation.ObjectAnimator
 import android.os.Bundle
+import android.transition.Transition
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
@@ -20,6 +22,18 @@ class FullSizeImageActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.fragment_full_size_image)
 
+        window.sharedElementEnterTransition.addListener(object: Transition.TransitionListener{
+            override fun onTransitionEnd(transition: Transition?) {}
+            override fun onTransitionResume(transition: Transition?) {}
+            override fun onTransitionPause(transition: Transition?) {}
+            override fun onTransitionCancel(transition: Transition?) {}
+            override fun onTransitionStart(transition: Transition?) {
+                val animator = ObjectAnimator.ofFloat(FullImageWrapper, "radius", 0f)
+                animator.duration = 300
+                animator.start()
+            }
+
+        })
         if (url != null) {
             Glide.with(this).load(url).into(FullScreenImage)
         }
@@ -34,5 +48,12 @@ class FullSizeImageActivity : AppCompatActivity() {
         window.decorView.setBackgroundColor(getColor(applicationContext, R.color.white))
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
         window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val animator = ObjectAnimator.ofFloat(FullImageWrapper, "radius", resources.getDimension(R.dimen.img_radius))
+        animator.duration = 200
+        animator.start()
     }
 }
