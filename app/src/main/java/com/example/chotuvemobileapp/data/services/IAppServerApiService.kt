@@ -22,6 +22,16 @@ interface IAppServerApiService {
     @POST("/videos")
     fun uploadVideo(@Body video: Video): Call<ResponseBody>
 
+    @POST("/sessions/password_recovery")
+    fun passwordRecovery(
+        @Body request: RevertPassRequest
+    ): Call<ResponseBody>
+
+    @PUT("/sessions/password_configuration")
+    fun changePassword(
+        @Body request: ChangePassRequest
+    ): Call<ResponseBody>
+
     @POST("users/sessions")
     fun loginUser(
         @Body request: LoginRequest

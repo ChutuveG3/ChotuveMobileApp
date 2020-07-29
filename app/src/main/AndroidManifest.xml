@@ -21,10 +21,6 @@
             android:name=".ChatActivity"
             android:theme="@style/AppTheme.NoActionBar.Dark"
             android:windowSoftInputMode="adjustResize"/>
-        <activity
-            android:name=".ThirdPartyLoginActivity"
-            android:theme="@style/AppTheme.NoActionBar.Light" />
-
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_stat_ic_notification" />
@@ -34,7 +30,15 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/default_notification_channel_id" />
-
+        <activity
+            android:name=".ThirdPartyLoginActivity"
+            android:theme="@style/AppTheme.NoActionBar.Light" />
+        <activity
+            android:name=".PasswordConfigActivity"
+            android:theme="@style/AppTheme.NoActionBar.Light" />
+        <activity
+            android:name=".RevertPasswordActivity"
+            android:theme="@style/AppTheme.NoActionBar.Light" />
         <activity
             android:name=".UserProfileActivity"
             android:theme="@style/AppTheme.NoActionBar.Dark" />
