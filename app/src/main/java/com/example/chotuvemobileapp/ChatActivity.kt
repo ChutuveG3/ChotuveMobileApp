@@ -198,8 +198,8 @@ class ChatActivity : AppCompatActivity() {
             val timestamp = LocalDateTime.now().atZone(ZoneId.systemDefault()).toEpochSecond()
             val newMessage = ChatMessageItem(ownUsername, messageText, timestamp)
             messagesReference.push().setValue(newMessage)
-            val ownChat = ChatItem(chatId, destinationUsername, messageText, timestamp, picUrl)
-            val destinationChat = ChatItem(chatId, ownUsername, messageText, timestamp)
+            val ownChat = ChatItem(chatId, destinationUsername, messageText, -timestamp, picUrl)
+            val destinationChat = ChatItem(chatId, ownUsername, messageText, -timestamp)
             database
                 .child("chats")
                 .child(ownUsername)

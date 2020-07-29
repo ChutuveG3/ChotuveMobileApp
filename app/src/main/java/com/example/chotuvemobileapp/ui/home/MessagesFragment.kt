@@ -47,7 +47,7 @@ class MessagesFragment : Fragment() {
     val options by lazy {
         FirebaseRecyclerOptions
             .Builder<ChatItem>()
-            .setQuery(chatsReference, ChatItem::class.java)
+            .setQuery(chatsReference.orderByChild("timestamp"), ChatItem::class.java)
             .build()
     }
     val adapter by lazy {
@@ -63,7 +63,7 @@ class MessagesFragment : Fragment() {
                 holder.user.text = model.user
                 holder.lastMessage.text = model.lastMessage
                 holder.timestamp.text = Utilities.parseTimestamp(LocalDateTime.ofInstant(
-                    Instant.ofEpochSecond(model.timestamp),
+                    Instant.ofEpochSecond(kotlin.math.abs(model.timestamp)),
                     TimeZone.getDefault().toZoneId()))
                 if (model.picUrl != null) {
                     Glide
@@ -72,6 +72,7 @@ class MessagesFragment : Fragment() {
                         .centerCrop()
                         .into(holder.userPic)
                 }
+                else holder.userPic.setImageDrawable(resources.getDrawable(R.drawable.ic_baseline_person_45, null))
 
                 holder.userPic.setOnClickListener {
                     val intent = Intent(requireContext(), FullSizeImageActivity::class.java)
