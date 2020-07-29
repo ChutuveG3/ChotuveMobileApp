@@ -8,12 +8,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.chotuvemobileapp.R
 import com.example.chotuvemobileapp.helpers.FriendsAdapter
 import com.example.chotuvemobileapp.helpers.Utilities
 import com.example.chotuvemobileapp.viewmodels.FriendsViewModel
 import kotlinx.android.synthetic.main.fragment_list.*
+import kotlinx.android.synthetic.main.fragment_messages.*
 
 
 class ListFragment : Fragment() {
@@ -53,6 +55,8 @@ class ListFragment : Fragment() {
         val variableToObserve = if (pending) friendsViewModel.pendingFriends else friendsViewModel.friends
         ListRecyclerView.adapter = FriendsAdapter(users, prefs, friendsViewModel, pending)
         ListRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        ListRecyclerView.addItemDecoration(DividerItemDecoration(ListRecyclerView.context, resources.configuration.orientation))
+
         variableToObserve.observe(viewLifecycleOwner, Observer {
             users = it
             ListRecyclerView.adapter = FriendsAdapter(users, prefs, friendsViewModel, pending)

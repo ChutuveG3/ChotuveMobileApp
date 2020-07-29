@@ -6,12 +6,14 @@ import android.view.*
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.chotuvemobileapp.R
 import com.example.chotuvemobileapp.data.repositories.FriendsDataSource
 import com.example.chotuvemobileapp.helpers.SearchedUsersAdapter
 import com.example.chotuvemobileapp.helpers.Utilities.USERNAME
 import com.example.chotuvemobileapp.viewmodels.FriendsViewModel
+import kotlinx.android.synthetic.main.fragment_list.*
 import kotlinx.android.synthetic.main.search_friends_fragment.*
 
 class SearchFriendsFragment : Fragment() {
@@ -47,7 +49,7 @@ class SearchFriendsFragment : Fragment() {
                 SearchFriendSearchView.clearFocus()
                 if (!query.isNullOrEmpty()){
                     FriendsDataSource.getSimilarUsers(prefs, query){
-                        when{
+                        when {
                             it == null || it.count() == 0 -> {
                                 SearchFriendsRecyclerView.visibility = View.INVISIBLE
                                 SadFaceImage.visibility = View.VISIBLE
@@ -58,6 +60,10 @@ class SearchFriendsFragment : Fragment() {
                                 SearchFriendsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
                                 NotFoundText.visibility = View.GONE
                                 SearchFriendsRecyclerView.visibility = View.VISIBLE
+                                SearchFriendsRecyclerView.addItemDecoration(DividerItemDecoration(
+                                    SearchFriendsRecyclerView.context,
+                                    resources.configuration.orientation)
+                                )
                             }
                         }
                     }
@@ -70,7 +76,6 @@ class SearchFriendsFragment : Fragment() {
                 SadFaceImage.visibility = View.GONE
                 return true
             }
-
         })
     }
 }
