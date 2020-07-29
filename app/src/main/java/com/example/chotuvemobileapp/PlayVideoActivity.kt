@@ -94,7 +94,7 @@ class PlayVideoActivity : AppCompatActivity() {
             quitLoadingVideoInfo()
         })
         viewModel.comments.observe(this, Observer {
-            if (it == null || it.isEmpty()) {
+            if (it.isNullOrEmpty()) {
                 NoCommentsImageView.visibility = View.VISIBLE
                 NoCommentsTextView.visibility = View.VISIBLE
             }

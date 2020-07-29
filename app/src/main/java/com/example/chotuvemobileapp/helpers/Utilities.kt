@@ -6,14 +6,18 @@ import android.app.DatePickerDialog
 import android.content.ContentResolver
 import android.content.Context
 import android.content.Intent
+import android.graphics.PorterDuff
 import android.net.Uri
 import android.provider.OpenableColumns
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.MotionEvent
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import androidx.core.app.ActivityCompat.startActivityForResult
 import java.text.DecimalFormat
+import java.time.Instant
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -90,8 +94,13 @@ object Utilities {
 
     fun parseTimestamp(timestamp: LocalDateTime) : String{
         val now = LocalDateTime.now()
-        return if(timestamp.year == now.year && timestamp.dayOfYear == now.dayOfYear) "${timestamp.hour}:${timestamp.minute}"
+        return if(timestamp.year == now.year && timestamp.dayOfYear == now.dayOfYear) "${timestamp.hour}:${String.format("%02d", timestamp.minute)}"
         else timestamp.format(DateTimeFormatter.ofPattern(DATE_FORMAT_SHORT))
+    }
+
+    fun parseTime(epoch: Long) : String{
+        val timestamp = LocalDateTime.ofInstant(Instant.ofEpochSecond(epoch), TimeZone.getDefault().toZoneId())
+        return "${timestamp.hour}:${String.format("%02d", timestamp.minute)}"
     }
 
     @SuppressLint("Recycle")
@@ -115,5 +124,28 @@ object Utilities {
             }
         }
         return result
+    }
+
+    fun getChatId(srcUsername: String, dstUsername: String) : String {
+        return arrayOf(srcUsername, dstUsername).sorted().joinToString(separator="-")
+    }
+
+    fun sizeInPx(dps: Int, density: Float) : Int = (dps*density + 0.5f).toInt()
+
+    @SuppressLint("ClickableViewAccessibility")
+    fun buttonEffect(button: View) {
+        button.setOnTouchListener { v, event ->
+            when (event.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    v.background.setColorFilter(-0x1f0b8adf, PorterDuff.Mode.SRC_ATOP)
+                    v.invalidate()
+                }
+                MotionEvent.ACTION_UP -> {
+                    v.background.clearColorFilter()
+                    v.invalidate()
+                }
+            }
+            false
+        }
     }
 }

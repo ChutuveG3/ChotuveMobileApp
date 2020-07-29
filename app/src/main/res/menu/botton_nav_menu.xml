@@ -11,19 +11,13 @@
         android:title="@string/menu_message_inbox"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/MenuHome"
-        android:icon="@drawable/ic_baseline_home_36"
-        android:title="@string/menu_home"
-        app:showAsAction="ifRoom" />
-    <item
         android:id="@+id/MenuAddVideo"
         android:icon="@drawable/ic_baseline_add_35"
         android:title="@string/action_upload"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/MenuInbox"
-        android:icon="@drawable/ic_baseline_mail_36"
-        android:title="@string/menu_notifications"
-        android:visible="true"
+        android:id="@+id/MenuHome"
+        android:icon="@drawable/ic_baseline_home_36"
+        android:title="@string/menu_home"
         app:showAsAction="ifRoom" />
 </menu>

@@ -14,10 +14,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".ChatActivity"></activity>
         <activity
-            android:name=".ThirdPartyLoginActivity"
-            android:theme="@style/AppTheme.NoActionBar.Light" />
+            android:name=".SelectFriendActivity"
+            android:theme="@style/AppTheme.NoActionBar.Dark"/>
+        <activity
+            android:name=".ChatActivity"
+            android:theme="@style/AppTheme.NoActionBar.Dark"
+            android:windowSoftInputMode="adjustResize"/>
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_stat_ic_notification" />

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.chotuvemobileapp.R
 import com.example.chotuvemobileapp.UserProfileActivity
 import com.example.chotuvemobileapp.data.repositories.FriendsDataSource
+import com.example.chotuvemobileapp.helpers.Utilities.USERNAME
 import com.example.chotuvemobileapp.viewmodels.FriendsViewModel
 
 class FriendsAdapter(private val friends: ArrayList<String>,
@@ -40,7 +41,7 @@ class FriendsAdapter(private val friends: ArrayList<String>,
         holder.friendUser.text = friend
         holder.friendUser.setOnClickListener {
             val intent = Intent(it.context, UserProfileActivity::class.java)
-            intent.putExtra("user", friend)
+            intent.putExtra(USERNAME, friend)
             it.context.startActivity(intent)
         }
         if (pending){
