@@ -306,6 +306,7 @@
         android:id="@+id/VideoWrapper"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -314,12 +315,12 @@
             android:id="@+id/Video"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:onClick="tapVideo"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintDimensionRatio="w,16:9"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:onClick="tapVideo"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ProgressBar
             android:id="@+id/VideoProgressBar"
@@ -340,11 +341,11 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:alpha="0.6"
+            android:onClick="toggleFullScreen"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/ic_fullscreen_black_24dp"
-            tools:ignore="ContentDescription"
-            android:onClick="toggleFullScreen"/>
+            tools:ignore="ContentDescription" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -60,6 +60,10 @@ class VideoListFragment : Fragment() {
         recyclerView.adapter = VideosAdapter(videos)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
+        SwipeRefreshView.setOnRefreshListener {
+            viewModel.refresh(SwipeRefreshView)
+        }
+
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener(){
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)

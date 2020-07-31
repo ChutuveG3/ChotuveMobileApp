@@ -15,7 +15,6 @@ import com.example.chotuvemobileapp.helpers.FriendsAdapter
 import com.example.chotuvemobileapp.helpers.Utilities
 import com.example.chotuvemobileapp.viewmodels.FriendsViewModel
 import kotlinx.android.synthetic.main.fragment_list.*
-import kotlinx.android.synthetic.main.fragment_messages.*
 
 
 class ListFragment : Fragment() {
@@ -70,6 +69,10 @@ class ListFragment : Fragment() {
             }
             quitLoadingScreen()
         })
+
+        FriendsSwipeRefresh.setOnRefreshListener {
+            friendsViewModel.updateFriends(FriendsSwipeRefresh)
+        }
     }
 
     private fun showLoadingScreen() {

@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.chotuvemobileapp.data.repositories.VideoDataSource
 import com.example.chotuvemobileapp.entities.VideoItem
 
@@ -20,6 +21,13 @@ class VideosViewModel : ViewModel() {
             liveData.value = it
         }
         return@lazy liveData
+    }
+
+    fun refresh(refreshLayout: SwipeRefreshLayout){
+        VideoDataSource.getVideosFrom(prefs, currentPage, pageSize, user){
+            videos.postValue(it)
+            refreshLayout.isRefreshing = false
+        }
     }
 
     fun getMoreVideos(recyclerView: RecyclerView){

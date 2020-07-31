@@ -16,7 +16,7 @@
         android:theme="@style/AppTheme.NoActionBar">
         <activity
             android:name=".SelectFriendActivity"
-            android:theme="@style/AppTheme.NoActionBar.Dark"/>
+            android:theme="@style/AppTheme.NoActionBar.Chat"/>
         <activity
             android:name=".ChatActivity"
             android:theme="@style/AppTheme.NoActionBar.Chat"
@@ -41,15 +41,15 @@
             android:theme="@style/AppTheme.NoActionBar.Dark" />
         <activity
             android:name=".UserProfileActivity"
-            android:theme="@style/AppTheme.NoActionBar.Dark" />
+            android:theme="@style/AppTheme.NoActionBar.Chat" />
         <activity
             android:name=".PlayVideoActivity"
             android:configChanges="screenSize|orientation|keyboardHidden"
             android:screenOrientation="user"
-            android:theme="@style/AppTheme.NoActionBar.Dark" />
+            android:theme="@style/AppTheme.NoActionBar.Chat" />
         <activity
             android:name=".ui.profile.EditProfileActivity"
-            android:theme="@style/AppTheme.NoActionBar.Home" />
+            android:theme="@style/AppTheme.NoActionBar.Chat" />
         <activity
             android:name=".ui.profile.FullSizeImageActivity"
             android:theme="@style/AppTheme.NoActionBar.Dark" />

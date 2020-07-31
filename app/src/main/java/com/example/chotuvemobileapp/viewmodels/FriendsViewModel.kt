@@ -3,8 +3,8 @@ package com.example.chotuvemobileapp.viewmodels
 import android.content.SharedPreferences
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.chotuvemobileapp.data.repositories.FriendsDataSource
-import com.example.chotuvemobileapp.data.users.FriendsInfo
 import com.example.chotuvemobileapp.helpers.Utilities.USERNAME
 
 class FriendsViewModel : ViewModel() {
@@ -26,15 +26,15 @@ class FriendsViewModel : ViewModel() {
         return@lazy liveData
     }
 
-    fun updateFriends(){
+    fun updateFriends(refreshLayout: SwipeRefreshLayout){
         FriendsDataSource.getFriends(prefs, prefs.getString(USERNAME, "")!!){
             friends.postValue(it)
+            refreshLayout.isRefreshing = false
         }
         FriendsDataSource.getPendingFriends(prefs, prefs.getString(USERNAME, "")!!){
             pendingFriends.postValue(it)
+            refreshLayout.isRefreshing = false
         }
-
-        FriendsInfo.needsUpdate.postValue(false)
     }
 
     fun removePendingFriend(friend: String){
