@@ -8,4 +8,6 @@
     <color name="like">#8DFF63</color>
     <color name="dislike">#63C8FF</color>
     <color name="transparent">#00000000</color>
+    <color name="status_bar">#FF33049C</color>
+    <color name="nav_bar">#02B6A5</color>
 </resources>

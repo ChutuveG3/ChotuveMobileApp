@@ -6,18 +6,21 @@
     android:layoutDirection="rtl"
     >
     <item
-        android:id="@+id/MenuMessages"
-        android:icon="@drawable/ic_baseline_forum_36"
-        android:title="@string/menu_message_inbox"
+        android:id="@+id/MenuHome"
+        android:icon="@drawable/home_selector"
+        android:title="@string/menu_home"
+        android:iconTint="@color/white"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/MenuAddVideo"
-        android:icon="@drawable/ic_baseline_add_35"
+        android:icon="@drawable/upload_video_selector"
+        android:iconTint="@color/white"
         android:title="@string/action_upload"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/MenuHome"
-        android:icon="@drawable/ic_baseline_home_36"
-        android:title="@string/menu_home"
+        android:id="@+id/MenuMessages"
+        android:icon="@drawable/chat_selector"
+        android:iconTint="@color/white"
+        android:title="@string/menu_message_inbox"
         app:showAsAction="ifRoom" />
 </menu>

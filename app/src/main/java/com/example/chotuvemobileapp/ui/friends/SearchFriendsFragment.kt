@@ -6,6 +6,7 @@ import android.view.*
 import android.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.chotuvemobileapp.R
 import com.example.chotuvemobileapp.data.repositories.FriendsDataSource
@@ -47,7 +48,7 @@ class SearchFriendsFragment : Fragment() {
                 SearchFriendSearchView.clearFocus()
                 if (!query.isNullOrEmpty()){
                     FriendsDataSource.getSimilarUsers(prefs, query){
-                        when{
+                        when {
                             it == null || it.count() == 0 -> {
                                 SearchFriendsRecyclerView.visibility = View.INVISIBLE
                                 SadFaceImage.visibility = View.VISIBLE
@@ -58,6 +59,10 @@ class SearchFriendsFragment : Fragment() {
                                 SearchFriendsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
                                 NotFoundText.visibility = View.GONE
                                 SearchFriendsRecyclerView.visibility = View.VISIBLE
+                                SearchFriendsRecyclerView.addItemDecoration(DividerItemDecoration(
+                                    SearchFriendsRecyclerView.context,
+                                    resources.configuration.orientation)
+                                )
                             }
                         }
                     }
@@ -68,9 +73,9 @@ class SearchFriendsFragment : Fragment() {
             override fun onQueryTextChange(newText: String?): Boolean {
                 NotFoundText.visibility = View.GONE
                 SadFaceImage.visibility = View.GONE
+                SearchFriendsRecyclerView.adapter =  null
                 return true
             }
-
         })
     }
 }

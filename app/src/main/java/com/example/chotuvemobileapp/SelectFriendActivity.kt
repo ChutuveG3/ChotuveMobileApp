@@ -6,11 +6,13 @@ import android.os.Bundle
 import android.view.View
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.chotuvemobileapp.helpers.ContactsAdapter
 import com.example.chotuvemobileapp.helpers.FriendsAdapter
 import com.example.chotuvemobileapp.viewmodels.FriendsViewModel
 import kotlinx.android.synthetic.main.activity_select_friend.*
+import kotlinx.android.synthetic.main.fragment_list.*
 
 class SelectFriendActivity : AppCompatActivity() {
 
@@ -32,6 +34,11 @@ class SelectFriendActivity : AppCompatActivity() {
         SelectFriendToolbar.setNavigationOnClickListener {
             this.onBackPressed()
         }
+
+        SelectFriendRecyclerView.addItemDecoration(DividerItemDecoration(
+            SelectFriendRecyclerView.context,
+            resources.configuration.orientation)
+        )
 
         friendsViewModel.friends.observe(this, Observer {
             SelectFriendRecyclerView.adapter = ContactsAdapter(it)

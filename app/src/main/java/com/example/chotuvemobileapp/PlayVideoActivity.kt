@@ -9,8 +9,7 @@ import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
-import android.text.Editable
-import android.text.TextWatcher
+import android.text.*
 import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewGroup
@@ -23,10 +22,14 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
+import androidx.core.text.bold
+import androidx.core.text.italic
 import androidx.core.widget.ImageViewCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.example.chotuvemobileapp.data.repositories.ProfileInfoDataSource
 import com.example.chotuvemobileapp.data.repositories.ReactionsDataSource
 import com.example.chotuvemobileapp.data.requests.reactions.CommentRequest
 import com.example.chotuvemobileapp.entities.CommentItem
@@ -39,6 +42,8 @@ import com.example.chotuvemobileapp.helpers.Utilities.nowDateTimeStr
 import com.example.chotuvemobileapp.helpers.VideoReaction
 import com.example.chotuvemobileapp.viewmodels.PlayVideoViewModel
 import kotlinx.android.synthetic.main.activity_play_video.*
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener
 
 
 @Suppress("UNUSED_PARAMETER")
@@ -77,8 +82,19 @@ class PlayVideoActivity : AppCompatActivity() {
         backgroundColor = getColor(R.color.white)
 
         viewModel.video.observe(this, Observer {
-            val description = intent.getStringExtra("videoDate")!! + "\n" +
-                    if (it.description.isBlank()) getString(R.string.no_description) else it.description
+            ProfileInfoDataSource.getProfileInfo(prefs, intent.getStringExtra("videoAuthor")!!){profile ->
+                if (profile?.profile_img_url != null)
+                    Glide
+                        .with(this)
+                        .load(Uri.parse(profile.profile_img_url))
+                        .centerCrop()
+                        .into(VideoAuthorPic)
+            }
+            val description = SpannableStringBuilder()
+                .bold { append("${it.views} views\n") }
+                .italic { append(intent.getStringExtra("videoDate")!!) }
+                .append("\n\n${if (it.description.isBlank()) getString(R.string.no_description) else it.description}")
+
             VideoDescription.text = description
             LikeCount.text = it.likes.toString()
             DislikeCount.text = it.dislikes.toString()
@@ -106,13 +122,21 @@ class PlayVideoActivity : AppCompatActivity() {
             }
         })
 
+        KeyboardVisibilityEvent.setEventListener(this, object : KeyboardVisibilityEventListener{
+            override fun onVisibilityChanged(isOpen: Boolean) {
+                VideoWrapper.maxHeight =
+                    if (isOpen) displayMetrics.heightPixels / 6
+                    else displayMetrics.heightPixels / 2
+            }
+
+        })
+
         AddCommentInput.addTextChangedListener(object : TextWatcher{
             override fun afterTextChanged(s: Editable?) {
                 PostCommentButton.visibility = if (s.isNullOrEmpty()) View.GONE else View.VISIBLE
             }
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-
         })
 
         mediaController.setAnchorView(VideoWrapper)
@@ -177,46 +201,32 @@ class PlayVideoActivity : AppCompatActivity() {
     fun dislike(view: View) {
         view as ImageView
         if (viewModel.video.value?.reaction == REACTION_DISLIKE){
-            ReactionsDataSource.reactToVideo(prefs, videoId, VideoReaction.Undislike) {
-                if (it == SUCCESS_MESSAGE) {
-                    setButtonColor(R.color.white, view)
-                    viewModel.react(VideoReaction.Undislike)
-                }
-            }
+            setButtonColor(R.color.white, view)
+            viewModel.react(VideoReaction.Undislike)
+            ReactionsDataSource.reactToVideo(prefs, videoId, VideoReaction.Undislike) {}
         }
         else{
-            ReactionsDataSource.reactToVideo(prefs, videoId, VideoReaction.Dislike) {
-                if (it == SUCCESS_MESSAGE) {
-                    if (viewModel.video.value?.reaction == REACTION_LIKE) setButtonColor(R.color.white, LikeButton)
-
-                    setButtonColor(R.color.dislike, view)
-                    viewModel.react(VideoReaction.Dislike)
-                    Toast.makeText(applicationContext, getString(R.string.toast_dislike), Toast.LENGTH_LONG).show()
-                }
-            }
+            if (viewModel.video.value?.reaction == REACTION_LIKE) setButtonColor(R.color.white, LikeButton)
+            setButtonColor(R.color.dislike, view)
+            viewModel.react(VideoReaction.Dislike)
+            Toast.makeText(applicationContext, getString(R.string.toast_dislike), Toast.LENGTH_LONG).show()
+            ReactionsDataSource.reactToVideo(prefs, videoId, VideoReaction.Dislike) {}
         }
     }
 
     fun like(view: View) {
         view as ImageView
         if (viewModel.video.value?.reaction == REACTION_LIKE) {
-            ReactionsDataSource.reactToVideo(prefs, videoId, VideoReaction.Unlike) {
-                if (it == SUCCESS_MESSAGE) {
-                    setButtonColor(R.color.white, view)
-                    viewModel.react(VideoReaction.Unlike)
-                }
-            }
+            setButtonColor(R.color.white, view)
+            viewModel.react(VideoReaction.Unlike)
+            ReactionsDataSource.reactToVideo(prefs, videoId, VideoReaction.Unlike) {}
         }
         else {
-            ReactionsDataSource.reactToVideo(prefs, videoId, VideoReaction.Like) {
-                if (it == SUCCESS_MESSAGE) {
-                    if (viewModel.video.value?.reaction == REACTION_DISLIKE) setButtonColor(R.color.white, DislikeButton)
-
-                    setButtonColor(R.color.like, view)
-                    viewModel.react(VideoReaction.Like)
-                    Toast.makeText(applicationContext, getString(R.string.toast_like), Toast.LENGTH_LONG).show()
-                }
-            }
+            if (viewModel.video.value?.reaction == REACTION_DISLIKE) setButtonColor(R.color.white, DislikeButton)
+            setButtonColor(R.color.like, view)
+            viewModel.react(VideoReaction.Like)
+            Toast.makeText(applicationContext, getString(R.string.toast_like), Toast.LENGTH_LONG).show()
+            ReactionsDataSource.reactToVideo(prefs, videoId, VideoReaction.Like) {}
         }
     }
 

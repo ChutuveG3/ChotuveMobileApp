@@ -9,5 +9,6 @@ class VideoItem(
     val user: String,
     @SerializedName("datetime")
     val date: String,
-    val url: String
+    val url: String,
+    val views: Int
 )

@@ -129,7 +129,10 @@ class LoginActivity : AppCompatActivity() {
                 LoginDataSource.loginWithThirdParty(firebaseToken, newToken) {
                     when (it.message) {
                         FAILURE_MESSAGE, INVALID_PARAMS_MESSAGE -> Toast.makeText(applicationContext, getString(R.string.internal_error), Toast.LENGTH_LONG).show()
-                        USER_NOT_REGISTERED -> startActivityForResult(Intent(this, ThirdPartyLoginActivity::class.java), REQUEST_SIGNUP)
+                        USER_NOT_REGISTERED -> {
+                            startActivityForResult(Intent(this, ThirdPartyLoginActivity::class.java), REQUEST_SIGNUP)
+                            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                        }
                         else -> saveDataAndStartHome(it)
                     }
                     quitLoadingScreen()
