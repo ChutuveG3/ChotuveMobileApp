@@ -3,6 +3,7 @@
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
     <string name="action_sign_in_short">Sign in</string>
+    <string name="sign_in_google">Sign in with Google</string>
     <!-- Strings used for fragments for navigation -->
     <string name="user_taken">Username already taken</string>
     <string name="email_taken">A user with that email already exists</string>
@@ -55,4 +56,33 @@
     <string name="friend_title">Find your friends on Chotuve</string>
     <string name="friend_explain_text">TextView</string>
     <string name="default_notification_channel_id">All</string>
+    <string name="add_comment">Add a comment</string>
+    <string name="comment_post_success">Your comment has been successfully posted!</string>
+    <string name="friends_not_found">Here you\'ll find all your friends. Try adding new ones!</string>
+    <string name="pending_friends_not_found">You have no new requests</string>
+    <string name="no_description">No description provided</string>
+    <string name="toast_like">You liked the video!</string>
+    <string name="toast_dislike">You disliked the video</string>
+    <string name="looks_like_there_s_nothing_to_see_here_be_the_first_to_comment">Looks like there\'s nothing to see here… be the first to comment !</string>
+    <string name="no_chats_text">Looks like there\'s nothing to see here… \nStart chatting with your friends!</string>
+    <string name="facebook_app_id">3177427842350967</string>
+    <string name="fb_login_protocol_scheme">fb3177427842350967</string>
+    <string name="signup_request">Please fill the following fields</string>
+    <string name="type_message">Type a message</string>
+    <string name="forgot_your_password">Forgot your password?</string>
+    <string name="email">Email</string>
+    <string name="forgot_password"><u>Forgot password?</u></string>
+    <string name="send">Send</string>
+    <string name="revert_pw_message">Don\'t worry, changing your password is easy</string>
+    <string name="enter_email_message">Enter the email address you registered and we\'ll send you a code</string>
+    <string name="confirm">Confirm</string>
+    <string name="text_change_pw">Change your password</string>
+    <string name="Code">code</string>
+    <string name="code">Code</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="enter_pw_tet">Enter your new password</string>
+    <string name="message_email_sent">We sent an email to</string>
+    <string name="continue_with_google">Continue with Google</string>
+    <string name="continue_with_facebook">Continue with Facebook</string>
+    <string name="select_contact">Select friend</string>
 </resources>

@@ -11,12 +11,15 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chotuvemobileapp.R
 import com.example.chotuvemobileapp.UserProfileActivity
-import com.example.chotuvemobileapp.data.users.ProfileInfoDataSource
-import com.example.chotuvemobileapp.ui.friends.FriendsViewModel
+import com.example.chotuvemobileapp.data.repositories.FriendsDataSource
+import com.example.chotuvemobileapp.helpers.Utilities.SUCCESS_MESSAGE
+import com.example.chotuvemobileapp.helpers.Utilities.USERNAME
+import com.example.chotuvemobileapp.viewmodels.FriendsViewModel
 
 class SearchedUsersAdapter(private val users: ArrayList<String>,
                            private val preferences: SharedPreferences,
-                           private val viewModel: FriendsViewModel) : RecyclerView.Adapter<SearchedUsersAdapter.ViewHolder>() {
+                           private val viewModel: FriendsViewModel
+) : RecyclerView.Adapter<SearchedUsersAdapter.ViewHolder>() {
     inner class ViewHolder(listItemView: View) : RecyclerView.ViewHolder(listItemView){
         val friendUser: TextView = itemView.findViewById(R.id.UsernameSearch)
         val addButton: Button = itemView.findViewById(R.id.AddFriend)
@@ -38,12 +41,12 @@ class SearchedUsersAdapter(private val users: ArrayList<String>,
         holder.friendUser.text = user
         holder.friendUser.setOnClickListener {
             val intent = Intent(it.context, UserProfileActivity::class.java)
-            intent.putExtra("user", user)
+            intent.putExtra(USERNAME, user)
             it.context.startActivity(intent)
         }
         holder.addButton.setOnClickListener {
-            ProfileInfoDataSource.addFriend(preferences, user) {
-                if (it == "Success") {
+            FriendsDataSource.addFriend(preferences, user) {
+                if (it == SUCCESS_MESSAGE) {
                     viewModel.removePendingFriend(user)
                     Toast.makeText(holder.itemView.context, "Request sent to $user!", Toast.LENGTH_LONG).show()
                     holder.addButton.visibility = View.GONE

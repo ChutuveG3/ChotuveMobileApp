@@ -1,6 +1,7 @@
 package com.example.chotuvemobileapp.ui.profile
 
 import android.app.Activity
+import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -42,23 +43,26 @@ class ProfileFragment : Fragment() {
         showLoadingScreen()
         viewModel.setPrefs(prefs)
         viewModel.userInfo.observe(viewLifecycleOwner, Observer {
-            val nameToDisplay = "${it.first_name} ${it.last_name}"
-            NameTextView.text = nameToDisplay
-            UsernameTextView.text = it.user_name
-            ProfileViewPager.adapter = ScreenSlidePagerAdapter(this)
-            TabLayoutMediator(ProfileTabLayout, ProfileViewPager) { tab, position ->
-                when (position) {
-                    0 -> tab.text = getString(R.string.profile_details)
-                    else -> tab.text = getString(R.string.videos)
+            if (it != null) {
+                val nameToDisplay = "${it.first_name} ${it.last_name}"
+                NameTextView.text = nameToDisplay
+                UsernameTextView.text = it.user_name
+                ProfileViewPager.adapter = ScreenSlidePagerAdapter(this)
+                TabLayoutMediator(ProfileTabLayout, ProfileViewPager) { tab, position ->
+                    when (position) {
+                        0 -> tab.text = getString(R.string.profile_details)
+                        else -> tab.text = getString(R.string.videos)
+                    }
+                }.attach()
+                if (it.profile_img_url != null) Glide.with(this).load(Uri.parse(it.profile_img_url)).centerCrop().into(ProfilePic)
+                ProfilePic.setOnClickListener {_ ->
+                    val intent = Intent(requireContext(), FullSizeImageActivity::class.java)
+                    intent.putExtra(Utilities.PIC_URL, it.profile_img_url)
+                    val options = ActivityOptions.makeSceneTransitionAnimation(requireActivity(), ProfilePicWrapper, "profilePic")
+                    startActivity(intent, options.toBundle())
                 }
-            }.attach()
-            if (it.profile_img_url != null) Glide.with(this).load(Uri.parse(it.profile_img_url)).centerCrop().into(ProfilePic)
-            quitLoadingScreen()
-            ProfilePic.setOnClickListener {_ ->
-                val intent = Intent(requireContext(), FullSizeImageActivity::class.java)
-                intent.putExtra(Utilities.PIC_URL, it.profile_img_url)
-                startActivity(intent)
             }
+            quitLoadingScreen()
         })
         openDrawer.setOnClickListener {
             val home = activity as HomeActivity
@@ -66,10 +70,10 @@ class ProfileFragment : Fragment() {
         }
         AddFriendButton.setOnClickListener {
             val intent = Intent(context, EditProfileActivity::class.java)
-            intent.putExtra(Utilities.FIRST_NAME, viewModel.userInfo.value!!.first_name)
-            intent.putExtra(Utilities.LAST_NAME, viewModel.userInfo.value!!.last_name)
-            intent.putExtra(Utilities.EMAIL, viewModel.userInfo.value!!.email)
-            intent.putExtra(Utilities.BIRTH_DATE, viewModel.userInfo.value!!.birthdate)
+            intent.putExtra(Utilities.FIRST_NAME, viewModel.userInfo.value?.first_name)
+            intent.putExtra(Utilities.LAST_NAME, viewModel.userInfo.value?.last_name)
+            intent.putExtra(Utilities.EMAIL, viewModel.userInfo.value?.email)
+            intent.putExtra(Utilities.BIRTH_DATE, viewModel.userInfo.value?.birthdate)
             intent.putExtra(Utilities.PIC_URL, viewModel.userInfo.value?.profile_img_url)
             startActivityForResult(intent, Utilities.REQUEST_CODE_EDIT_PROFILE)
         }
@@ -114,10 +118,5 @@ class ProfileFragment : Fragment() {
         ProfileScrollView.alpha = .2F
         ProfilePic.isClickable = false
         ProfileProgressBar.visibility = View.VISIBLE
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        viewModelStore.clear()
     }
 }

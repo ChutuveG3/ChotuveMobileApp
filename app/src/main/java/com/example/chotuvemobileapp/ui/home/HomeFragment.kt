@@ -22,13 +22,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        SearchIcon.setOnSearchClickListener {
-            chotuveLogo.visibility = View.GONE
-        }
-        SearchIcon.setOnCloseListener {
-            chotuveLogo.visibility = View.VISIBLE
-            return@setOnCloseListener false
-        }
+
         HomeToolbar.setNavigationOnClickListener {
             val home=  activity as HomeActivity
             home.openDrawer()

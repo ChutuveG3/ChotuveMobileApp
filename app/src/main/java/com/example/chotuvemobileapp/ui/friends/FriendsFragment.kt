@@ -12,8 +12,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.example.chotuvemobileapp.HomeActivity
 import com.example.chotuvemobileapp.R
-import com.example.chotuvemobileapp.data.users.FriendsInfo
+import com.example.chotuvemobileapp.helpers.Utilities.USERNAME
 import com.example.chotuvemobileapp.ui.ListFragment
+import com.example.chotuvemobileapp.viewmodels.FriendsViewModel
 import com.google.android.material.tabs.TabLayoutMediator
 import kotlinx.android.synthetic.main.fragment_friends.*
 
@@ -41,10 +42,7 @@ class FriendsFragment : Fragment() {
             home.openDrawer()
         }
         viewModel.setPrefs(prefs)
-        FriendsInfo.needsUpdate.observe(viewLifecycleOwner, Observer {
-            if (it) viewModel.updateFriends()
-        })
-        FriendsToolbar.title = prefs.getString("username", "")
+        FriendsToolbar.title = prefs.getString(USERNAME, "")
         FriendsViewPager.adapter = FriendsPagerAdapter(this)
         viewModel.friends.observe(viewLifecycleOwner, Observer {
             TabLayoutMediator(FriendsTabLayout, FriendsViewPager) {tab, position ->
@@ -62,8 +60,8 @@ class FriendsFragment : Fragment() {
         override fun getItemCount(): Int = 3
         override fun createFragment(position: Int): Fragment {
             return when(position){
-                0 -> ListFragment.newInstance(false)
-                1 -> ListFragment.newInstance(true)
+                0 -> ListFragment.newInstance(false, getString(R.string.friends_not_found))
+                1 -> ListFragment.newInstance(true, getString(R.string.pending_friends_not_found))
                 else -> SearchFriendsFragment()
             }
         }

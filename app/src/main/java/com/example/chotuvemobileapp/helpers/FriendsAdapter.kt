@@ -11,8 +11,9 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.chotuvemobileapp.R
 import com.example.chotuvemobileapp.UserProfileActivity
-import com.example.chotuvemobileapp.data.users.ProfileInfoDataSource
-import com.example.chotuvemobileapp.ui.friends.FriendsViewModel
+import com.example.chotuvemobileapp.data.repositories.FriendsDataSource
+import com.example.chotuvemobileapp.helpers.Utilities.USERNAME
+import com.example.chotuvemobileapp.viewmodels.FriendsViewModel
 
 class FriendsAdapter(private val friends: ArrayList<String>,
                      private val preferences: SharedPreferences,
@@ -40,13 +41,13 @@ class FriendsAdapter(private val friends: ArrayList<String>,
         holder.friendUser.text = friend
         holder.friendUser.setOnClickListener {
             val intent = Intent(it.context, UserProfileActivity::class.java)
-            intent.putExtra("user", friend)
+            intent.putExtra(USERNAME, friend)
             it.context.startActivity(intent)
         }
         if (pending){
             holder.acceptRequest.setOnClickListener {
                 holder.itemView.alpha = .2F
-                ProfileInfoDataSource.respondRequest(preferences, friend, true){
+                FriendsDataSource.respondRequest(preferences, friend, true){
                     if (it == "Success"){
                         viewModel.addFriend(friend)
                         holder.itemView.visibility = View.GONE
@@ -57,7 +58,7 @@ class FriendsAdapter(private val friends: ArrayList<String>,
             }
             holder.declineRequest.setOnClickListener {
                 holder.itemView.alpha = .2F
-                ProfileInfoDataSource.respondRequest(preferences, friend, false){
+                FriendsDataSource.respondRequest(preferences, friend, false){
                     if (it == "Success"){
                         viewModel.removePendingFriend(friend)
                         holder.itemView.visibility = View.GONE

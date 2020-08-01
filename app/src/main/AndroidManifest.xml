@@ -3,17 +3,24 @@
     package="com.example.chotuvemobileapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
+        android:allowBackup="true"
+        android:fullBackupContent="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme.NoActionBar"
-        android:allowBackup="true"
-        android:fullBackupContent="false">
+        android:theme="@style/AppTheme.NoActionBar">
+        <activity
+            android:name=".SelectFriendActivity"
+            android:theme="@style/AppTheme.NoActionBar.Chat"/>
+        <activity
+            android:name=".ChatActivity"
+            android:theme="@style/AppTheme.NoActionBar.Chat"
+            android:windowSoftInputMode="adjustResize"/>
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_stat_ic_notification" />
@@ -24,16 +31,25 @@
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/default_notification_channel_id" />
         <activity
+            android:name=".PasswordConfigActivity"
+            android:theme="@style/AppTheme.NoActionBar.Dark" />
+        <activity
+            android:name=".ThirdPartyLoginActivity"
+            android:theme="@style/AppTheme.NoActionBar.Dark" />
+        <activity
+            android:name=".RevertPasswordActivity"
+            android:theme="@style/AppTheme.NoActionBar.Dark" />
+        <activity
             android:name=".UserProfileActivity"
-            android:theme="@style/AppTheme.NoActionBar.Dark"/>
+            android:theme="@style/AppTheme.NoActionBar.Chat" />
         <activity
             android:name=".PlayVideoActivity"
             android:configChanges="screenSize|orientation|keyboardHidden"
             android:screenOrientation="user"
-            android:theme="@style/AppTheme.NoActionBar.Dark" />
+            android:theme="@style/AppTheme.NoActionBar.Chat" />
         <activity
             android:name=".ui.profile.EditProfileActivity"
-            android:theme="@style/AppTheme.NoActionBar.Dark" />
+            android:theme="@style/AppTheme.NoActionBar.Chat" />
         <activity
             android:name=".ui.profile.FullSizeImageActivity"
             android:theme="@style/AppTheme.NoActionBar.Dark" />
@@ -50,14 +66,37 @@
         </activity>
         <activity
             android:name=".SignUpActivity"
-            android:theme="@style/AppTheme.NoActionBar.Light" />
+            android:theme="@style/AppTheme.NoActionBar.Dark" />
         <activity
             android:name=".LoginActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar.Light" />
+            android:theme="@style/AppTheme.NoActionBar.Dark" />
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:label="@string/app_name" />
+        <activity
+            android:name="com.facebook.CustomTabActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="@string/fb_login_protocol_scheme" />
+            </intent-filter>
+        </activity>
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+
         <service
             android:name=".MyFirebaseMessagingService"
             android:exported="false">
@@ -66,4 +105,5 @@
             </intent-filter>
         </service>
     </application>
+
 </manifest>

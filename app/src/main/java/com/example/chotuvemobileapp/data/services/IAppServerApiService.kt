@@ -1,7 +1,7 @@
 package com.example.chotuvemobileapp.data.services
 
-import com.example.chotuvemobileapp.data.requests.LoginRequest
-import com.example.chotuvemobileapp.data.requests.TokenLoginRequest
+import com.example.chotuvemobileapp.data.requests.*
+import com.example.chotuvemobileapp.data.requests.reactions.CommentRequest
 import com.example.chotuvemobileapp.data.users.User
 import com.example.chotuvemobileapp.data.users.UserForModification
 import com.example.chotuvemobileapp.data.videos.Video
@@ -16,9 +16,18 @@ interface IAppServerApiService {
         @Body user: User
     ): Call<ResponseBody>
 
-//    refactor
     @POST("/videos")
     fun uploadVideo(@Body video: Video): Call<ResponseBody>
+
+    @POST("/sessions/password_recovery")
+    fun passwordRecovery(
+        @Body request: RevertPassRequest
+    ): Call<ResponseBody>
+
+    @PUT("/sessions/password_configuration")
+    fun changePassword(
+        @Body request: ChangePassRequest
+    ): Call<ResponseBody>
 
     @POST("users/sessions")
     fun loginUser(
@@ -29,6 +38,9 @@ interface IAppServerApiService {
     fun tokenLoginUser(
         @Body request: TokenLoginRequest
     ): Call<ResponseBody>
+
+    @POST("users/sessions")
+    fun loginThirdParty(@Body request: ThirdPartyLoginRequest) : Call<ResponseBody>
 
     @DELETE("users/{user}/sessions")
     fun logoutUser(@Path("user") user: String): Call<ResponseBody>
@@ -69,4 +81,25 @@ interface IAppServerApiService {
 
     @GET("users/{user}/potential_friends")
     fun searchFriends(@Path("user") sender: String, @Query("username") queryString: String) : Call<ResponseBody>
+
+    @PATCH("videos/{videoId}/like")
+    fun like(@Path("videoId") videoId: String) : Call<ResponseBody>
+
+    @PATCH("videos/{videoId}/unlike")
+    fun unlike(@Path("videoId") videoId: String) : Call<ResponseBody>
+
+    @PATCH("videos/{videoId}/dislike")
+    fun dislike(@Path("videoId") videoId: String) : Call<ResponseBody>
+
+    @PATCH("videos/{videoId}/undislike")
+    fun undislike(@Path("videoId") videoId: String) : Call<ResponseBody>
+
+    @POST("videos/{videoId}/comments")
+    fun comment(@Path("videoId") videoId: String, @Body comment: CommentRequest) : Call<ResponseBody>
+
+    @GET("videos/{videoId}")
+    fun getVideo(@Path("videoId") videoId: String) : Call<ResponseBody>
+
+    @POST("users/{destUser}/messages")
+    fun sendMessage(@Path("destUser") dest: String, @Body message: MessageRequest) : Call<ResponseBody>
 }
